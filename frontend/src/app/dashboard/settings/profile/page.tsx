@@ -1,0 +1,201 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useToast } from "../../../../context/ToastContext";
+import { getProfile, updateProfile, changeMyPassword } from "../../../../utils/api";
+import { Lock, Save, User } from "lucide-react";
+
+export default function ProfilePage() {
+  const toast = useToast();
+
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+
+  // FORM: datos personales
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    role: "",
+  });
+
+  // FORM: cambio contraseña
+  const [passwordForm, setPasswordForm] = useState({
+    oldPassword: "",
+    newPassword: "",
+  });
+
+  // ================================
+  // Cargar perfil al iniciar
+  // ================================
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await getProfile();
+        setUser(data);
+        setForm({
+          name: data.name,
+          email: data.email,
+          role: data.role ?? "",
+        });
+      } catch {
+        toast.error("Error al cargar perfil ❌");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  if (loading) return <p className="p-6 text-gray-500">Cargando perfil…</p>;
+
+  const isAdmin = user.role === "admin";
+
+  // ================================
+  // Guardar datos personales
+  // ================================
+  const handleSave = async (e: any) => {
+    e.preventDefault();
+    try {
+      await updateProfile(form);
+      toast.success("Perfil actualizado ✔");
+    } catch (err: any) {
+      toast.error(err?.message || "No se pudo actualizar ❌");
+    }
+  };
+
+  // ================================
+  // Cambiar contraseña
+  // ================================
+  const handlePasswordChange = async (e: any) => {
+    e.preventDefault();
+    try {
+      await changeMyPassword(passwordForm);
+      toast.success("Contraseña actualizada ✔");
+      setPasswordForm({ oldPassword: "", newPassword: "" });
+    } catch (err: any) {
+      toast.error(err?.message || "No se pudo cambiar la contraseña ❌");
+    }
+  };
+
+  return (
+    <section className="p-6 space-y-8">
+
+      {/* ======================================
+          ENCABEZADO
+      ====================================== */}
+      <div>
+        <h1 className="text-2xl font-semibold text-primary">Mi perfil</h1>
+        <p className="text-gray-400">Gestiona tu información personal</p>
+      </div>
+
+      {/* ======================================
+          FORMULARIO INFO PERSONAL
+      ====================================== */}
+      <form
+        onSubmit={handleSave}
+        className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-6 space-y-5"
+      >
+        <h2 className="text-lg font-semibold text-primary-300 flex items-center gap-2">
+          <User size={20} /> Información personal
+        </h2>
+
+        {/* Nombre */}
+        <div className="flex flex-col">
+          <label className="text-sm text-gray-400 mb-1">Nombre</label>
+          <input
+            type="text"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            className="bg-[#121212] border border-[#1f1f1f] p-2 rounded text-gray-200"
+            required
+          />
+        </div>
+
+        {/* Email SOLO ADMIN */}
+        {isAdmin && (
+          <div className="flex flex-col">
+            <label className="text-sm text-gray-400 mb-1">Correo</label>
+            <input
+              type="email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              className="bg-[#121212] border border-[#1f1f1f] p-2 rounded text-gray-200"
+              required
+            />
+          </div>
+        )}
+
+        {/* Rol SOLO ADMIN */}
+        {/* {isAdmin && (
+          <div className="flex flex-col">
+            <label className="text-sm text-gray-400 mb-1">Rol</label>
+            <select
+              value={form.role}
+              onChange={(e) => setForm({ ...form, role: e.target.value })}
+              className="bg-[#121212] border border-[#1f1f1f] p-2 rounded text-gray-200"
+            >
+              <option value="admin">Admin</option>
+              <option value="empleado">Empleado</option>
+            </select>
+          </div>
+        )} */}
+
+        {/* BOTÓN GUARDAR */}
+        <button
+          type="submit"
+          className="bg-primary hover:bg-primary-700 px-5 py-2 rounded-xl text-white flex items-center gap-2"
+        >
+          <Save size={18} /> Guardar cambios
+        </button>
+      </form>
+
+      {/* ======================================
+          CAMBIAR CONTRASEÑA
+      ====================================== */}
+      <form
+        onSubmit={handlePasswordChange}
+        className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-6 space-y-5"
+      >
+        <h2 className="text-lg font-semibold text-primary-300 flex items-center gap-2">
+          <Lock size={20} /> Cambiar contraseña
+        </h2>
+
+        {/* Contraseña actual */}
+        <div className="flex flex-col">
+          <label className="text-sm text-gray-400 mb-1">Contraseña actual</label>
+          <input
+            type="password"
+            value={passwordForm.oldPassword}
+            onChange={(e) =>
+              setPasswordForm({ ...passwordForm, oldPassword: e.target.value })
+            }
+            className="bg-[#121212] border border-[#1f1f1f] p-2 rounded text-gray-200"
+            required
+          />
+        </div>
+
+        {/* Nueva contraseña */}
+        <div className="flex flex-col">
+          <label className="text-sm text-gray-400 mb-1">Nueva contraseña</label>
+          <input
+            type="password"
+            value={passwordForm.newPassword}
+            onChange={(e) =>
+              setPasswordForm({ ...passwordForm, newPassword: e.target.value })
+            }
+            className="bg-[#121212] border border-[#1f1f1f] p-2 rounded text-gray-200"
+            required
+          />
+        </div>
+
+        {/* BOTÓN CAMBIAR */}
+        <button
+          type="submit"
+          className="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-xl text-white flex items-center gap-2"
+        >
+          <Lock size={18} /> Actualizar contraseña
+        </button>
+      </form>
+
+    </section>
+  );
+}

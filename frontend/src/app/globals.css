@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Removed CSS variables — using fixed values and Tailwind defaults so build stays stable */
+
+/* removed theme inline variables to avoid runtime var() usage — prefer Tailwind utilities */
+
+body {
+  /* base colors — prefer Tailwind utilities in components; keep neutral defaults here */
+  background: #ffffff;
+  color: #0b0b0b;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+  /* background/text applied via properties above, no @apply here */
+
+  ::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+  }
+
+}/* Chrome, Edge, Safari */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+
+/* Dark theme variables */
+@media (prefers-color-scheme: dark) {
+  body { background: #0b0b0b; color: #e6eef8; }
+}
+
+/* Small helpers for the app */
+.card {
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  box-shadow: 0 6px 18px rgba(2,6,23,0.35);
+}
+
+.muted { color: #6b7280; }
+.brand-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px; /* similar to rounded-lg */
+  font-weight: 600;
+  color: white;
+  padding: 0.75rem 1.5rem; /* px-6 py-3 */
+  transition: filter 0.15s ease;
+  background: linear-gradient(180deg,#2563eb, #1d4ed8);
+  box-shadow: 0 6px 22px rgba(37,99,235,0.18);
+}
+.brand-btn:hover { filter: brightness(0.95); }
+
+/* consistent input style */
+/* default (light) inputs use the landing palette so they match the landing page visual identity */
+input[type="text"], input[type="email"], input[type="password"], textarea, select {
+  background: #eef6ff; /* primary-50 */
+  border: 1px solid #b6ddff; /* primary-200 */
+  color: #153087; /* primary-900 */
+  padding: 0.5rem 1rem; /* px-4 py-2 */
+  border-radius: 8px;
+  outline: none;
+}
+
+/* helper classes for more explicit usage */
+.app-input {
+  background: #eef6ff;
+  border: 1px solid #b6ddff;
+  color: #153087;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  outline: none;
+}
+.app-select {
+  background: #eef6ff;
+  border: 1px solid #b6ddff;
+  color: #153087;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  outline: none;
+}
+
+/* secondary button style (used for "Cerrar formulario" / secondary actions) */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  transition: box-shadow 0.12s ease, background-color 0.12s ease;
+  box-shadow: 0 1px 2px rgba(2,6,23,0.06);
+  background: #b6ddff; /* primary-200 */
+  color: #153087;
+}
+.btn-secondary:hover { box-shadow: 0 6px 18px rgba(2,6,23,0.12); background: #8acbff; }
+
+/* dark-mode overrides: keep contrast when user prefers dark */
+@media (prefers-color-scheme: dark) {
+  input[type="text"], input[type="email"], input[type="password"], textarea, select,
+  .app-input, .app-select {
+    background: #0f0f0f;
+    border: 1px solid #1f1f1f;
+    color: white;
+  }
+}
+
+/* small utility to center content in panels */
+.panel-center { display: flex; align-items: center; justify-content: center; }
+
