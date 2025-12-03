@@ -8,5 +8,4 @@ async function generate() {
   console.log("Nuevo hash generado:");
   console.log(hash);
 }
-
 generate();
