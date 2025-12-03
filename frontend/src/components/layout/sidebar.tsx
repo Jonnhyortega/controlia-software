@@ -28,6 +28,7 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  
 
   return (
     <aside
@@ -49,7 +50,7 @@ export default function Sidebar() {
 
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-2 rounded-md hover:bg-[#1f1f1f] transition"
+            className="p-2 rounded-sm hover:bg-[#1f1f1f] transition"
           >
             <Menu size={22} className="text-gray-400" />
           </button>
@@ -74,7 +75,7 @@ export default function Sidebar() {
                 <button
                   onClick={() => router.push(item.path)}
                   className={`
-                    w-full flex items-center gap-3 px-4 py-3 rounded-lg transition
+                    w-full flex items-center gap-3 px-4 py-3 rounded-sm transition
                     ${
                       active
                         ? "bg-[#1f1f1f] text-white"
@@ -95,7 +96,7 @@ export default function Sidebar() {
                   <span
                     className="
                       absolute left-20 top-1/2 -translate-y-1/2 
-                      bg-black text-white text-xs px-3 py-1 rounded-md opacity-0 
+                      bg-black text-white text-xs px-3 py-1 rounded-sm opacity-0 
                       group-hover:opacity-100 transition-all shadow-lg
                       border border-gray-700 pointer-events-none
                     "
@@ -125,7 +126,7 @@ export default function Sidebar() {
                 <button
                   onClick={() => router.push(item.path)}
                   className={`
-                    w-full flex items-center gap-3 px-4 py-3 rounded-lg transition
+                    w-full flex items-center gap-3 px-4 py-3 roundedccccccc transition
                     ${
                       active
                         ? "bg-[#1f1f1f] text-white"
@@ -158,22 +159,6 @@ export default function Sidebar() {
           })}
         </nav>
       </div>
-
-      {/* LOGOUT */}
-      <button
-        onClick={() => {
-          localStorage.removeItem("token");
-          router.push("/login");
-        }}
-        className={`
-          flex items-center gap-3 px-4 py-4 text-red-400 
-          hover:text-red-300 hover:bg-[#1a1a1a] transition rounded-lg
-          ${collapsed ? "justify-center" : ""}
-        `}
-      >
-        <LogOut size={18} />
-        {!collapsed && <span className="font-medium">Cerrar sesión</span>}
-      </button>
     </aside>
   );
 }
