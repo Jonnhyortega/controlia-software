@@ -27,9 +27,14 @@ import { useToast } from "../../../../context/ToastContext";
 export default function SalesForm({
   onBack,
   onCreated,
+  scannedCode,
+  onScannedConsumed
 }: {
   onBack: () => void;
   onCreated: (data: any) => void;
+  scannedCode?: string | null;
+  onScannedConsumed?: () => void;
+
 }) {
   const toast = useToast();
 
@@ -66,9 +71,16 @@ export default function SalesForm({
     fetchProducts();
   }, []);
 
+
   useEffect(() => {
-  console.log("scannerOpen:", scannerOpen);
-}, [scannerOpen]);
+    if (!scannedCode) return;
+    if (!productsDB.length) return; // Esperar a que los productos estén cargados
+    
+    handleSaleBarcodeDetected(scannedCode);
+    onScannedConsumed?.();
+  }, [scannedCode, productsDB]);
+
+
 
 
   // dynamic import - ensure we return the component (not the module) so types match
@@ -83,40 +95,82 @@ export default function SalesForm({
 
 
   const handleSaleBarcodeDetected = (code: string) => {
-    // try to find product by barcode in inventory
-    const found = productsDB.find((p) => String(p.barcode || "") === String(code));
+    const found = productsDB.find(
+      (p) => String(p.barcode || "") === String(code)
+    );
+
+    const products = [...newSale.products];
+
+    // 1) ¿Ya existe este producto en la venta?
     if (found) {
-      // if product already in sale, increment quantity
-      const existingIndex = newSale.products.findIndex((x) => x.productId === found._id);
+      const existingIndex = products.findIndex((p) => p.productId === found._id);
+
       if (existingIndex >= 0) {
-        const updated = [...newSale.products];
-        updated[existingIndex].quantity = Number(updated[existingIndex].quantity || 0) + 1;
-        setNewSale({ ...newSale, products: updated });
-      } else {
-        setNewSale({
-          ...newSale,
-          products: [
-            ...newSale.products,
-            { productId: found._id, name: found.name, quantity: 1, price: found.price },
-          ],
-        });
+        // Ya existe → aumentar cantidad
+        products[existingIndex].quantity =
+          Number(products[existingIndex].quantity) + 1;
+
+        setNewSale({ ...newSale, products });
+        toast.success(`Cantidad aumentada: ${found.name}`);
+        return;
       }
-      toast?.success?.(`Producto agregado: ${found.name}`);
-      setScannerOpen(false);
+
+      // 2) ¿Hay un slot vacío para completarlo?
+      const emptyIndex = products.findIndex((p) => !p.productId);
+
+      if (emptyIndex >= 0) {
+        products[emptyIndex] = {
+          productId: found._id,
+          name: found.name,
+          quantity: 1,
+          price: found.price,
+        };
+
+        setNewSale({ ...newSale, products });
+        toast.success(`Producto agregado: ${found.name}`);
+        return;
+      }
+
+      // 3) No hay slots vacíos → agregar uno nuevo
+      products.push({
+        productId: found._id,
+        name: found.name,
+        quantity: 1,
+        price: found.price,
+      });
+
+      setNewSale({ ...newSale, products });
+      toast.success(`Producto agregado: ${found.name}`);
       return;
     }
 
-    // if not found, add as "otro" manual product and prefill the name with the scanned code
-    setNewSale({
-      ...newSale,
-      products: [
-        ...newSale.products,
-        { productId: "otro", name: String(code), quantity: 1, price: 0 },
-      ],
-    });
-    toast?.info?.("Código no encontrado en inventario — agregué una entrada 'Otro' para completar manualmente.");
-    setScannerOpen(false);
+    // ========================
+    // Producto NO encontrado
+    // ========================
+
+    const emptyIndex = products.findIndex((p) => !p.productId);
+
+    if (emptyIndex >= 0) {
+      products[emptyIndex] = {
+        productId: "otro",
+        name: code,
+        quantity: 1,
+        price: 0,
+      };
+    } else {
+      products.push({
+        productId: "otro",
+        name: code,
+        quantity: 1,
+        price: 0,
+      });
+    }
+
+    setNewSale({ ...newSale, products });
+    toast.info("Código no encontrado — agregado como producto manual");
   };
+
+
 
   const handleProductChange = (
     index: number,

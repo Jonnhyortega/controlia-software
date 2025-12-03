@@ -18,7 +18,7 @@ import SalesForm from "./components/Forms/salesForm";
 
 import Loading from "../../components/loading";
 import { api } from "../../utils/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 export default function DashboardPage() {
@@ -27,9 +27,18 @@ export default function DashboardPage() {
   const { data, loading, reload } = useSales();
   const { date, time } = useClock();
 
-  const scanner = useScanner((code) => {
-    toast.success(`Código detectado: ${code}`);
-  });
+  const [pendingScannedCode, setPendingScannedCode] = useState<string | null>(null);
+
+  const handleScannedCode = (code: string) => {
+    setPendingScannedCode(code);
+
+    // Si el formulario NO está abierto → lo abrimos automáticamente
+    if (!showSalesForm) {
+      setShowSalesForm(true);
+      setShowCloseCashForm(false);
+    }
+  };
+
 
   const [expandedSale, setExpandedSale] = useState<string | null>(null);
   const [showSalesForm, setShowSalesForm] = useState(false);
@@ -45,19 +54,85 @@ export default function DashboardPage() {
     }
   };
 
+  useEffect(() => {
+  let buffer = "";
+  let timer: NodeJS.Timeout | null = null;
+
+  const handleKeyPress = (e: KeyboardEvent) => {
+    // si está escribiendo en un input → ignoramos (no queremos romper nada)
+    if (document.activeElement && (document.activeElement as HTMLElement).tagName === "INPUT") return;
+
+    if (timer) clearTimeout(timer);
+
+    // si presionó Enter → procesamos
+    if (e.key === "Enter") {
+      if (buffer.length > 0) {
+        handleScannedCode(buffer);
+        buffer = "";
+      }
+      return;
+    }
+
+    // solo aceptar números / letras
+    if (/^[0-9A-Za-z]+$/.test(e.key)) {
+      buffer += e.key;
+    }
+
+    // si pasan 300ms sin tipear → reset
+    timer = setTimeout(() => {
+      buffer = "";
+    }, 300);
+  };
+
+  window.addEventListener("keydown", handleKeyPress);
+
+  return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [showSalesForm]);
+
+  useEffect(() => {
+  let buffer = "";
+  let timer: NodeJS.Timeout | null = null;
+
+  const handleKeyPress = (e: KeyboardEvent) => {
+    // si está escribiendo en un input → ignoramos (no queremos romper nada)
+    if (document.activeElement && (document.activeElement as HTMLElement).tagName === "INPUT") return;
+
+    if (timer) clearTimeout(timer);
+
+    // si presionó Enter → procesamos
+    if (e.key === "Enter") {
+      if (buffer.length > 0) {
+        handleScannedCode(buffer);
+        buffer = "";
+      }
+      return;
+    }
+
+    // solo aceptar números / letras
+    if (/^[0-9A-Za-z]+$/.test(e.key)) {
+      buffer += e.key;
+    }
+
+    // si pasan 300ms sin tipear → reset
+    timer = setTimeout(() => {
+      buffer = "";
+    }, 300);
+  };
+
+  window.addEventListener("keydown", handleKeyPress);
+
+  return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [showSalesForm]);
+
+
   if (loading) return <Loading fullscreen message="Cargando..." />;
 
   const sales = data?.sales || [];
   const total = data?.totalSalesAmount || 0;
 
+
   return (
     <>
-      <ScannerOverlay
-        open={scanner.open}
-        onClose={scanner.hide}
-        onDetected={scanner.handleDetected}
-      />
-
       <DashboardHeader
         date={date}
         time={time}
@@ -78,12 +153,19 @@ export default function DashboardPage() {
         {showSalesForm && (
           <Overlay>
             <SalesForm
-              onBack={() => setShowSalesForm(false)}
+              scannedCode={pendingScannedCode}
+              onBack={() => {
+                setShowSalesForm(false);
+                setPendingScannedCode(null);
+              }}
               onCreated={async () => {
                 await reload();
+                setPendingScannedCode(null);
                 setShowSalesForm(false);
               }}
+              onScannedConsumed={() => setPendingScannedCode(null)}
             />
+
           </Overlay>
         )}
 
