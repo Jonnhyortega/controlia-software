@@ -132,7 +132,7 @@ export const getDailyCashByDate = async (date: string): Promise<DailyCash> => {
 
   const res = await fetch(`${API_URL}/daily-cash/${date}`, {
     headers: { Authorization: `Bearer ${token}` },
-  });
+  })
 
   const data = await res.json();
   console.log(data.status)

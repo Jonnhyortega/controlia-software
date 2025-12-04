@@ -7,6 +7,7 @@ import { useAuth } from "../../context/authContext";
 import axios from "axios";
 import { useEffect } from "react";
 import { useToast } from "../../context/ToastContext"; // 👈 opcional si usás toasts globales
+import { api } from "../../utils/api";
 
 export default function AuthPage() {
   const router = useRouter();
@@ -57,8 +58,7 @@ export default function AuthPage() {
         }
       } else {
         // ✅ REGISTRO
-        const endpoint = "http://localhost:5000/api/users/register";
-        await axios.post(endpoint, formData);
+        await api.post("/users/register", formData);
         toast?.success?.("Cuenta creada correctamente. Iniciá sesión.");
         setIsLogin(true);
       }
