@@ -379,14 +379,6 @@ export default function SalesForm({
 
           <div className="flex items-center gap-2 fixed right-5 top-5">
             <button
-              onClick={() => setScannerOpen(true)}
-              className="px-3 py-2 rounded-xl bg-primary hover:bg-primary-700 text-white text-sm font-medium"
-              title="Escanear código para agregar producto a la venta"
-            >
-              Escanear
-            </button>
-
-            <button
               onClick={onBack}
               className="
               group
@@ -537,7 +529,7 @@ export default function SalesForm({
           <button
             onClick={addProductField}
             className="
-              flex items-center gap-2 text-primary-300 font-medium text-sm
+              flex items-center gap-2 text-blue-600 font-bold text-sm
               hover:underline
             "
           >

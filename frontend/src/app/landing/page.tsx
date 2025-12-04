@@ -1,7 +1,6 @@
 "use client";
 
 import { BarChart3, ShoppingCart, Package, Users } from "lucide-react";
-import Image from "next/image";
 import { Button } from "../dashboard/components/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";

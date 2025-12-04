@@ -10,15 +10,13 @@ export default function HomePage() {
   const { token, loading, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (!loading) {
-      if (isAuthenticated){ 
-        router.push("/dashboard")
-      }
+    if (!loading && isAuthenticated) {
+      router.push("/dashboard");
     }
   }, [isAuthenticated, loading, router]);
 
-  // 🔹 Mientras el contexto carga, mostramos el loader
-  if (loading) {
+  // Mostrar loader si está cargando O si está autenticado (mientras redirige)
+  if (loading || isAuthenticated) {
     return (
       <section className="min-h-screen flex items-center justify-center">
         <Loading />
@@ -26,15 +24,6 @@ export default function HomePage() {
     );
   }
 
-  // 🔹 Si ya hay sesión, mostramos el loader corto antes del dashboard
-  if (isAuthenticated) {
-    return (
-      <section className="min-h-screen flex items-center justify-center">
-        <Loading />
-      </section>
-    );
-  }
-
-  // 🔹 Si no hay sesión → landing
+  // Si no carga y no está autenticado -> Landing
   return <LandingPage />;
 }
