@@ -11,11 +11,8 @@ export default function HomePage() {
 
   useEffect(() => {
     if (!loading) {
-      if (isAuthenticated) {
-        const timeout = setTimeout(() => {
-          router.push("/dashboard");
-        }, 1500);
-        return () => clearTimeout(timeout);
+      if (isAuthenticated){ 
+        router.push("/dashboard")
       }
     }
   }, [isAuthenticated, loading, router]);
