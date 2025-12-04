@@ -1,0 +1,120 @@
+import { useState, useEffect, useRef } from "react";
+import { Search, Plus, Package } from "lucide-react";
+
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  stock: number;
+  barcode?: string;
+}
+
+interface ProductSearchProps {
+  products: Product[];
+  onSelect: (product: Product) => void;
+}
+
+export default function ProductSearch({ products, onSelect }: ProductSearchProps) {
+  const [query, setQuery] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Filtrar productos
+  const filteredProducts = products.filter((product) => {
+    if (!query) return false;
+    const lowerQuery = query.toLowerCase();
+    return (
+      product.name.toLowerCase().includes(lowerQuery) ||
+      (product.barcode && product.barcode.includes(lowerQuery))
+    );
+  }).slice(0, 5); // Limitar a 5 resultados para no saturar
+
+  // Cerrar al hacer click fuera
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelect = (product: Product) => {
+    onSelect(product);
+    setQuery("");
+    setIsOpen(false);
+  };
+
+  return (
+    <div ref={wrapperRef} className="relative w-full mb-6 z-[100]">
+      <div className="relative">
+        <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+        <label htmlFor="search-product" className="text-black w-full text-left p-5 font-bold">Buscar producto por nombre o código...</label>
+        <input
+          type="text"
+          name="search-product"
+          placeholder="Buscar producto por nombre o código..."
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setIsOpen(true);
+          }}
+          onFocus={() => setIsOpen(true)}
+          className="
+            w-full
+            bg-white border border-gray-300 rounded-xl
+            focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent
+            shadow-sm text-gray-800 placeholder-gray-400
+          "
+        />
+      </div>
+      <p className="text-xs text-gray-500 mt-2 ml-1">
+        💡 Tip: Puedes escanear el código de barras directamente o escribir para buscar.
+      </p>
+
+      {isOpen && query.length > 0 && (
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden max-h-60 overflow-y-auto">
+          {filteredProducts.length > 0 ? (
+            <ul>
+              {filteredProducts.map((product) => (
+                <li
+                  key={product._id}
+                  onClick={() => handleSelect(product)}
+                  className="
+                    px-4 py-3 hover:bg-gray-50 cursor-pointer
+                    flex items-center justify-between
+                    border-b border-gray-50 last:border-none
+                  "
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary-50 p-2 rounded-lg text-primary">
+                      <Package className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-800">{product.name}</p>
+                      <p className="text-xs text-gray-500">
+                        Stock: <span className={product.stock > 0 ? "text-green-600" : "text-red-500"}>{product.stock}</span>
+                        {product.barcode && ` • Código: ${product.barcode}`}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="font-bold text-gray-700">${product.price}</span>
+                    <button className="p-1 bg-primary text-white rounded-full hover:bg-primary-700">
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="p-4 text-center text-gray-500 text-sm">
+              No se encontraron productos.
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
