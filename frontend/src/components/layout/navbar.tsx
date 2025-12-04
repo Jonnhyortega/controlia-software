@@ -51,7 +51,7 @@ export default function Navbar() {
         className="
           opacity-0 pointer-events-none
           group-hover:opacity-100 group-hover:pointer-events-auto
-          absolute right-2 top-8 mt-2 w-52 
+          absolute right-2 top-4 mt-2 w-52 
           bg-[#1a1a1a] border border-[#2c2c2c]
           rounded-lg shadow-xl z-50 transition-all duration-150
         "

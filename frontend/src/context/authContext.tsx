@@ -33,9 +33,14 @@ interface AuthContextType {
     message?: string;
     user?: User;
   }>;
+  register: (
+    data: { name: string; lastName?: string; email: string; password: string }
+  ) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   setUser: Dispatch<SetStateAction<User | null>>;
 }
+
+
 
 // ==========================================================
 // 🔹 Crear contexto con tipo inicial null
@@ -88,9 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   ): Promise<{ success: boolean; message?: string; user?: User }> => {
     try {
       const res = await api.post("/users/login", { email, password });
-  
-      // 💡 Tu backend devuelve directamente los campos del user + token
-      // valida la respuesta runtime contra el esquema
+
       const parsed = AuthResponseSchema.safeParse(res.data);
       if (!parsed.success) {
         console.error("Auth response inválida:", parsed.error.issues);
@@ -122,6 +125,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       };
     }
   };
+
+  // ==========================================================
+// 🔹 Registro
+// ==========================================================
+const register = async (
+  data: { name: string; lastName?: string; email: string; password: string }
+): Promise<{ success: boolean; message?: string }> => {
+  try {
+    const res = await api.post("/users/register", data);
+
+    return {
+      success: true,
+      message: "Cuenta creada correctamente.",
+    };
+  } catch (err: any) {
+    console.error("❌ Error en registro:", err.response?.data || err);
+    return {
+      success: false,
+      message:
+        err?.response?.data?.message ||
+        "Error al crear la cuenta. Intenta nuevamente.",
+    };
+  }
+};
+
   
   
   // ==========================================================
@@ -142,20 +170,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAuthenticated = !!token && !!user;
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        loading,
-        isAuthenticated,
-        login,
-        logout,
-        setUser,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  <AuthContext.Provider
+    value={{
+      user,
+      token,
+      loading,
+      isAuthenticated,
+      login,
+      register,  
+      logout,
+      setUser,
+    }}
+  >
+    {children}
+  </AuthContext.Provider>
   );
+
 }
 
 // ==========================================================

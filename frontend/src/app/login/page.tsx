@@ -11,7 +11,7 @@ import { api } from "../../utils/api";
 
 export default function AuthPage() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, register } = useAuth();   // 👈 AHORA TENÉS REGISTER
   const toast = useToast?.();
 
   const [isLogin, setIsLogin] = useState(true);
@@ -25,15 +25,11 @@ export default function AuthPage() {
     password: "",
   });
 
-  // ==========================================================
-  // 🔹 Manejar inputs
-  // ==========================================================
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   // ==========================================================
-  // 🔹 Envío del formulario
+  // 🔥 SUBMIT FORMULARIO
   // ==========================================================
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,32 +38,30 @@ export default function AuthPage() {
 
     try {
       if (isLogin) {
-        // ✅ LOGIN
+        // LOGIN
         const res = await login(formData.email, formData.password);
 
         if (res.success) {
           toast?.success?.(`Bienvenido ${res.user?.name || ""} 👋`);
-        
-          // Esperá brevemente para que se rehidrate el contexto
-          setTimeout(() => {
-            router.push("/dashboard");
-          }, 150);
-        }
-         else {
+          setTimeout(() => router.push("/dashboard"), 150);
+        } else {
           setError(res.message || "Error al iniciar sesión.");
         }
+
       } else {
-        // ✅ REGISTRO
-        await api.post("/users/register", formData);
-        toast?.success?.("Cuenta creada correctamente. Iniciá sesión.");
-        setIsLogin(true);
+        // REGISTRO
+        const res = await register(formData);
+
+        if (!res.success) {
+          setError(res.message ?? "Ocurrió un error desconocido");
+        } else {
+          toast?.success?.("Cuenta creada correctamente. Iniciá sesión.");
+          setIsLogin(true);
+        }
       }
     } catch (err: any) {
       console.error("❌ Error en auth:", err);
-      setError(
-        err?.response?.data?.message ||
-          "Error al procesar la solicitud. Verificá tus datos."
-      );
+      setError(err?.response?.data?.message || "Error procesando la solicitud.");
     } finally {
       setLoading(false);
     }
