@@ -23,6 +23,7 @@ import {
 } from "../../../../utils/salesForm";
 import { api, getDashboardData } from "../../../../utils/api";
 import { useToast } from "../../../../context/ToastContext";
+import ProductSearch from "./ProductSearch";
 
 export default function SalesForm({
   onBack,
@@ -94,60 +95,67 @@ export default function SalesForm({
   );
 
 
+
+
+  // Función reutilizable para agregar producto
+  const addProductToSale = (product: any) => {
+    const products = [...newSale.products];
+
+    // 1) ¿Ya existe este producto en la venta?
+    const existingIndex = products.findIndex((p) => p.productId === product._id);
+
+    if (existingIndex >= 0) {
+      // Ya existe → aumentar cantidad
+      products[existingIndex].quantity =
+        Number(products[existingIndex].quantity) + 1;
+
+      setNewSale({ ...newSale, products });
+      toast.success(`Cantidad aumentada: ${product.name}`);
+      return;
+    }
+
+    // 2) ¿Hay un slot vacío para completarlo?
+    const emptyIndex = products.findIndex((p) => !p.productId);
+
+    if (emptyIndex >= 0) {
+      products[emptyIndex] = {
+        productId: product._id,
+        name: product.name,
+        quantity: 1,
+        price: product.price,
+      };
+
+      setNewSale({ ...newSale, products });
+      toast.success(`Producto agregado: ${product.name}`);
+      return;
+    }
+
+    // 3) No hay slots vacíos → agregar uno nuevo
+    products.push({
+      productId: product._id,
+      name: product.name,
+      quantity: 1,
+      price: product.price,
+    });
+
+    setNewSale({ ...newSale, products });
+    toast.success(`Producto agregado: ${product.name}`);
+  };
+
   const handleSaleBarcodeDetected = (code: string) => {
     const found = productsDB.find(
       (p) => String(p.barcode || "") === String(code)
     );
 
-    const products = [...newSale.products];
-
-    // 1) ¿Ya existe este producto en la venta?
     if (found) {
-      const existingIndex = products.findIndex((p) => p.productId === found._id);
-
-      if (existingIndex >= 0) {
-        // Ya existe → aumentar cantidad
-        products[existingIndex].quantity =
-          Number(products[existingIndex].quantity) + 1;
-
-        setNewSale({ ...newSale, products });
-        toast.success(`Cantidad aumentada: ${found.name}`);
-        return;
-      }
-
-      // 2) ¿Hay un slot vacío para completarlo?
-      const emptyIndex = products.findIndex((p) => !p.productId);
-
-      if (emptyIndex >= 0) {
-        products[emptyIndex] = {
-          productId: found._id,
-          name: found.name,
-          quantity: 1,
-          price: found.price,
-        };
-
-        setNewSale({ ...newSale, products });
-        toast.success(`Producto agregado: ${found.name}`);
-        return;
-      }
-
-      // 3) No hay slots vacíos → agregar uno nuevo
-      products.push({
-        productId: found._id,
-        name: found.name,
-        quantity: 1,
-        price: found.price,
-      });
-
-      setNewSale({ ...newSale, products });
-      toast.success(`Producto agregado: ${found.name}`);
+      addProductToSale(found);
       return;
     }
 
     // ========================
     // Producto NO encontrado
     // ========================
-
+    const products = [...newSale.products];
     const emptyIndex = products.findIndex((p) => !p.productId);
 
     if (emptyIndex >= 0) {
@@ -347,12 +355,10 @@ export default function SalesForm({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
       className="
-        fixed inset-0 z-9999
-        flex items-center justify-center
-        bg-black/50 backdrop-blur-sm
+        fixed inset-0 z-[9999]
         overflow-y-auto
-        px-4 py-10
-        w-full z-50
+        w-full h-full
+        bg-gray-200
       "
     >
       {/* Contenedor del formulario */}
@@ -362,9 +368,7 @@ export default function SalesForm({
         exit={{ opacity: 0, scale: 0.95, y: -20 }}
         transition={{ duration: 0.35 }}
         className="
-          w-full max-w-3xl h-full
-          overflow-x-scroll
-          bg-gray-200 rounded-xs shadow-2xl border border-gray-100
+          w-full min-h-full
           p-8 relative
         "
       >
@@ -377,7 +381,7 @@ export default function SalesForm({
             </h3>
           </div>
 
-          <div className="flex items-center gap-2 fixed right-5 top-5">
+          <div className="flex items-center gap-2 fixed right-5 top-5 z-[10000]">
             <button
               onClick={onBack}
               className="
@@ -387,10 +391,13 @@ export default function SalesForm({
               hover:bg-red-600 transition
             "
             >
-              <Undo2 className="w-5 h-5" color="white"/>
+              <Undo2 className="w-8 h-8" color="black"/>
             </button>
           </div>
         </div>
+
+        {/* Buscador de productos */}
+        <ProductSearch products={productsDB} onSelect={addProductToSale} />
 
         {/* Formulario */}
         <div className="space-y-8">
@@ -564,6 +571,14 @@ export default function SalesForm({
               <option value="mercado pago">Mercado Pago</option>
               <option value="otro">Otro</option>
             </select>
+          </div>
+
+          {/* Total Calculation */}
+          <div className="flex justify-end items-center gap-4 mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+            <span className="text-lg font-medium text-gray-600">Total a pagar:</span>
+            <span className="text-3xl font-bold text-primary">
+              ${newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0).toLocaleString("es-AR")}
+            </span>
           </div>
 
           {/* Botón submit */}
