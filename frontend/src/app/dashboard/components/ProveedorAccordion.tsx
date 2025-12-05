@@ -52,11 +52,11 @@ export function ProveedorAccordion({
               <thead>
                 <tr className="bg-gray-100 text-gray-600 uppercase text-xs">
                   <th className="p-3 text-left">Nombre</th>
-                  <th className="p-3 text-left">Categoría</th>
+                  <th className="hidden md:table-cell p-3 text-left">Categoría</th>
                   <th className="p-3 text-left">Precio</th>
                   <th className="p-3 text-left">Stock</th>
-                  <th className="p-3 text-left">Costo</th>
-                  <th className="p-3 text-left">Codigo</th>
+                  <th className="hidden md:table-cell p-3 text-left">Costo</th>
+                  <th className="hidden md:table-cell p-3 text-left">Codigo</th>
                   <th className="p-3 text-center">Acciones</th>
                 </tr>
               </thead>
@@ -70,11 +70,11 @@ export function ProveedorAccordion({
                     className={`border-b border-gray-100 hover:bg-gray-50 transition ${p.stock === 0 ? "bg-red-100" : ""}`}
                   >
                     <td className="p-3">{p.name}</td>
-                    <td className="p-3">{p.category}</td>
+                    <td className="hidden md:table-cell p-3">{p.category}</td>
                     <td className="p-3">${p.price}</td>
                     <td className={`p-3 ${p.stock === 0 ? "font-bold text-red-600" : ""}`}>{p.stock}</td>
-                    <td className="p-3">${p.cost}</td>
-                    <td className="p-3">#{p.barcode}</td>
+                    <td className="hidden md:table-cell p-3">${p.cost}</td>
+                    <td className="hidden md:table-cell p-3">#{p.barcode}</td>
                     <td className="p-3 flex items-center justify-center gap-3">
                       <button
                         onClick={() => {onEdit(p)}}

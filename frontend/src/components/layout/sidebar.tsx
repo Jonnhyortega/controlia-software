@@ -33,8 +33,9 @@ export default function Sidebar() {
   return (
     <aside
       className={`
+        hidden md:flex
         bg-[#0E0E0E] text-gray-300 h-screen border-r border-[#1a1a1a]
-        flex flex-col justify-between transition-all duration-300
+        flex-col justify-between transition-all duration-300
         ${collapsed ? "w-20" : "w-64"}
       `}
     >

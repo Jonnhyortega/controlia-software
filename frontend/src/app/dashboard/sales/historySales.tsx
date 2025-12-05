@@ -238,8 +238,8 @@ export default function HistorySales() {
                                   <thead className="bg-gray-100 border-b text-gray-700">
                                     <tr>
                                       <th className="p-2">Hora</th>
-                                      <th className="p-2">Productos</th>
-                                      <th className="p-2">Método</th>
+                                      <th className="hidden md:table-cell p-2">Productos</th>
+                                      <th className="hidden md:table-cell p-2">Método</th>
                                       <th className="p-2 text-right">Total</th>
                                     </tr>
                                   </thead>
@@ -249,7 +249,7 @@ export default function HistorySales() {
                                       <tr key={sale._id} className="border-t">
                                         <td className="p-4">{formatLocalTime(sale.createdAt)}</td>
                                         <td
-                                          className="p-4 max-w-[250px] truncate cursor-help"
+                                          className="hidden md:table-cell p-4 max-w-[250px] truncate cursor-help"
                                           title={formatProductsTooltip(sale.products)}
                                           style={{ whiteSpace: "pre-line" }} // Permite saltos de línea en el tooltip
                                         >
@@ -260,7 +260,7 @@ export default function HistorySales() {
                                             35
                                           )}
                                         </td>
-                                        <td className="p-4 capitalize">{sale.paymentMethod}</td>
+                                        <td className="hidden md:table-cell p-4 capitalize">{sale.paymentMethod}</td>
                                         <td className="p-4 text-right font-medium">
                                           {sale.total.toLocaleString("es-AR", {
                                             style: "currency",

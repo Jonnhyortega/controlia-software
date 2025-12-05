@@ -6,9 +6,14 @@ interface InfoCardProps {
   
   function InfoCard({ title, value, color = "text-red-800" }: InfoCardProps) {
     return (
-      <div className="bg-white p-4 rounded-xl border shadow-sm">
-        <h4 className="text-sm text-gray-500">{title}</h4>
-        <p className={`text-lg font-semibold ${color}`}>{value?.toLocaleString("es-AR") ?? "$" + 0}</p>
+      <div className="bg-white p-4 rounded-xl border shadow-sm overflow-hidden">
+        <h4 className="text-sm text-gray-500 truncate" title={title}>{title}</h4>
+        <p 
+          className={`text-base md:text-lg font-semibold ${color} truncate`} 
+          title={value?.toString()}
+        >
+          {value?.toLocaleString("es-AR") ?? "$" + 0}
+        </p>
       </div>
     );
   }

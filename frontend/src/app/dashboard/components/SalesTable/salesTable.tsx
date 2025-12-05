@@ -19,10 +19,10 @@ export default function SalesTable({
     <table className="w-full border border-gray-200 rounded-2xl overflow-hidden text-sm">
       <thead className="bg-primary-50 text-gray-700 border-b">
         <tr>
-          <th className="py-3 px-4 text-left font-semibold">#</th>
+          <th className="hidden md:table-cell py-3 px-4 text-left font-semibold">#</th>
           <th className="py-3 px-4 text-left font-semibold">Hora</th>
-          <th className="py-3 px-4 text-left font-semibold">Método</th>
-          <th className="py-3 px-4 text-left font-semibold">Productos</th>
+          <th className="hidden md:table-cell py-3 px-4 text-left font-semibold">Método</th>
+          <th className="hidden md:table-cell py-3 px-4 text-left font-semibold">Productos</th>
           <th className="py-3 px-4 text-right font-semibold">Total</th>
           <th className="py-3 px-4 text-center font-semibold">Acciones</th>
         </tr>

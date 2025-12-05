@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import React from "react";
 import { ConfirmDialog } from "../confirmDialog";
+import { Ban } from "lucide-react";
 
 interface SalesRowProps {
   sale: any;
@@ -29,7 +30,7 @@ export default function SalesRow({
         onClick={() => onExpand(sale._id)}
         className="hover:bg-primary-50 transition-colors cursor-pointer"
       >
-        <td className="py-3 px-4 font-semibold text-gray-700">
+        <td className="hidden md:table-cell py-3 px-4 font-semibold text-gray-700">
           #{index + 1}
         </td>
 
@@ -43,11 +44,11 @@ export default function SalesRow({
           })}
         </td>
 
-        <td className="py-3 px-4 capitalize text-primary-700 font-medium">
+        <td className="hidden md:table-cell py-3 px-4 capitalize text-primary-700 font-medium">
           {sale.paymentMethod || "—"}
         </td>
 
-        <td className="py-3 px-4 text-gray-700">
+        <td className="hidden md:table-cell py-3 px-4 text-gray-700">
           <div className="truncate max-w-xs">
             {sale.products
               ?.map(
@@ -75,9 +76,12 @@ export default function SalesRow({
             bg-red-300 hover:bg-red-500 
             p-2 rounded-md transition
             font-semibold
+            flex items-center justify-center
           "
+          title="Anular venta"
         >
-          Anular
+          <span className="hidden md:inline">Anular</span>
+          <Ban className="w-4 h-4 md:hidden" />
         </button>
 
           {isExpanded && (

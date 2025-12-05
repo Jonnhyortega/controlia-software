@@ -161,14 +161,14 @@ export default function SuppliersPage() {
           Proveedores
         </h1>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 w-full md:w-auto">
           {/* 🔍 Buscador */}
           <input
             type="text"
             placeholder="Buscar proveedor..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border border-gray-300 rounded-xl px-3 py-2 w-48 md:w-64 focus:ring-2 focus:ring-primary-400 outline-none"
+            className="border border-gray-300 rounded-xl px-3 py-2 w-full md:w-64 focus:ring-2 focus:ring-primary-400 outline-none"
           />
 
           {/* ➕ Botón agregar */}
@@ -185,7 +185,7 @@ export default function SuppliersPage() {
               setShowForm((prev) => !prev);
             }}
             variant={showForm ? 'secondary' : 'default'}
-            className={`rounded-xl px-4 py-2 shadow-sm transition flex items-center gap-2`}
+            className={`rounded-xl px-4 py-2 shadow-sm transition flex items-center justify-center gap-2 w-full md:w-auto`}
           >
             {showForm ? (
               <>
