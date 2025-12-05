@@ -68,21 +68,21 @@ const Hero = ({ isLoggedIn }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
-              className="mt-12 flex items-center gap-8"
+              className="mt-12 grid grid-cols-3 gap-4 md:flex md:items-center md:gap-8"
             >
-              <div>
-                <div className="text-3xl font-bold text-white">500+</div>
-                <div className="text-sm text-gray-400">Negocios activos</div>
+              <div className="text-center md:text-left">
+                <div className="text-2xl md:text-3xl font-bold text-white">500+</div>
+                <div className="text-xs md:text-sm text-gray-400">Negocios activos</div>
               </div>
-              <div className="h-12 w-px bg-gray-700"></div>
-              <div>
-                <div className="text-3xl font-bold text-white">99.9%</div>
-                <div className="text-sm text-gray-400">Uptime garantizado</div>
+              <div className="hidden md:block h-12 w-px bg-gray-700"></div>
+              <div className="text-center md:text-left">
+                <div className="text-2xl md:text-3xl font-bold text-white">99.9%</div>
+                <div className="text-xs md:text-sm text-gray-400">Uptime garantizado</div>
               </div>
-              <div className="h-12 w-px bg-gray-700"></div>
-              <div>
-                <div className="text-3xl font-bold text-white">24/7</div>
-                <div className="text-sm text-gray-400">Soporte técnico</div>
+              <div className="hidden md:block h-12 w-px bg-gray-700"></div>
+              <div className="text-center md:text-left">
+                <div className="text-2xl md:text-3xl font-bold text-white">24/7</div>
+                <div className="text-xs md:text-sm text-gray-400">Soporte técnico</div>
               </div>
             </motion.div>
           </motion.div>
@@ -97,7 +97,7 @@ const Hero = ({ isLoggedIn }) => {
             <img 
               src="https://horizons-cdn.hostinger.com/e059da5a-bba4-4792-8c52-5124e2066510/8e0b5fe3bf6a4225c669e58fc0a53acf.png"
               alt="CONTROLIA Dashboard - Panel de control con gestión de inventario y ventas" 
-              className="relative rounded-2xl shadow-2xl border border-gray-800"
+              className="relative rounded-2xl shadow-2xl border border-gray-800 w-full"
             />
           </motion.div>
         </div>

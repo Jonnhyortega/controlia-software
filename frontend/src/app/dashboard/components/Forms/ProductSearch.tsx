@@ -48,26 +48,30 @@ export default function ProductSearch({ products, onSelect }: ProductSearchProps
 
   return (
     <div ref={wrapperRef} className="relative w-full mb-6 z-[100]">
-      <div className="relative">
-        <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-        <label htmlFor="search-product" className="text-black w-full text-left p-5 font-bold">Buscar producto por nombre o código...</label>
-        <input
-          type="text"
-          name="search-product"
-          placeholder="Buscar producto por nombre o código..."
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setIsOpen(true);
-          }}
-          onFocus={() => setIsOpen(true)}
-          className="
-            w-full
-            bg-white border border-gray-300 rounded-xl
-            focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent
-            shadow-sm text-gray-800 placeholder-gray-400
-          "
-        />
+      <div className="flex flex-col gap-2">
+        <label htmlFor="search-product" className="text-black font-bold text-lg px-1">
+          Buscar producto por nombre o código...
+        </label>
+        <div className="relative">
+          <input
+            type="text"
+            name="search-product"
+            placeholder="Escribe para buscar..."
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setIsOpen(true);
+            }}
+            onFocus={() => setIsOpen(true)}
+            className="
+              w-full
+              bg-white border border-gray-300 rounded-xl px-4 py-3 pr-10
+              focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent
+              shadow-sm text-gray-800 placeholder-gray-400
+            "
+          />
+          <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+        </div>
       </div>
       <p className="text-xs text-gray-500 mt-2 ml-1">
         💡 Tip: Puedes escanear el código de barras directamente o escribir para buscar.

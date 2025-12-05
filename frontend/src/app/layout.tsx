@@ -22,8 +22,8 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // Use className (stable) instead of font "variable" to avoid SSR/CSR mismatch
-    <html lang="es" className={`${inter.className} ${interTight.className}`}>
-      <body>
+    <html lang="es" className={`${inter.className} ${interTight.className}`} suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <AuthProvider>
           <ToastProvider>
             {children}

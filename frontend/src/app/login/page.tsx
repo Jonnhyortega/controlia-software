@@ -108,21 +108,15 @@ export default function AuthPage() {
       // callback that mirrors the previous inline script behaviour
       (async function (id_token: string) {
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/users/google`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id_token })
-          });
-          const data = await res.json();
-          if (res.ok) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify({ _id: data._id, name: data.name, email: data.email }));
-            location.replace('/dashboard');
-          } else {
-            alert(data?.message || 'Error autenticando con Google');
-          }
-        } catch (err) {
+          const res = await api.post('/users/google', { id_token });
+          const data = res.data;
+          
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify({ _id: data._id, name: data.name, email: data.email }));
+          location.replace('/dashboard');
+        } catch (err: any) {
           console.error(err);
+          alert(err.response?.data?.message || 'Error autenticando con Google');
         }
       })(credential);
     }
