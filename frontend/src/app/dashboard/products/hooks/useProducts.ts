@@ -16,7 +16,7 @@ export function useProducts() {
   const { user } = useAuth();
 
   const [products, setProducts] = useState<any[]>([]);
-  const [suppliers, setSuppñliers] = useState<any[]>([]);
+  const [suppliers, setSuppliers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -58,7 +58,7 @@ export function useProducts() {
           // The backend seems to return all products globally. We filter here to ensure isolation.
           const myProducts = p.filter((prod: any) => {
              const prodUserId = typeof prod.user === 'object' ? prod.user?._id : prod.user;
-             return prodUserId === user._id;
+             return prodUserId === user?._id;
           });
 
           setProducts(myProducts);

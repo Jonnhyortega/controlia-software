@@ -69,7 +69,7 @@ export default function SalesForm({
         // 🔒 FILTER PRODUCTS BY USER ID (Frontend Patch)
         const myProducts = (res.data || []).filter((prod: any) => {
              const prodUserId = typeof prod.user === 'object' ? prod.user?._id : prod.user;
-             return prodUserId === user._id;
+             return prodUserId === user?._id;
         });
 
         setProductsDB(myProducts);
