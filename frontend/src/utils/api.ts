@@ -17,9 +17,7 @@ import { CreateSaleResponseSchema, DailyCashSchema } from "../validators/apiVali
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
-  (typeof window !== "undefined" && window.location.hostname === "localhost"
-    ? "http://localhost:5000/api"
-    : "https://controlia-backend.onrender.com/api");
+  "https://controlia-backend.onrender.com/api";
 
 
 // Headers comunes

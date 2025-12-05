@@ -72,9 +72,14 @@ export default function HistorySales() {
       try {
         const data = await getDailyCashByDate(date);
         setSalesData((prev) => ({ ...prev, [date]: data }));
-      } catch (err) {
-        console.error("Error al obtener ventas:", err);
-        toast.error("Error al cargar ventas ❌");
+      } catch (err: any) {
+        // Si es 404 o "No se encontró", simplemente no hay datos para ese día
+        if (err.message?.includes("No se encontró") || err.response?.status === 404) {
+             setSalesData((prev) => ({ ...prev, [date]: null }));
+        } else {
+             console.error("Error al obtener ventas:", err);
+             toast.error("Error al cargar ventas ❌");
+        }
       }
     }
 

@@ -34,6 +34,10 @@ export default function DashboardPage() {
 
     // Si el formulario NO está abierto → lo abrimos automáticamente
     if (!showSalesForm) {
+      if (data?.status === "cerrada") {
+        toast.error("La caja está cerrada. No se pueden registrar más ventas.");
+        return;
+      }
       setShowSalesForm(true);
       setShowCloseCashForm(false);
     }
@@ -138,7 +142,12 @@ export default function DashboardPage() {
         time={time}
         showSalesForm={showSalesForm}
         showCloseCashForm={showCloseCashForm}
+        isCashClosed={data?.status === "cerrada"}
         onNewSale={() => {
+          if (data?.status === "cerrada") {
+             toast.error("La caja está cerrada. No se pueden registrar más ventas.");
+             return;
+          }
           setShowSalesForm(true);
           setShowCloseCashForm(false);
         }}

@@ -23,6 +23,7 @@ import {
 } from "../../../../utils/salesForm";
 import { api, getDashboardData } from "../../../../utils/api";
 import { useToast } from "../../../../context/ToastContext";
+import { useAuth } from "../../../../context/authContext";
 import ProductSearch from "./ProductSearch";
 
 export default function SalesForm({
@@ -38,6 +39,7 @@ export default function SalesForm({
 
 }) {
   const toast = useToast();
+  const { user } = useAuth();
 
   const [productsDB, setProductsDB] = useState<any[]>([]);
   const [newSale, setNewSale] = useState({
@@ -58,10 +60,19 @@ export default function SalesForm({
 
   // Cargar productos del stock
   useEffect(() => {
+    if (!user) return;
+
     const fetchProducts = async () => {
       try {
         const res = await api.get("/products");
-        setProductsDB(res.data);
+        
+        // 🔒 FILTER PRODUCTS BY USER ID (Frontend Patch)
+        const myProducts = (res.data || []).filter((prod: any) => {
+             const prodUserId = typeof prod.user === 'object' ? prod.user?._id : prod.user;
+             return prodUserId === user._id;
+        });
+
+        setProductsDB(myProducts);
       } catch (error) {
         console.error("Error al obtener productos:", error);
         toast.error("Error al cargar productos.");
@@ -70,7 +81,7 @@ export default function SalesForm({
       }
     };
     fetchProducts();
-  }, []);
+  }, [user]);
 
 
   useEffect(() => {

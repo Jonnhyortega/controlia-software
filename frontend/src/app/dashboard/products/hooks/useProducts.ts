@@ -8,13 +8,15 @@ import {
   getSuppliers,
   getCustomization,
 } from "../../../../utils/api";
+import { useAuth } from "../../../../context/authContext";
 import { useToast } from "../../../../context/ToastContext";
 
 export function useProducts() {
   const toast = useToast();
+  const { user } = useAuth();
 
   const [products, setProducts] = useState<any[]>([]);
-  const [suppliers, setSuppliers] = useState<any[]>([]);
+  const [suppliers, setSuppñliers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -42,6 +44,8 @@ export function useProducts() {
 
   // cargar productos y proveedores
     useEffect(() => {
+      if (!user) return;
+
       async function load() {
         try {
           const [p, s, c] = await Promise.all([
@@ -50,7 +54,14 @@ export function useProducts() {
             getCustomization(),
           ]);
 
-          setProducts(p);
+          // 🔒 FILTER PRODUCTS BY USER ID (Frontend Patch)
+          // The backend seems to return all products globally. We filter here to ensure isolation.
+          const myProducts = p.filter((prod: any) => {
+             const prodUserId = typeof prod.user === 'object' ? prod.user?._id : prod.user;
+             return prodUserId === user._id;
+          });
+
+          setProducts(myProducts);
           setSuppliers(s);
           setCategories(c.categories || []);
         } catch (err) {
@@ -60,7 +71,7 @@ export function useProducts() {
         }
       }
       load();
-    }, []);
+    }, [user]);
 
 
   const filtered = products.filter((p) => {
@@ -112,8 +123,14 @@ export function useProducts() {
       setShowForm(false);
 
     } catch(error: any) {
-      // console.error("Error guardando producto:", error);
-      toast.error(error.response.data.message || "Error al guardar el producto");
+      console.error("Error guardando producto:", error);
+      const msg = error.response?.data?.message || error.message || "";
+      
+      if (msg.includes("E11000") || msg.includes("duplicate key")) {
+        toast.error("El código de barras ya existe en otro producto.");
+      } else {
+        toast.error(msg || "Error al guardar el producto");
+      }
     }
   };
 
