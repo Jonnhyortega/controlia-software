@@ -41,7 +41,22 @@ export default function HistorySales() {
           (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
         );
 
-        setDates(sorted);
+        // Remove duplicates by UTC date (YYYY-MM-DD)
+        const unique = sorted.filter(
+          (d, index, self) =>
+            index ===
+            self.findIndex((t) => {
+              const d1 = new Date(t.date);
+              const d2 = new Date(d.date);
+              
+              // Comparar solo la fecha UTC para evitar desfasajes de zona horaria
+              const k1 = `${d1.getUTCFullYear()}-${d1.getUTCMonth()}-${d1.getUTCDate()}`;
+              const k2 = `${d2.getUTCFullYear()}-${d2.getUTCMonth()}-${d2.getUTCDate()}`;
+              return k1 === k2;
+            })
+        );
+
+        setDates(unique);
       } catch (err) {
         console.error("Error al obtener días:", err);
         toast.error("Error al obtener días ❌");
@@ -101,15 +116,21 @@ export default function HistorySales() {
               No hay registros 📭
             </p>
           ) : (
-            dates.map((d) => {
-              const date = new Date(d.date).toLocaleDateString("en-CA");
+            dates.map((d, index) => {
+              // Convertir fecha UTC a YYYY-MM-DD sin ajuste de zona horaria
+              const dateObj = new Date(d.date);
+              const year = dateObj.getUTCFullYear();
+              const month = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
+              const day = String(dateObj.getUTCDate()).padStart(2, '0');
+              const date = `${year}-${month}-${day}`;
+              
               const daily = salesData[date];
               const isOpen = openDate === date;
 
               return (
                 <div
-                  key={date}
-                  className="mb-4 border border-gray-200 rounded-2xl overflow-hidden shadow-sm"
+                  key={d._id || index}
+                   className="mb-4 border border-gray-200 rounded-2xl overflow-hidden shadow-sm"
                 >
                   {/* HEADER */}
                   <button
@@ -125,7 +146,11 @@ export default function HistorySales() {
                     {/* FECHA */}
                     <div className="flex flex-col">
                       <span className="font-semibold text-gray-800">
-                        {formatLocalDate(d.date)}
+                        {dateObj.toLocaleDateString("es-AR", {
+                            timeZone: "UTC",
+                            day: "numeric",
+                            month: "long"
+                        })}
                       </span>
                       <p
                         className={`text-xs ${

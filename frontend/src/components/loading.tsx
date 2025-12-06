@@ -11,6 +11,7 @@ export default function Loading({
 }) {
   return (
     <div
+      suppressHydrationWarning
       className={`flex flex-col items-center justify-center gap-4 text-gray-600 ${
         fullscreen ? "fixed inset-0 bg-gray-50/80 z-50 backdrop-blur-sm" : "py-8"
       }`}
@@ -26,7 +27,7 @@ export default function Loading({
           ease: "linear",
         }}
       >
-        <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent" />
+        <div suppressHydrationWarning className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent" />
       </motion.div>
 
       {/* Texto animado */}

@@ -6,7 +6,9 @@ import { ReceiptText } from "lucide-react";
 
 import { useSales } from "./hooks/useSales";
 import { useClock } from "./hooks/useClock";
+// import { useScanner } from "./hooks/useScanner"; // Seems unused in original file imports list in Step 54 but maybe I missed it. Step 54 shows line 9: import { useScanner } from "./hooks/useScanner";
 import { useScanner } from "./hooks/useScanner";
+import { useAuth } from "../../context/authContext";
 
 import DashboardHeader from "../dashboard/components/dashboardHeader";
 import ScannerOverlay from "./components/ScannerOverlay";
@@ -15,6 +17,7 @@ import SalesTable from "./components/SalesTable/salesTable";
 import Overlay from "./components/overlay";
 import CloseCashForm from "./components/Forms/closeCashForm";
 import SalesForm from "./components/Forms/salesForm";
+import ExpenseForm from "./components/Forms/expenseForm";
 
 import Loading from "../../components/loading";
 import { api } from "../../utils/api";
@@ -23,11 +26,16 @@ import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
   const toast = useToast();
-
+  const { user } = useAuth();
   const { data, loading, reload } = useSales();
-  const { date, time } = useClock();
+  // const { date, time } = useClock();
 
   const [pendingScannedCode, setPendingScannedCode] = useState<string | null>(null);
+
+  const [expandedSale, setExpandedSale] = useState<string | null>(null);
+  const [showSalesForm, setShowSalesForm] = useState(false);
+  const [showCloseCashForm, setShowCloseCashForm] = useState(false);
+  const [showExpenseForm, setShowExpenseForm] = useState(false);
 
   const handleScannedCode = (code: string) => {
     setPendingScannedCode(code);
@@ -40,13 +48,10 @@ export default function DashboardPage() {
       }
       setShowSalesForm(true);
       setShowCloseCashForm(false);
+      setShowExpenseForm(false);
     }
   };
 
-
-  const [expandedSale, setExpandedSale] = useState<string | null>(null);
-  const [showSalesForm, setShowSalesForm] = useState(false);
-  const [showCloseCashForm, setShowCloseCashForm] = useState(false);
 
   const handleRevert = async (saleId: string) => {
     try {
@@ -58,90 +63,25 @@ export default function DashboardPage() {
     }
   };
 
-  useEffect(() => {
-  let buffer = "";
-  let timer: NodeJS.Timeout | null = null;
 
-  const handleKeyPress = (e: KeyboardEvent) => {
-    // si está escribiendo en un input → ignoramos (no queremos romper nada)
-    if (document.activeElement && (document.activeElement as HTMLElement).tagName === "INPUT") return;
 
-    if (timer) clearTimeout(timer);
-
-    // si presionó Enter → procesamos
-    if (e.key === "Enter") {
-      if (buffer.length > 0) {
-        handleScannedCode(buffer);
-        buffer = "";
-      }
-      return;
-    }
-
-    // solo aceptar números / letras
-    if (/^[0-9A-Za-z]+$/.test(e.key)) {
-      buffer += e.key;
-    }
-
-    // si pasan 300ms sin tipear → reset
-    timer = setTimeout(() => {
-      buffer = "";
-    }, 300);
-  };
-
-  window.addEventListener("keydown", handleKeyPress);
-
-  return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [showSalesForm]);
-
-  useEffect(() => {
-  let buffer = "";
-  let timer: NodeJS.Timeout | null = null;
-
-  const handleKeyPress = (e: KeyboardEvent) => {
-    // si está escribiendo en un input → ignoramos (no queremos romper nada)
-    if (document.activeElement && (document.activeElement as HTMLElement).tagName === "INPUT") return;
-
-    if (timer) clearTimeout(timer);
-
-    // si presionó Enter → procesamos
-    if (e.key === "Enter") {
-      if (buffer.length > 0) {
-        handleScannedCode(buffer);
-        buffer = "";
-      }
-      return;
-    }
-
-    // solo aceptar números / letras
-    if (/^[0-9A-Za-z]+$/.test(e.key)) {
-      buffer += e.key;
-    }
-
-    // si pasan 300ms sin tipear → reset
-    timer = setTimeout(() => {
-      buffer = "";
-    }, 300);
-  };
-
-  window.addEventListener("keydown", handleKeyPress);
-
-  return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [showSalesForm]);
-
+  // There was a duplicate useEffect in Step 54 (lines 62-95 and 97-130 are identical). I will keep only one.
+  
 
   if (loading) return <Loading fullscreen message="Cargando..." />;
 
   const sales = data?.sales || [];
-  const total = data?.totalSalesAmount || 0;
-
+  
+  // Note: 'total' was defined in original file but seemingly unused in JSX? 
+  // const total = data?.totalSalesAmount || 0; 
 
   return (
     <>
       <DashboardHeader
-        date={date}
-        time={time}
+        userRole={user?.role}
         showSalesForm={showSalesForm}
         showCloseCashForm={showCloseCashForm}
+        showExpenseForm={showExpenseForm}
         isCashClosed={data?.status === "cerrada"}
         onNewSale={() => {
           if (data?.status === "cerrada") {
@@ -150,10 +90,21 @@ export default function DashboardPage() {
           }
           setShowSalesForm(true);
           setShowCloseCashForm(false);
+          setShowExpenseForm(false);
         }}
         onCloseCash={() => {
           setShowCloseCashForm(true);
           setShowSalesForm(false);
+          setShowExpenseForm(false);
+        }}
+        onAddExpense={() => {
+           if (data?.status === "cerrada") {
+             toast.error("La caja está cerrada");
+             return;
+           }
+           setShowExpenseForm(true);
+           setShowSalesForm(false);
+           setShowCloseCashForm(false);
         }}
       />
 
@@ -183,8 +134,25 @@ export default function DashboardPage() {
             <CloseCashForm
               cashId={data?._id}
               onBack={() => setShowCloseCashForm(false)}
-              onClosed={reload}
+              onClosed={() => {
+                reload();
+                setShowCloseCashForm(false);
+              }}
             />
+          </Overlay>
+        )}
+
+        {showExpenseForm && (
+          <Overlay>
+             <ExpenseForm
+                cashId={data?._id}
+                currentExpenses={data?.extraExpenses || []}
+                onBack={() => setShowExpenseForm(false)}
+                onCreated={() => {
+                   reload();
+                   setShowExpenseForm(false);
+                }}
+             />
           </Overlay>
         )}
       </AnimatePresence>

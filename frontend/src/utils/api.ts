@@ -133,7 +133,8 @@ export const getTodayDailySales = async (): Promise<DailyCash | null> => {
 export const getDailyCashByDate = async (date: string): Promise<DailyCash> => {
   const token = localStorage.getItem("token");
 
-  const res = await fetch(`${API_URL}/daily-cash/${date}`, {
+  const res = await fetch(`${API_URL}/daily-cash/${date}?t=${Date.now()}`, {
+    cache: "no-store",
     headers: { Authorization: `Bearer ${token}` },
   })
 
@@ -255,7 +256,7 @@ export const createSale = async (
 export const getClosedCashDays = async (): Promise<DailyCash[]> => {
   const token = localStorage.getItem("token");
   const res = await fetch(`${API_URL}/daily-cash/days`, {
-    
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${token}`,
     },  

@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Undo2 } from "lucide-react";
-import OverlayNotification from "../../../../components/overlayNotification"; 
+import { Undo2, Lock, AlertTriangle } from "lucide-react";
 import { closeDailyCashById } from "../../../../utils/api";
+import { useToast } from "../../../../context/ToastContext";
 
 interface CloseCashFormProps {
   cashId: string;
@@ -17,230 +17,79 @@ export default function CloseCashForm({
   onBack,
   onClosed,
 }: CloseCashFormProps) {
-  const [extraExpenses, setExtraExpenses] = useState([
-    { description: "", amount: 0 },
-  ]);
-  const [supplierPayments, setSupplierPayments] = useState([
-    { metodo: "efectivo", total: 0 },
-  ]);
-
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any>(null);
-  const [showOverlay, setShowOverlay] = useState(false);
-
-  // ============================================
-  //            HANDLERS
-  // ============================================
-
-  const handleChange = (
-    arr: any[],
-    setter: any,
-    index: number,
-    field: string,
-    value: any
-  ) => {
-    const updated = [...arr];
-    updated[index][field] = value;
-    setter(updated);
-  };
-
-  const addExpense = () =>
-    setExtraExpenses([...extraExpenses, { description: "", amount: 0 }]);
-
-  const addPayment = () =>
-    setSupplierPayments([...supplierPayments, { metodo: "efectivo", total: 0 }]);
-
-  // ============================================
-  //            VALIDACIÓN
-  // ============================================
-
-
-
-  const validateForm = () => {
-    for (const [i, exp] of extraExpenses.entries()) {
-      const filled = exp.description.trim() || exp.amount > 0;
-      if (filled && (!exp.description.trim() || exp.amount <= 0)) {
-        return `El gasto #${i + 1} debe tener descripción y monto válido.`;
-      }
-    }
-
-    for (const [i, pay] of supplierPayments.entries()) {
-      if (pay.total > 0 && (!pay.metodo.trim() || pay.total <= 0)) {
-        return `El pago #${i + 1} debe tener método y monto válido.`;
-      }
-    }
-
-    return null;
-  };
-
-  // ============================================
-  //            SUBMIT
-  // ============================================
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setResponse(null);
-
-    const error = validateForm();
-    if (error) {
-      setResponse({ success: false, message: error });
-      setShowOverlay(true);
-      return;
-    }
-
     setLoading(true);
 
     try {
+      // Send empty arrays as we don't add expenses here anymore
       const res = await closeDailyCashById(cashId, {
-        extraExpenses,
-        supplierPayments,
+        extraExpenses: [],
+        supplierPayments: [],
       });
 
-      setResponse(res);
-      setShowOverlay(true);
-
-      if (res.success && onClosed) onClosed();
-    } catch (err) {
+      if (res.success) {
+        toast.success(res.message || "Caja cerrada correctamente.");
+        if (onClosed) onClosed();
+      } else {
+        toast.error(res.message || "Error al cerrar la caja.");
+      }
+      
+    } catch (err: any) {
       console.error("❌ Error al cerrar caja:", err);
-      setResponse({
-        success: false,
-        message: "Error desconocido al intentar cerrar caja.",
-      });
-      setShowOverlay(true);
+      toast.error(err.response?.data?.message || err.message || "Error desconocido al intentar cerrar caja.");
     } finally {
       setLoading(false);
     }
   };
 
-  // ============================================
-  //            RENDER
-  // ============================================
-
   return (
-    <>
-      {/* OVERLAY DE ÉXITO / ERROR */}
-      <OverlayNotification
-        type={response?.success ? "success" : "error"}
-        message={response?.message || ""}
-        show={showOverlay}
-        onClose={() => setShowOverlay(false)}
-      />
+    <motion.div
+      onClick={(e) => e.stopPropagation()}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.2 }}
+      className="bg-white border border-gray-200 shadow-xl rounded-2xl p-6 max-w-md mx-auto relative overflow-hidden"
+    >
+      {/* HEADER */}
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+           <Lock className="text-gray-700" size={24} />
+           Cerrar caja del día
+        </h3>
 
-      {/* FORMULARIO */}
-      <motion.div
-        onClick={(e) => e.stopPropagation()}
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -15 }}
-        transition={{ duration: 0.25 }}
-        className="bg-white border border-gray-200 shadow-md rounded-2xl p-6 max-w-xl mx-auto"
-      >
-        {/* HEADER */}
-        <div className="flex justify-between items-center mb-5">
-          <h3 className="text-xl font-semibold text-gray-900">
-            Cerrar caja del día
-          </h3>
+        <button
+          onClick={onBack}
+          className="p-2 border rounded-lg hover:bg-gray-100 transition"
+        >
+          <Undo2 size={20} />
+        </button>
+      </div>
 
-          <button
-            onClick={onBack}
-            className="p-2 border rounded-lg hover:bg-gray-100 transition"
-          >
-            <Undo2 size={20} />
-          </button>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex gap-3 text-amber-800">
+           <AlertTriangle className="shrink-0" size={24} />
+           <p className="text-sm">
+             ¿Estás seguro de que deseas cerrar la caja? 
+             <br />
+             Una vez cerrada, no podrás registrar más ventas hasta abrir una nueva.
+           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* ---------------------- GASTOS ---------------------- */}
-          <section>
-            <h4 className="font-medium text-gray-700 mb-2">Gastos extras</h4>
-
-            {extraExpenses.map((item, i) => (
-              <div key={i} className="flex gap-3 mb-2">
-                <input
-                  type="text"
-                  placeholder="Descripción"
-                  value={item.description}
-                  onChange={(e) =>
-                    handleChange(extraExpenses, setExtraExpenses, i, "description", e.target.value)
-                  }
-                  className="border p-2 rounded w-2/3"
-                />
-
-                <input
-                  type="number"
-                  placeholder="Monto"
-                  value={item.amount}
-                  min={0}
-                  onChange={(e) =>
-                    handleChange(extraExpenses, setExtraExpenses, i, "amount", Number(e.target.value))
-                  }
-                  className="border p-2 rounded w-1/3"
-                />
-              </div>
-            ))}
-
-            <button
-              type="button"
-              className="text-primary-600 text-sm"
-              onClick={addExpense}
-            >
-              + Agregar gasto
-            </button>
-          </section>
-
-          {/* ---------------------- PAGOS ---------------------- */}
-          <section>
-            <h4 className="font-medium text-gray-700 mb-2">
-              Pagos a proveedores
-            </h4>
-
-            {supplierPayments.map((item, i) => (
-              <div key={i} className="flex gap-3 mb-2">
-                <select
-                  value={item.metodo}
-                  onChange={(e) =>
-                    handleChange(supplierPayments, setSupplierPayments, i, "metodo", e.target.value)
-                  }
-                  className="border p-2 rounded w-1/3"
-                >
-                  <option value="efectivo">Efectivo</option>
-                  <option value="transferencia">Transferencia</option>
-                  <option value="mercado pago">Mercado Pago</option>
-                  <option value="otro">Otro</option>
-                </select>
-
-                <input
-                  type="number"
-                  placeholder="Monto"
-                  value={item.total}
-                  min={0}
-                  onChange={(e) =>
-                    handleChange(supplierPayments, setSupplierPayments, i, "total", Number(e.target.value))
-                  }
-                  className="border p-2 rounded w-1/3"
-                />
-              </div>
-            ))}
-
-            <button
-              type="button"
-              className="text-primary-600 text-sm"
-              onClick={addPayment}
-            >
-              + Agregar pago
-            </button>
-          </section>
-
-          {/* ---------------- BOTÓN SUBMIT ---------------- */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg w-full transition"
-          >
-            {loading ? "Cerrando..." : "Cerrar caja"}
-          </button>
-        </form>
-      </motion.div>
-    </>
+        {/* ---------------- BOTÓN SUBMIT ---------------- */}
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-gray-900 hover:bg-black text-white font-bold px-6 py-3 rounded-xl w-full transition shadow-lg flex justify-center"
+        >
+          {loading ? "Cerrando..." : "Confirmar Cierre"}
+        </button>
+      </form>
+    </motion.div>
   );
 }
