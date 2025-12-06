@@ -28,7 +28,10 @@ const Footer = () => {
               viewport={{ once: true }}
               className="mb-4"
             >
-              <span className="text-2xl font-bold text-white">CONTROLIA</span>
+              <div className="flex items-center gap-2">
+                <img src="/icon.png" alt="Controlia" className="w-8 h-8 rounded-lg" />
+                <span className="text-2xl font-bold text-white">CONTROLIA</span>
+              </div>
             </motion.div>
             <p className="text-gray-400 text-sm mb-4">
               La plataforma de gestión empresarial diseñada para pequeños negocios.

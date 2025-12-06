@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, ShoppingCart, Package, Users } from "lucide-react";
+import { ShoppingCart, Package, Users } from "lucide-react";
 import { Button } from "../dashboard/components/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -26,8 +26,8 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                <BarChart3 className="h-5 w-5 text-white" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden">
+                <img src="/icon.png" alt="Controlia" className="h-full w-full object-contain" />
               </div>
               <span className="text-xl font-bold text-white tracking-tight">CONTROLIA</span>
             </div>
@@ -36,9 +36,9 @@ export default function LandingPage() {
               <a href="#features" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                 Características
               </a>
-              <a href="#pricing" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+              {/* <a href="#pricing" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                 Precios
-              </a>
+              </a> */}
               <a href="#contact" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                 Contacto
               </a>

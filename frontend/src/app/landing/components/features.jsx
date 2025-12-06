@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Package, TrendingUp, Users, CreditCard, DollarSign, BarChart } from 'lucide-react';
+import { Package, TrendingUp, Users, ScanBarcode, DollarSign, BarChart } from 'lucide-react';
 
 const features = [
   {
@@ -19,9 +19,9 @@ const features = [
     description: 'Mantén un registro completo de tus proveedores, historial de compras y mejora tus relaciones comerciales.'
   },
   {
-    icon: CreditCard,
-    title: 'Procesamiento de Pagos',
-    description: 'Acepta múltiples métodos de pago: efectivo, tarjetas, transferencias y mantén todo organizado.'
+    icon: ScanBarcode,
+    title: 'Scanner de Códigos',
+    description: 'Escanea el producto que queres vender y registra la venta.'
   },
   {
     icon: DollarSign,

@@ -4,21 +4,21 @@ import { Button } from './ui/button';
 import { Check, Sparkles } from 'lucide-react';
 
 const plans = [
-  {
-    name: 'Básico',
-    price: '$10.000',
-    period: '/mes',
-    description: 'Perfect para negocios pequeños que están comenzando',
-    features: [
-      'Hasta 500 productos',
-      'Gestión de inventario básica',
-      '5 usuarios',
-      'Reportes básicos',
-      'Soporte por email',
-      'Cierres de caja diarios'
-    ],
-    popular: false
-  },
+//   {
+//     name: 'Básico',
+//     price: '$10.000',
+//     period: '/mes',
+//     description: 'Perfect para negocios pequeños que están comenzando',
+//     features: [
+//       'Hasta 500 productos',
+//       'Gestión de inventario básica',
+//       '5 usuarios',
+//       'Reportes básicos',
+//       'Soporte por email',
+//       'Cierres de caja diarios'
+//     ],
+//     popular: false
+//   },
 //   {
 //     name: 'Profesional',
 //     price: '$59',
@@ -68,7 +68,7 @@ const Pricing = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-primary-300 font-semibold text-sm uppercase tracking-wider">Precios</span>
+          {/* <span className="text-primary-300 font-semibold text-sm uppercase tracking-wider">Precios</span> */}
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mt-4 mb-4">
             Planes diseñados para cada etapa de tu negocio
           </h2>
