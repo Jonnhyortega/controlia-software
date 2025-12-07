@@ -44,6 +44,15 @@ export default function AuthPage() {
         if (res.success) {
           toast?.success?.(`Bienvenido ${res.user?.name || ""} 👋`);
           setTimeout(() => router.push("/dashboard"), 150);
+        } else if (res.emailNotVerified) {
+          // ✉️ Email no verificado - mostrar link a verificación
+          setError(
+            `${res.message || "Email no verificado"}. Verifica tu cuenta para continuar.`
+          );
+          // Guardar email para el link
+          if (res.email) {
+            sessionStorage.setItem("unverifiedEmail", res.email);
+          }
         } else {
           setError(res.message || "Error al iniciar sesión.");
         }
@@ -55,8 +64,13 @@ export default function AuthPage() {
         if (!res.success) {
           setError(res.message ?? "Ocurrió un error desconocido");
         } else {
-          toast?.success?.("Cuenta creada correctamente. Iniciá sesión.");
-          setIsLogin(true);
+          toast?.success?.("Revisa tu email para verificar tu cuenta 📧");
+          // Redirigir a verificación con el email
+          if (res.email) {
+            setTimeout(() => {
+              router.push(`/verify-email?email=${encodeURIComponent(res.email!)}`);
+            }, 500);
+          }
         }
       }
     } catch (err: any) {
@@ -245,7 +259,23 @@ export default function AuthPage() {
                 </div>
 
                 {error && (
-                  <p className="text-red-500 text-sm font-medium">{error}</p>
+                  <div className="space-y-2">
+                    <p className="text-red-500 text-sm font-medium">{error}</p>
+                    {error.includes("verifica") && sessionStorage.getItem("unverifiedEmail") && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const email = sessionStorage.getItem("unverifiedEmail");
+                          if (email) {
+                            router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+                          }
+                        }}
+                        className="text-primary hover:text-primary-400 text-sm font-medium underline"
+                      >
+                        Verificar ahora →
+                      </button>
+                    )}
+                  </div>
                 )}
 
                 <button

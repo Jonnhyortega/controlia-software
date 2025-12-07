@@ -9,3 +9,4 @@ frontend/.env
 
 # System
 .DS_Store
+CONTROLIA_BACKEND/

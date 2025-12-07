@@ -15,9 +15,27 @@ import type {
 } from "../types/api";
 import { CreateSaleResponseSchema, DailyCashSchema } from "../validators/apiValidators";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  "https://controlia-backend.onrender.com/api";
+// 🔧 Configuración de API URL desde variables de entorno
+// En desarrollo: usa localhost por defecto
+// En producción: NEXT_PUBLIC_API_URL en tu plataforma de deployment
+const isDevelopment = process.env.NODE_ENV === 'development';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 
+  (isDevelopment ? 'http://localhost:5000/api' : '');
+
+// Advertencia si no está configurada en producción
+if (!isDevelopment && !process.env.NEXT_PUBLIC_API_URL && typeof window !== 'undefined') {
+  console.error(
+    '⚠️ ADVERTENCIA: NEXT_PUBLIC_API_URL no está configurada en producción. ' +
+    'Configura esta variable en tu plataforma de deployment (Vercel, Netlify, etc.)'
+  );
+}
+
+// Log para debugging (solo en desarrollo)
+if (isDevelopment && typeof window !== 'undefined') {
+  console.log('🔧 Entorno de desarrollo');
+  console.log('📡 API URL:', API_URL);
+}
+
 
 
 // Headers comunes
@@ -126,7 +144,20 @@ export const getTodayDailySales = async (): Promise<DailyCash | null> => {
   const parsed = DailyCashSchema.safeParse(res.data);
   // If the response doesn't match our schema, don't attempt to coerce it into DailyCash — return null
   return parsed.success ? parsed.data : null;
+}
+
+// ✉️ Verificar email con código
+export const verifyEmail = async (email: string, code: string): Promise<AuthResponse> => {
+  const res = await api.post("/users/verify-email", { email, code });
+  return res.data;
 };
+
+// ✉️ Reenviar código de verificación
+export const resendVerificationCode = async (email: string): Promise<{ message: string }> => {
+  const res = await api.post("/users/resend-verification", { email });
+  return res.data;
+};
+
 
 
 // 🧾 Obtener caja diaria (por fecha específica)

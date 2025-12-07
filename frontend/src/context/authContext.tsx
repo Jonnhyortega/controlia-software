@@ -32,10 +32,12 @@ interface AuthContextType {
     success: boolean;
     message?: string;
     user?: User;
+    emailNotVerified?: boolean;
+    email?: string;
   }>;
   register: (
     data: { name: string; lastName?: string; email: string; password: string }
-  ) => Promise<{ success: boolean; message?: string }>;
+  ) => Promise<{ success: boolean; message?: string; email?: string }>;
   logout: () => void;
   setUser: Dispatch<SetStateAction<User | null>>;
 }
@@ -90,7 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (
     email: string,
     password: string
-  ): Promise<{ success: boolean; message?: string; user?: User }> => {
+  ): Promise<{ success: boolean; message?: string; user?: User; emailNotVerified?: boolean; email?: string }> => {
     try {
       const res = await api.post("/users/login", { email, password });
 
@@ -117,6 +119,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { success: true, user };
     } catch (err: any) {
       console.error("❌ Error de login:", err.response?.data || err);
+      
+      // ✉️ Detectar si el email no está verificado
+      if (err?.response?.status === 403 && err?.response?.data?.emailNotVerified) {
+        return {
+          success: false,
+          emailNotVerified: true,
+          email: email,
+          message: err?.response?.data?.message || "Email no verificado",
+        };
+      }
+      
       return {
         success: false,
         message:
@@ -131,13 +144,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 // ==========================================================
 const register = async (
   data: { name: string; lastName?: string; email: string; password: string }
-): Promise<{ success: boolean; message?: string }> => {
+): Promise<{ success: boolean; message?: string; email?: string }> => {
   try {
     const res = await api.post("/users/register", data);
 
     return {
       success: true,
-      message: "Cuenta creada correctamente.",
+      message: res.data.message || "Cuenta creada correctamente.",
+      email: data.email, // Retornar email para redirección
     };
   } catch (err: any) {
     console.error("❌ Error en registro:", err.response?.data || err);
