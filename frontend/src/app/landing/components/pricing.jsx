@@ -4,55 +4,55 @@ import { Button } from './ui/button';
 import { Check, Sparkles } from 'lucide-react';
 
 const plans = [
-//   {
-//     name: 'Básico',
-//     price: '$10.000',
-//     period: '/mes',
-//     description: 'Perfect para negocios pequeños que están comenzando',
-//     features: [
-//       'Hasta 500 productos',
-//       'Gestión de inventario básica',
-//       '5 usuarios',
-//       'Reportes básicos',
-//       'Soporte por email',
-//       'Cierres de caja diarios'
-//     ],
-//     popular: false
-//   },
-//   {
-//     name: 'Profesional',
-//     price: '$59',
-//     period: '/mes',
-//     description: 'Ideal para negocios en crecimiento',
-//     features: [
-//       'Productos ilimitados',
-//       'Gestión avanzada de inventario',
-//       '15 usuarios',
-//       'Reportes avanzados y analytics',
-//       'Soporte prioritario 24/7',
-//       'Gestión de proveedores',
-//       'Múltiples puntos de venta',
-//       'API de integración'
-//     ],
-//     popular: true
-//   },
-//   {
-//     name: 'Empresarial',
-//     price: '$99',
-//     period: '/mes',
-//     description: 'Para negocios que requieren lo máximo',
-//     features: [
-//       'Todo lo del plan Profesional',
-//       'Usuarios ilimitados',
-//       'Múltiples sucursales',
-//       'Capacitación personalizada',
-//       'Gestor de cuenta dedicado',
-//       'Integraciones personalizadas',
-//       'Respaldos automáticos diarios',
-//       'SLA garantizado 99.9%'
-//     ],
-//     popular: false
-//   }
+  {
+    name: 'Básico',
+    price: '$0',
+    period: '/mes (x 3 meses)',
+    description: 'Comienza gratis con nuestra oferta de lanzamiento',
+    features: [
+      'Hasta 500 productos',
+      'Gestión de inventario básica',
+      '5 usuarios',
+      'Reportes básicos',
+      'Soporte por email',
+      'Cierres de caja diarios'
+    ],
+    popular: false
+  },
+  {
+    name: 'Profesional',
+    price: '$59',
+    period: '/mes',
+    description: 'Ideal para negocios en crecimiento',
+    features: [
+      'Productos ilimitados',
+      'Gestión avanzada de inventario',
+      '15 usuarios',
+      'Reportes avanzados y analytics',
+      'Soporte prioritario 24/7',
+      'Gestión de proveedores',
+      'Múltiples puntos de venta',
+      'API de integración'
+    ],
+    popular: true
+  },
+  {
+    name: 'Empresarial',
+    price: '$99',
+    period: '/mes',
+    description: 'Para negocios que requieren lo máximo',
+    features: [
+      'Todo lo del plan Profesional',
+      'Usuarios ilimitados',
+      'Múltiples sucursales',
+      'Capacitación personalizada',
+      'Gestor de cuenta dedicado',
+      'Integraciones personalizadas',
+      'Respaldos automáticos diarios',
+      'SLA garantizado 99.9%'
+    ],
+    popular: false
+  }
 ];
 
 const Pricing = () => {

@@ -1,10 +1,16 @@
 // Tipos compartidos para llamadas a la API — frontend
+
 export interface UserAPI {
-  logoUrl(logoUrl: any): unknown;
   _id: string;
   name: string;
   email: string;
   role?: string;
+  membershipTier?: "basic" | "medium" | "pro";
+  active?: boolean;
+  isEmailVerified?: boolean;
+  logoUrl?: string;
+  membershipStartDate?: string;
+  trialDaysRemaining?: string | number;
 }
 
 export interface AuthResponse {
@@ -12,7 +18,12 @@ export interface AuthResponse {
   name: string;
   email: string;
   role?: string;
-  membershipTier?: string;
+  membershipTier?: "basic" | "medium" | "pro";
+  active?: boolean;
+  isEmailVerified?: boolean;
+  logoUrl?: string;
+  membershipStartDate?: string;
+  trialDaysRemaining?: string | number;
   token: string;
 }
 

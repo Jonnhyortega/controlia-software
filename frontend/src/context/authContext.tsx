@@ -21,6 +21,12 @@ interface User {
   name: string;
   email: string;
   role?: string;
+  membershipTier?: "basic" | "medium" | "pro";
+  active?: boolean;
+  isEmailVerified?: boolean;
+  logoUrl?: string;
+  membershipStartDate?: string;
+  trialDaysRemaining?: string | number;
 }
 
 interface AuthContextType {
@@ -41,8 +47,6 @@ interface AuthContextType {
   logout: () => void;
   setUser: Dispatch<SetStateAction<User | null>>;
 }
-
-
 
 // ==========================================================
 // 🔹 Crear contexto con tipo inicial null
@@ -83,28 +87,48 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
     setLoading(false);
   }, []);
-  
+
+  // ==========================================================
+  // 🔹 Check Trial Status
+  // ==========================================================
+  // ==========================================================
+  // 🔹 Check Trial Status (ELIMINADO - Usamos backend)
+  // ==========================================================
+  // La lógica ahora reside en el backend. Usamos user.trialDaysRemaining.
+
 
   // ==========================================================
   // 🔹 Login
   // ==========================================================
- 
   const login = async (
     email: string,
     password: string
   ): Promise<{ success: boolean; message?: string; user?: User; emailNotVerified?: boolean; email?: string }> => {
     try {
       const res = await api.post("/users/login", { email, password });
-
+      
       const parsed = AuthResponseSchema.safeParse(res.data);
       if (!parsed.success) {
         console.error("Auth response inválida:", parsed.error.issues);
+        // Si falla validación de schema, imprimimos pero intentamos seguir si hay token?
+        // Mejor lanzar error para seguridad
         throw new Error("Respuesta inválida del servidor");
       }
 
-      const { token, _id, name, email: userEmail, role } = parsed.data;
+      const { token, _id, name, email: userEmail, role, membershipTier, active, isEmailVerified, logoUrl, membershipStartDate, createdAt, trialDaysRemaining } = parsed.data;
   
-      const user = { _id, name, email: userEmail, role };
+      const user: User = { 
+        _id, 
+        name, 
+        email: userEmail, 
+        role,
+        membershipTier: membershipTier as "basic" | "medium" | "pro",
+        active,
+        isEmailVerified,
+        logoUrl,
+        membershipStartDate: membershipStartDate || createdAt,
+        trialDaysRemaining
+      };
   
       // 💾 Guardamos todo en cookies y localStorage
       Cookies.set("token", token, { expires: 7 });
@@ -118,7 +142,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
       return { success: true, user };
     } catch (err: any) {
-      console.error("❌ Error de login:", err.response?.data || err);
+      const isUnverifiedError = err?.response?.status === 403 && err?.response?.data?.emailNotVerified;
+
+      // Solo loguear error si NO es un error de verificación de email (que es esperado)
+      if (!isUnverifiedError) {
+        console.error("❌ Error de login:", err.response?.data || err);
+      }
       
       // ✉️ Detectar si el email no está verificado
       if (err?.response?.status === 403 && err?.response?.data?.emailNotVerified) {
@@ -140,32 +169,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   // ==========================================================
-// 🔹 Registro
-// ==========================================================
-const register = async (
-  data: { name: string; lastName?: string; email: string; password: string }
-): Promise<{ success: boolean; message?: string; email?: string }> => {
-  try {
-    const res = await api.post("/users/register", data);
+  // 🔹 Registro
+  // ==========================================================
+  const register = async (
+    data: { name: string; lastName?: string; email: string; password: string }
+  ): Promise<{ success: boolean; message?: string; email?: string }> => {
+    try {
+      const res = await api.post("/users/register", data);
 
-    return {
-      success: true,
-      message: res.data.message || "Cuenta creada correctamente.",
-      email: data.email, // Retornar email para redirección
-    };
-  } catch (err: any) {
-    console.error("❌ Error en registro:", err.response?.data || err);
-    return {
-      success: false,
-      message:
-        err?.response?.data?.message ||
-        "Error al crear la cuenta. Intenta nuevamente.",
-    };
-  }
-};
+      return {
+        success: true,
+        message: res.data.message || "Cuenta creada correctamente.",
+        email: data.email, // Retornar email para redirección
+      };
+    } catch (err: any) {
+      console.error("❌ Error en registro:", err.response?.data || err);
+      return {
+        success: false,
+        message:
+          err?.response?.data?.message ||
+          "Error al crear la cuenta. Intenta nuevamente.",
+      };
+    }
+  };
 
-  
-  
   // ==========================================================
   // 🔹 Logout
   // ==========================================================
@@ -193,13 +220,12 @@ const register = async (
       login,
       register,  
       logout,
-      setUser,
+      setUser
     }}
   >
     {children}
   </AuthContext.Provider>
   );
-
 }
 
 // ==========================================================

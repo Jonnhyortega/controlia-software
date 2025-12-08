@@ -110,11 +110,11 @@ function VerifyEmailContent() {
         role: data.role,
       }));
 
-      toast.success("¡Email verificado correctamente! 🎉");
+      toast.success("¡Email verificado correctamente!");
       
       // Redirigir al dashboard
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push("/dashboard?welcome=true");
       }, 500);
 
     } catch (err: any) {

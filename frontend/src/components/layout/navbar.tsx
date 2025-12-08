@@ -10,16 +10,19 @@ import { usePathname } from "next/navigation";
 export default function Navbar() {
   const [nameProfile, setName] = useState("");
   const [imgPerfil, setImgPerfil] = useState("" as any);
+  const [daysRemaining, setdaysremaining] = useState("" as any)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const auth = useAuth();
   const pathname = usePathname();
+  const user = auth?.user;
 
   useEffect(() => {
     (async () => {
       try {
         const data = await getProfile();
+        setdaysremaining(data.trialDaysRemaining || "Prueba finalizada");
         setName(data.name || "");
-        setImgPerfil(data?.logoUrl || "");
+        setImgPerfil(data?.logoUrl);
       } catch {}
     })();
   }, []);
@@ -73,12 +76,20 @@ export default function Navbar() {
               className="
                 opacity-0 pointer-events-none
                 group-hover:opacity-100 group-hover:pointer-events-auto
-                absolute right-0 top-full mt-2 w-52 
+                absolute right-5 top-5 mt-2 w-52 
                 bg-[#1a1a1a] border border-[#2c2c2c]
-                rounded-lg shadow-xl z-50 transition-all duration-150
+                rounded-sm shadow-xl z-50 transition-all duration-150
               "
             >
               <ul className="py-2 text-sm text-gray-300">
+                
+                  <li className="px-4 py-2 border-b border-[#2c2c2c] mb-2">
+                    <div className="text-xs text-gray-400">Prueba gratuita</div>
+                    <div className="text-sm text-primary-400 font-medium">
+                      {daysRemaining} días restantes
+                    </div>
+                  </li>
+                          
                 <li>
                   <Link
                     href="/dashboard/settings/customization"
@@ -99,10 +110,10 @@ export default function Navbar() {
 
                 <li>
                   <Link
-                    href="/dashboard/settings/membresia"
+                    href="/dashboard/subscription"
                     className="block px-4 py-2 hover:bg-[#2a2a2a]"
                   >
-                    Membresía
+                    Subscripcion
                   </Link>
                 </li>
 

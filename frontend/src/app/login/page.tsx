@@ -127,7 +127,13 @@ export default function AuthPage() {
           
           localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify({ _id: data._id, name: data.name, email: data.email }));
-          location.replace('/dashboard');
+          localStorage.setItem('user', JSON.stringify({ _id: data._id, name: data.name, email: data.email }));
+          
+          if (data.isNewUser) {
+            location.replace('/dashboard?welcome=true');
+          } else {
+            location.replace('/dashboard');
+          }
         } catch (err: any) {
           console.error(err);
           alert(err.response?.data?.message || 'Error autenticando con Google');
@@ -305,6 +311,19 @@ export default function AuthPage() {
                 transition={{ duration: 0.35 }}
                 className="flex flex-col gap-4"
               >
+                 {/* 🎁 Alerta de Prueba Gratuita */}
+                <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-2">
+                  <div className="flex items-start gap-3">
+                    <span className="text-xl">🎁</span>
+                    <div className="text-sm">
+                      <p className="font-semibold text-primary-300">¡Comienza tu prueba gratuita de 90 días!</p>
+                      <p className="text-gray-400 mt-1">
+                        Disfruta del Plan Básico sin costo. Después de 90 días, el precio será de <span className="text-white font-medium">$15.000 ARS/mes</span>.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm mb-1">Nombre</label>

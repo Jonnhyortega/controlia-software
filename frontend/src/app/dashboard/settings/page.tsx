@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { UserCog, Users, ShieldCheck, Palette, Building2 } from "lucide-react";
+import { UserCog, Users, ShieldCheck, Palette, Building2, CreditCard } from "lucide-react";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -36,6 +36,12 @@ export default function SettingsPage() {
       title: "Preferencias generales",
       desc: "Horarios, moneda, formatos de ticket y opciones del sistema.",
       action: () => router.push("/dashboard/settings/general"),
+    },
+    {
+      icon: <CreditCard size={28} className="text-primary" />,
+      title: "Suscripción y Pagos",
+      desc: "Gestionar plan, método de pago y facturación.",
+      action: () => router.push("/dashboard/subscription"),
     },
   ];
 

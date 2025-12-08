@@ -22,6 +22,8 @@ import ExpenseForm from "./components/Forms/expenseForm";
 import Loading from "../../components/loading";
 import { api } from "../../utils/api";
 import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { X, Gift, Sparkles } from "lucide-react";
 
 
 export default function DashboardPage() {
@@ -36,6 +38,20 @@ export default function DashboardPage() {
   const [showSalesForm, setShowSalesForm] = useState(false);
   const [showCloseCashForm, setShowCloseCashForm] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
+
+  // 🎁 Welcome Modal Logic
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get("welcome") === "true") {
+      setShowWelcomeModal(true);
+      // Clean URL without refresh
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, "", newUrl);
+    }
+  }, [searchParams]);
 
   const handleScannedCode = (code: string) => {
     setPendingScannedCode(code);
@@ -153,6 +169,70 @@ export default function DashboardPage() {
                    setShowExpenseForm(false);
                 }}
              />
+          </Overlay>
+        )}
+      </AnimatePresence>
+
+      {/* 🎁 Welcome Modal */}
+      <AnimatePresence>
+        {showWelcomeModal && (
+          <Overlay>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-[#121212] border border-[#2c2c2c] rounded-2xl w-full max-w-lg p-0 overflow-hidden shadow-2xl relative"
+            >
+              {/* Decorative Background */}
+              <div className="absolute top-0 w-full h-32 bg-gradient-to-b from-primary/20 to-transparent pointer-events-none" />
+              
+              <button 
+                onClick={() => setShowWelcomeModal(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-white z-10"
+              >
+                <X size={20} />
+              </button>
+
+              <div className="p-8 text-center relative z-0">
+                <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-6 border border-primary/20">
+                  <Gift className="w-8 h-8 text-primary" />
+                </div>
+                
+                <h2 className="text-2xl font-bold text-white mb-2">¡Bienvenido a Controlia!</h2>
+                <div className="flex items-center justify-center gap-2 mb-6">
+                  <span className="px-3 py-1 rounded-full bg-primary/20 text-primary-300 text-xs font-semibold border border-primary/20 flex items-center gap-1">
+                    <Sparkles size={12} /> Prueba Gratuita Activa
+                  </span>
+                </div>
+
+                <div className="bg-[#1a1a1a] rounded-xl p-4 mb-6 text-left border border-gray-800">
+                  <p className="text-gray-300 text-sm mb-3">
+                    Has comenzado tu periodo de prueba de <strong>90 días</strong> del Plan Básico.
+                  </p>
+                  <ul className="space-y-2 text-sm text-gray-400">
+                    <li className="flex items-center gap-2">
+                       <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                       Acceso completo a todas las funciones
+                    </li>
+                    <li className="flex items-center gap-2">
+                       <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                       Sin compromiso de compra
+                    </li>
+                  </ul>
+                </div>
+
+                <p className="text-xs text-gray-500 mb-6">
+                  Al finalizar los 90 días, podrás suscribirte al Plan Básico por solo <strong>$15.000 ARS/mes</strong> para continuar usando el servicio.
+                </p>
+
+                <button
+                  onClick={() => setShowWelcomeModal(false)}
+                  className="w-full bg-primary hover:bg-primary-700 text-white font-medium py-3 rounded-xl transition-all"
+                >
+                  ¡Entendido, comencemos! 🚀
+                </button>
+              </div>
+            </motion.div>
           </Overlay>
         )}
       </AnimatePresence>

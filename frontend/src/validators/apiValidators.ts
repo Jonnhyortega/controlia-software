@@ -6,6 +6,13 @@ export const AuthResponseSchema = z.object({
   email: z.string().email(),
   role: z.string().optional(),
   token: z.string(),
+  membershipTier: z.enum(["basic", "medium", "pro"]).optional(),
+  active: z.boolean().optional(),
+  isEmailVerified: z.boolean().optional(),
+  logoUrl: z.string().optional(),
+  membershipStartDate: z.string().optional(),
+  createdAt: z.string().optional(),
+  trialDaysRemaining: z.union([z.string(), z.number()]).optional(),
 });
 
 export const SaleProductSchema = z.object({
