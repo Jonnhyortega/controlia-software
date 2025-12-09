@@ -67,10 +67,8 @@ export default function ExpenseForm({
       };
 
       // Append to existing
-      const updatedExpenses = [...(currentExpenses || []), newExpense];
-
       await updateDailyCash(cashId, {
-        extraExpenses: updatedExpenses,
+        extraExpenses: [newExpense],
       });
 
       toast.success("Movimiento registrado correctamente");

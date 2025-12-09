@@ -66,8 +66,8 @@ export interface DailyCash {
   sales: (string | Sale)[];
   totalSalesAmount: number;
   totalOperations: number;
-  extraExpenses?: { description: string; amount: number }[];
-  supplierPayments?: { metodo: string; total: number }[];
+  extraExpenses?: { description?: string; amount: number }[];
+  supplierPayments?: { metodo?: string; total: number }[];
   totalOut?: number;
   finalExpected?: number;
   finalReal?: number;

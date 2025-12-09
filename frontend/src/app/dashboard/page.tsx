@@ -13,6 +13,8 @@ import { useAuth } from "../../context/authContext";
 import DashboardHeader from "../dashboard/components/dashboardHeader";
 import ScannerOverlay from "./components/ScannerOverlay";
 import SalesTable from "./components/SalesTable/salesTable";
+import ExpensesTable from "./components/ExpensesTable";
+import ClosedCashSummary from "./components/ClosedCashSummary";
 
 import Overlay from "./components/overlay";
 import CloseCashForm from "./components/Forms/closeCashForm";
@@ -31,7 +33,7 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const { data, loading, reload } = useSales();
   // const { date, time } = useClock();
-
+  console.log(data)
   const [pendingScannedCode, setPendingScannedCode] = useState<string | null>(null);
 
   const [expandedSale, setExpandedSale] = useState<string | null>(null);
@@ -237,6 +239,10 @@ export default function DashboardPage() {
         )}
       </AnimatePresence>
 
+      <div className="mt-8">
+        {data?.status === "cerrada" && data && <ClosedCashSummary data={data} />}
+      </div>
+
       <motion.div className="mt-6">
         {sales.length > 0 ? 
         (<SalesTable
@@ -259,6 +265,16 @@ export default function DashboardPage() {
         )}
 
       </motion.div>
+
+      {/* 📉 Expenses Table */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <ExpensesTable expenses={data?.extraExpenses || []} />
+      </motion.div>
     </>
+
   );
 }

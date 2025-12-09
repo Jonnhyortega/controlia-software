@@ -46,6 +46,15 @@ export const DailyCashSchema = z.object({
   sales: z.array(z.any()),
   totalSalesAmount: z.number(),
   totalOperations: z.number(),
+  extraExpenses: z.array(z.object({ description: z.string().optional(), amount: z.number() })).optional(),
+  supplierPayments: z.array(z.object({ metodo: z.string().optional(), total: z.number() })).optional(),
+  totalOut: z.number().optional(),
+  finalExpected: z.number().optional(),
+  finalReal: z.number().optional(),
+  difference: z.number().optional(),
+  status: z.string().optional(),
+  closedAt: z.string().optional(),
+  createdAt: z.string().optional(),
 });
 
 export default {
