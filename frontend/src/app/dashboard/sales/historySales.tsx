@@ -13,6 +13,7 @@ import {
   DollarSign,
   TrendingUp,
   Lock,
+  Printer 
 } from "lucide-react";
 
 import { formatLocalDate, formatLocalTime } from "../../../utils/dateUtils";
@@ -21,6 +22,7 @@ import Loading from "../../../components/loading";
 import { AnimatePresence, motion } from "framer-motion";
 import CloseCashForm from "../components/CloseCashForm";
 import { useToast } from "../../../context/ToastContext";
+import ReceiptModal from "../components/SalesTable/ReceiptModal";
 
 export default function HistorySales() {
   const toast = useToast();
@@ -31,6 +33,9 @@ export default function HistorySales() {
   const [openDate, setOpenDate] = useState<string | null>(null);
   const [salesData, setSalesData] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
+  
+  // State for ticket modal
+  const [selectedReceiptSale, setSelectedReceiptSale] = useState<any>(null);
 
   useEffect(() => {
     const fetchDays = async () => {
@@ -77,8 +82,6 @@ export default function HistorySales() {
     .map((p) => `${p.product?.name || p.name} x${p.quantity}`)
     .join("\n");
   };
-
-
 
   const toggleDate = async (date: string) => {
     if (openDate === date) return setOpenDate(null);
@@ -266,17 +269,18 @@ export default function HistorySales() {
                                       <th className="hidden md:table-cell p-2">Productos</th>
                                       <th className="hidden md:table-cell p-2">Método</th>
                                       <th className="p-2 text-right">Total</th>
+                                      <th className="p-2 text-center w-10">Ver</th>
                                     </tr>
                                   </thead>
 
                                   <tbody>
                                     {daily.sales.map((sale: any) => (
-                                      <tr key={sale._id} className="border-t">
+                                      <tr key={sale._id} className="border-t hover:bg-gray-50">
                                         <td className="p-4">{formatLocalTime(sale.createdAt)}</td>
                                         <td
                                           className="hidden md:table-cell p-4 max-w-[250px] truncate cursor-help"
                                           title={formatProductsTooltip(sale.products)}
-                                          style={{ whiteSpace: "pre-line" }} // Permite saltos de línea en el tooltip
+                                          style={{ whiteSpace: "pre-line" }} 
                                         >
                                           {truncate(
                                             sale.products
@@ -291,6 +295,15 @@ export default function HistorySales() {
                                             style: "currency",
                                             currency: "ARS",
                                           })}
+                                        </td>
+                                        <td className="p-2 text-center">
+                                            <button 
+                                                onClick={() => setSelectedReceiptSale(sale)}
+                                                className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
+                                                title="Ver Ticket"
+                                            >
+                                                <Printer size={16} />
+                                            </button>
                                         </td>
                                       </tr>
                                     ))}
@@ -309,7 +322,7 @@ export default function HistorySales() {
           )}
         </div>
 
-        {/* MODAL */}
+        {/* MODAL CIERRE */}
         <AnimatePresence>
           {showCloseCashForm && (
             <motion.div
@@ -331,6 +344,14 @@ export default function HistorySales() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* MODAL TICKET */}
+        {selectedReceiptSale && (
+           <ReceiptModal 
+              sale={selectedReceiptSale}
+              onClose={() => setSelectedReceiptSale(null)}
+           />
+        )}
       </div>
     </section>
   );

@@ -31,6 +31,8 @@ export function useProducts() {
   const [addStockQty, setAddStockQty] = useState(1);
   const [categories, setCategories] = useState<string[]>([]);
 
+  const [historyProduct, setHistoryProduct] = useState<{ id: string; name: string } | null>(null);
+
   const [form, setForm] = useState({
     name: "",
     category: "",
@@ -54,14 +56,8 @@ export function useProducts() {
             getCustomization(),
           ]);
 
-          // 🔒 FILTER PRODUCTS BY USER ID (Frontend Patch)
-          // The backend seems to return all products globally. We filter here to ensure isolation.
-          const myProducts = p.filter((prod: any) => {
-             const prodUserId = typeof prod.user === 'object' ? prod.user?._id : prod.user;
-             return prodUserId === user?._id;
-          });
-
-          setProducts(myProducts);
+          // El backend ya filtra por ownerId/multi-tenancy
+          setProducts(p);
           setSuppliers(s);
           setCategories(c.categories || []);
         } catch (err) {
@@ -229,5 +225,8 @@ export function useProducts() {
     setCategories,
     reloadCategories,
 
+    historyProduct,
+    setHistoryProduct,
+    handleHistory: (p: any) => setHistoryProduct({ id: p._id, name: p.name }),
   };
 }

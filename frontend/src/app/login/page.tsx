@@ -8,6 +8,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useToast } from "../../context/ToastContext"; // 👈 opcional si usás toasts globales
 import { api } from "../../utils/api";
+import Link from "next/link";
 
 export default function AuthPage() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function AuthPage() {
   const [formData, setFormData] = useState({
     name: "",
     lastName: "",
+    businessName: "",
     email: "",
     password: "",
   });
@@ -262,6 +264,14 @@ export default function AuthPage() {
                     className="w-full px-4 py-2 rounded-lg app-input"
                     placeholder="********"
                   />
+                  <div className="flex justify-end mt-1">
+                    <Link 
+                      href="/forgot-password" 
+                      className="text-xs text-primary-400 hover:text-primary-300"
+                    >
+                      ¿Olvidaste tu contraseña?
+                    </Link>
+                  </div>
                 </div>
 
                 {error && (
@@ -322,6 +332,19 @@ export default function AuthPage() {
                       </p>
                     </div>
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm mb-1">Nombre del Negocio</label>
+                  <input
+                    type="text"
+                    name="businessName"
+                    value={formData.businessName}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 rounded-lg app-input"
+                    placeholder="Mi Negocio S.A."
+                  />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

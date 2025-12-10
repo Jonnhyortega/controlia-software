@@ -15,6 +15,7 @@ import ScannerOverlay from "./components/ScannerOverlay";
 import SalesTable from "./components/SalesTable/salesTable";
 import ExpensesTable from "./components/ExpensesTable";
 import ClosedCashSummary from "./components/ClosedCashSummary";
+import SimpleStats from "./components/SimpleStats";
 
 import Overlay from "./components/overlay";
 import CloseCashForm from "./components/Forms/closeCashForm";
@@ -25,7 +26,7 @@ import Loading from "../../components/loading";
 import { api } from "../../utils/api";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { X, Gift, Sparkles } from "lucide-react";
+import { X, Gift, Sparkles, ChevronDown, ChevronUp, BarChart3 } from "lucide-react";
 
 
 export default function DashboardPage() {
@@ -40,6 +41,7 @@ export default function DashboardPage() {
   const [showSalesForm, setShowSalesForm] = useState(false);
   const [showCloseCashForm, setShowCloseCashForm] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
+  const [showStats, setShowStats] = useState(false);
 
   // 🎁 Welcome Modal Logic
   const searchParams = useSearchParams();
@@ -245,12 +247,44 @@ export default function DashboardPage() {
 
       <motion.div className="mt-6">
         {sales.length > 0 ? 
-        (<SalesTable
-          sales={sales.slice().reverse()}
-          expanded={expandedSale}
-          onExpand={(id) => setExpandedSale(expandedSale === id ? null : id)}
-          onRevert={(saleId) => handleRevert (saleId)}
-        />) : 
+        (
+        <>
+          <SalesTable
+            sales={sales.slice().reverse()}
+            expanded={expandedSale}
+            onExpand={(id: any) => setExpandedSale(expandedSale === id ? null : id)}
+            onRevert={(saleId: any) => handleRevert(saleId)}
+            simpleMode={true}
+          />
+
+          {/* 📊 Estadísticas Desplegables */}
+          <div className="mt-6 mb-8">
+             <button
+                onClick={() => setShowStats(!showStats)}
+                className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-primary transition-colors bg-gray-50 px-4 py-2 rounded-lg border border-gray-100"
+             >
+                <BarChart3 size={16} />
+                {showStats ? "Ocultar gráficos y estadísticas" : "Ver gráficos generales de hoy"}
+                {showStats ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+             </button>
+
+             <AnimatePresence>
+                {showStats && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="pt-4">
+                      <SimpleStats sales={sales} />
+                    </div>
+                  </motion.div>
+                )}
+             </AnimatePresence>
+          </div>
+        </>
+        ) : 
         (
           <div className="flex flex-col items-center justify-center py-14 text-gray-400">
             <ReceiptText className="w-12 h-12 mb-3 opacity-60" />
@@ -263,7 +297,6 @@ export default function DashboardPage() {
             </p>
           </div>
         )}
-
       </motion.div>
 
       {/* 📉 Expenses Table */}

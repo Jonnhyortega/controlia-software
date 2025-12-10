@@ -11,6 +11,7 @@ interface SalesRowProps {
   expanded: string | null;
   onExpand: (id: string) => void;
   onRevert: (id: string) => void;
+  onShowReceipt?: (sale: any) => void;
 }
 
 export default function SalesRow({
@@ -19,6 +20,7 @@ export default function SalesRow({
   expanded,
   onExpand,
   onRevert,
+  onShowReceipt,
 }: SalesRowProps) {
   const [isExpanded, setIsExpanded] = React.useState(false);
 
@@ -66,23 +68,45 @@ export default function SalesRow({
         </td>
 
         <td className="py-3 px-4 text-center">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsExpanded(true); // ← Abrir confirm dialog
-          }}
-          className="
-            text-red-600 hover:text-white 
-            bg-red-300 hover:bg-red-500 
-            p-2 rounded-md transition
-            font-semibold
-            flex items-center justify-center
-          "
-          title="Anular venta"
-        >
-          <span className="hidden md:inline">Anular</span>
-          <Ban className="w-4 h-4 md:hidden" />
-        </button>
+        <div className="flex items-center justify-center gap-2">
+            {onShowReceipt && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onShowReceipt(sale);
+                }}
+                className="
+                  text-indigo-600 hover:text-white 
+                  bg-indigo-100 hover:bg-indigo-500 
+                  p-2 rounded-md transition
+                  font-semibold
+                  flex items-center justify-center
+                "
+                title="Ver Ticket"
+              >
+                <code className="text-xs mr-1 hidden md:inline">Ticket</code>
+                {/* Icon if needed */}
+              </button>
+            )}
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsExpanded(true); // ← Abrir confirm dialog
+              }}
+              className="
+                text-red-600 hover:text-white 
+                bg-red-300 hover:bg-red-500 
+                p-2 rounded-md transition
+                font-semibold
+                flex items-center justify-center
+              "
+              title="Anular venta"
+            >
+              <span className="hidden md:inline">Anular</span>
+              <Ban className="w-4 h-4 md:hidden" />
+            </button>
+          </div>
 
           {isExpanded && (
             <ConfirmDialog

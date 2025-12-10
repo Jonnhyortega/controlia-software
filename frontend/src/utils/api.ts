@@ -100,7 +100,7 @@ export async function getDashboardData(): Promise<{
 }> {
   try {
     const [latestDaily, products, clients] = await Promise.allSettled([
-      api.get("/daily-sales/latest"),
+      api.get("/daily-cash/today"),
       api.get("/products"),
       api.get("/clients"),
     ]);
@@ -343,9 +343,17 @@ export const updateProduct = async (id: string, data: Partial<Product>): Promise
   return res.data;
 };
 
+
+
 // 🔴 Eliminar un producto
 export const deleteProduct = async (id: string): Promise<{ message: string }> => {
   const res = await api.delete(`/products/${id}`);
+  return res.data;
+};
+
+// 📜 Obtener historial de producto
+export const getProductHistory = async (id: string): Promise<any[]> => {
+  const res = await api.get(`/products/${id}/history`);
   return res.data;
 };
 

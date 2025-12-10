@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [nameProfile, setName] = useState("");
+  const [businessName, setBusinessName] = useState("");
   const [imgPerfil, setImgPerfil] = useState("" as any);
   const [daysRemaining, setdaysremaining] = useState("" as any)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -22,7 +23,9 @@ export default function Navbar() {
         const data = await getProfile();
         setdaysremaining(data.trialDaysRemaining || "Prueba finalizada");
         setName(data.name || "");
+        setBusinessName(data.businessName || "");
         setImgPerfil(data?.logoUrl);
+        console.log(imgPerfil)
       } catch {}
     })();
   }, []);
@@ -34,6 +37,11 @@ export default function Navbar() {
     { label: "Proveedores", icon: Truck, path: "/dashboard/providers" },
     { label: "Configuración", icon: Settings, path: "/dashboard/settings" },
   ];
+
+  const capitalize = (str: string) => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
 
   return (
     <>
@@ -48,9 +56,9 @@ export default function Navbar() {
         </button>
 
         <div className="flex items-center">
-          {/* Nombre */}
-          <span className="hidden md:block font-light text-white text-sm mr-4">
-            {nameProfile}
+          {/* Nombre Comercial (o Usuario si no hay comercial) */}
+          <span className="hidden md:block font-light text-white text-sm mr-4 uppercase tracking-wider">
+            {businessName || nameProfile}
           </span>
 
           <div className="relative group">
@@ -59,6 +67,7 @@ export default function Navbar() {
               <img
                 src={imgPerfil}
                 alt="Perfil"
+                title={capitalize(user?.name || "Usuario")}
                 width={48}
                 height={48}
                 className="rounded-full cursor-pointer transition"
@@ -83,10 +92,25 @@ export default function Navbar() {
             >
               <ul className="py-2 text-sm text-gray-300">
                 
+                  {/* Nombre del Usuario */}
+                  <li className="px-4 py-2 border-b border-[#2c2c2c] mb-2">
+                    <div className="text-xs text-gray-400">Usuario</div>
+                    <div className="text-sm text-white font-medium">
+                      {capitalize(nameProfile)}
+                    </div>
+                  </li>
+
                   <li className="px-4 py-2 border-b border-[#2c2c2c] mb-2">
                     <div className="text-xs text-gray-400">Prueba gratuita</div>
                     <div className="text-sm text-primary-400 font-medium">
                       {daysRemaining} días restantes
+                    </div>
+                  </li>
+
+                  <li className="px-4 py-2 border-b border-[#2c2c2c] mb-2">
+                    <div className="text-xs text-gray-400">Rol</div>
+                    <div className="text-sm text-blue-400 font-medium capitalize">
+                      {user?.role || "Cargando..."}
                     </div>
                   </li>
                           
@@ -108,14 +132,16 @@ export default function Navbar() {
                   </Link>
                 </li>
 
-                <li>
-                  <Link
-                    href="/dashboard/subscription"
-                    className="block px-4 py-2 hover:bg-[#2a2a2a]"
-                  >
-                    Subscripcion
-                  </Link>
-                </li>
+                {user?.role !== "empleado" && (
+                  <li>
+                    <Link
+                      href="/dashboard/subscription"
+                      className="block px-4 py-2 hover:bg-[#2a2a2a]"
+                    >
+                      Subscripcion
+                    </Link>
+                  </li>
+                )}
 
                 <li>
                   <button

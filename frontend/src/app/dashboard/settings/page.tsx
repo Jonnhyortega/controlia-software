@@ -2,48 +2,46 @@
 
 import { useRouter } from "next/navigation";
 import { UserCog, Users, ShieldCheck, Palette, Building2, CreditCard } from "lucide-react";
+import { useAuth } from "../../../context/authContext";
 
 export default function SettingsPage() {
   const router = useRouter();
+  const { user } = useAuth();
+  
+  const isAdmin = user?.role === "admin";
 
-  const cards = [
+  const allCards = [
     {
-    icon: <Users size={28} className="text-primary" />,
+      icon: <Users size={28} className="text-primary" />,
       title: "Gestión de empleados",
       desc: "Crear, editar o desactivar usuarios con rol empleado.",
       action: () => router.push("/dashboard/settings/employees"),
+      adminOnly: true,
     },
     {
       icon: <UserCog size={28} className="text-primary" />,
       title: "Mi perfil",
       desc: "Actualizar nombre, email, contraseña y preferencias personales.",
       action: () => router.push("/dashboard/settings/profile"),
+      adminOnly: false,
     },
     {
       icon: <Palette size={28} className="text-primary" />,
       title: "Personalización",
       desc: "Logo, colores de la marca y apariencia del sistema.",
       action: () => router.push("/dashboard/settings/customization"),
-    },
-    {
-      icon: <ShieldCheck size={28} className="text-primary" />,
-      title: "Seguridad",
-      desc: "Ver actividad reciente, cerrar sesiones y reiniciar contraseña.",
-      action: () => router.push("/dashboard/settings/security"),
-    },
-    {
-      icon: <Building2 size={28} className="text-primary" />,
-      title: "Preferencias generales",
-      desc: "Horarios, moneda, formatos de ticket y opciones del sistema.",
-      action: () => router.push("/dashboard/settings/general"),
+      adminOnly: true,
     },
     {
       icon: <CreditCard size={28} className="text-primary" />,
       title: "Suscripción y Pagos",
       desc: "Gestionar plan, método de pago y facturación.",
       action: () => router.push("/dashboard/subscription"),
+      adminOnly: true,
     },
   ];
+
+  const cards = allCards.filter(c => !c.adminOnly || isAdmin);
 
   return (
     <section className="p-6">

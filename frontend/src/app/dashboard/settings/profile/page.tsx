@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useToast } from "../../../../context/ToastContext";
+import { useAuth } from "../../../../context/authContext";
 import { getProfile, updateProfile, changeMyPassword } from "../../../../utils/api";
 import { Lock, Save, User } from "lucide-react";
 
 export default function ProfilePage() {
   const toast = useToast();
+  const { setUser: setGlobalUser, user: globalUser } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
@@ -14,8 +16,10 @@ export default function ProfilePage() {
   // FORM: datos personales
   const [form, setForm] = useState({
     name: "",
+    businessName: "",
     email: "",
     role: "",
+    address: "",
   });
 
   // FORM: cambio contraseña
@@ -34,8 +38,10 @@ export default function ProfilePage() {
         setUser(data);
         setForm({
           name: data.name,
+          businessName: data.businessName || "",
           email: data.email,
           role: data.role ?? "",
+          address: data.address || "",
         });
       } catch {
         toast.error("Error al cargar perfil ❌");
@@ -55,7 +61,18 @@ export default function ProfilePage() {
   const handleSave = async (e: any) => {
     e.preventDefault();
     try {
-      await updateProfile(form);
+      const res = await updateProfile(form);
+      
+      // Actualizar estado global
+      if (res.user) {
+        setGlobalUser((prev: any) => {
+          if (!prev) return null;
+          const updated = { ...prev, ...res.user };
+          localStorage.setItem("user", JSON.stringify(updated));
+          return updated;
+        });
+      }
+
       toast.success("Perfil actualizado ✔");
     } catch (err: any) {
       toast.error(err?.message || "No se pudo actualizar ❌");
@@ -107,6 +124,30 @@ export default function ProfilePage() {
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             className="bg-[#121212] border border-[#1f1f1f] p-2 rounded text-gray-200"
             required
+          />
+        </div>
+
+        {/* Nombre del Negocio */}
+        <div className="flex flex-col">
+          <label className="text-sm text-gray-400 mb-1">Nombre del Negocio</label>
+          <input
+            type="text"
+            value={form.businessName}
+            onChange={(e) => setForm({ ...form, businessName: e.target.value })}
+            className="bg-[#121212] border border-[#1f1f1f] p-2 rounded text-gray-200"
+            required
+          />
+        </div>
+
+        {/* Dirección */}
+        <div className="flex flex-col">
+          <label className="text-sm text-gray-400 mb-1">Dirección</label>
+          <input
+            type="text"
+            value={form.address}
+            onChange={(e) => setForm({ ...form, address: e.target.value })}
+            className="bg-[#121212] border border-[#1f1f1f] p-2 rounded text-gray-200"
+            placeholder="Ej: Av. Rivadavia 1234, CABA"
           />
         </div>
 

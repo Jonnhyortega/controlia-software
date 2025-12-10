@@ -45,7 +45,7 @@ export default function Sidebar() {
         <div className="flex items-center justify-between px-3 py-5">
           {!collapsed && (
             <h1 className="text-xl font-bold tracking-wide text-white">
-              CONTROLIA
+              <img src="/logosinfondo.png" alt="Logo controlia" width={48} height={48} />
             </h1>
           )}
 

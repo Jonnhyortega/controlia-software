@@ -25,6 +25,7 @@ import {
 } from "../../../../utils/api";
 
 import { ConfirmDialog } from "../../../dashboard/components/confirmDialog";
+import RoleGuard from "@/components/auth/RoleGuard";
 
 export default function EmployeesPage() {
   const toast = useToast();
@@ -163,22 +164,22 @@ export default function EmployeesPage() {
   if (loading) return <p className="p-6 text-gray-500">Cargando empleados…</p>;
 
   return (
-    <section className="p-6 space-y-6">
-
-      {/* HEADER */}
+    <RoleGuard role="admin">
+      <section className="p-6 space-y-6">
+        {/* HEADER */}
+        {/* ... (keep existing content intact, just wrapped) ... */}
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold text-primary">Gestión de empleados</h1>
+          <button
+            onClick={openCreateModal}
+            className="bg-primary hover:bg-primary-700 px-4 py-2 rounded-xl text-white flex items-center gap-2"
+          >
+            <UserPlus size={18} /> Nuevo empleado
+          </button>
+        </div>
 
-        <button
-          onClick={openCreateModal}
-          className="bg-primary hover:bg-primary-700 px-4 py-2 rounded-xl text-white flex items-center gap-2"
-        >
-          <UserPlus size={18} /> Nuevo empleado
-        </button>
-      </div>
-
-      {/* GRID DE CARDS */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* GRID DE CARDS */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {employees.map((emp) => (
           <div
             key={emp.name}
@@ -262,7 +263,6 @@ export default function EmployeesPage() {
         ))}
       </div>
 
-      {/* CONFIRM DIALOG */}
       <ConfirmDialog
         open={showConfirm}
         message={confirmMessage}
@@ -273,7 +273,6 @@ export default function EmployeesPage() {
         onCancel={() => setShowConfirm(false)}
       />
 
-      {/* MODAL CREAR / EDITAR */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <form
@@ -342,7 +341,6 @@ export default function EmployeesPage() {
         </div>
       )}
 
-      {/* MODAL CAMBIO DE CONTRASEÑA */}
       {showPasswordModal && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-6 w-full max-w-md space-y-4">
@@ -376,6 +374,7 @@ export default function EmployeesPage() {
           </div>
         </div>
       )}
-    </section>
+      </section>
+    </RoleGuard>
   );
 }

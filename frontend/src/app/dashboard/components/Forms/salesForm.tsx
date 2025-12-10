@@ -66,13 +66,13 @@ export default function SalesForm({
       try {
         const res = await api.get("/products");
         
-        // 🔒 FILTER PRODUCTS BY USER ID (Frontend Patch)
-        const myProducts = (res.data || []).filter((prod: any) => {
-             const prodUserId = typeof prod.user === 'object' ? prod.user?._id : prod.user;
-             return prodUserId === user?._id;
-        });
+        // 🔒 FILTER PRODUCTS BY USER ID (Removed - Backend handles this)
+        // const myProducts = (res.data || []).filter((prod: any) => {
+        //      const prodUserId = typeof prod.user === 'object' ? prod.user?._id : prod.user;
+        //      return prodUserId === user?._id;
+        // });
 
-        setProductsDB(myProducts);
+        setProductsDB(res.data || []);
       } catch (error) {
         console.error("Error al obtener productos:", error);
         toast.error("Error al cargar productos.");

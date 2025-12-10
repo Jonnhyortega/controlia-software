@@ -13,6 +13,7 @@ import { AddStockModal } from "./components/AddStockModal";
 import { ConfirmDialog } from "../components/confirmDialog";
 
 import ConfigCategories from "./components/ConfigCategories";
+import { ProductHistoryModal } from "./components/ProductHistoryModal";
 
 import Loading from "../../../components/loading";
 import { Undo2, X } from "lucide-react";
@@ -85,6 +86,7 @@ export default function ProductsPage() {
         products={p.filtered}
         onEdit={p.handleEdit}
         onDelete={p.handleDeleteClick}
+        onHistory={p.handleHistory}
       />
 
       {/* CONFIRMAR ELIMINAR PRODUCTO */}
@@ -120,6 +122,15 @@ export default function ProductsPage() {
         <ConfigCategories 
         onClose={() => setShowCategories(false)}
         reloadCategories={p.reloadCategories} 
+        />
+      )}
+
+      {/* MODAL HISTORIAL DE PRODUCTO */}
+      {p.historyProduct && (
+        <ProductHistoryModal
+          productId={p.historyProduct.id}
+          productName={p.historyProduct.name}
+          onClose={() => p.setHistoryProduct(null)}
         />
       )}
     </section>

@@ -3,16 +3,18 @@ import { z } from "zod";
 export const AuthResponseSchema = z.object({
   _id: z.string(),
   name: z.string(),
+  businessName: z.string().nullable().optional(),
   email: z.string().email(),
-  role: z.string().optional(),
+  role: z.string().nullable().optional(),
   token: z.string(),
-  membershipTier: z.enum(["basic", "medium", "pro"]).optional(),
-  active: z.boolean().optional(),
-  isEmailVerified: z.boolean().optional(),
-  logoUrl: z.string().optional(),
-  membershipStartDate: z.string().optional(),
-  createdAt: z.string().optional(),
-  trialDaysRemaining: z.union([z.string(), z.number()]).optional(),
+  membershipTier: z.enum(["basic", "medium", "pro"]).nullable().optional(),
+  active: z.boolean().nullable().optional(),
+  isEmailVerified: z.boolean().nullable().optional(),
+  logoUrl: z.string().nullable().optional(),
+  membershipStartDate: z.string().nullable().optional(),
+  createdAt: z.string().nullable().optional(),
+  trialDaysRemaining: z.union([z.string(), z.number()]).nullable().optional(),
+  address: z.string().nullable().optional(),
 });
 
 export const SaleProductSchema = z.object({

@@ -1,19 +1,19 @@
-"use client";
-
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronUp, Package, Edit3, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Package, Edit3, Trash2, History } from "lucide-react";
 
 export function ProveedorAccordion({
   proveedor,
   productos,
   onEdit,
   onDelete,
+  onHistory,
 }: {
   proveedor: string;
   productos: any[];
   onEdit: (p: any) => void;
   onDelete: (id: string) => void;
+  onHistory: (p: any) => void;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -79,12 +79,21 @@ export function ProveedorAccordion({
                       <button
                         onClick={() => {onEdit(p)}}
                         className="text-primary-300 hover:text-primary-700 transition"
+                        title="Editar"
                       >
                         <Edit3 className="w-4 h-4" />
                       </button>
                       <button
+                        onClick={() => onHistory(p)}
+                        className="text-gray-400 hover:text-gray-700 transition"
+                        title="Ver Historial"
+                      >
+                         <History className="w-4 h-4" />
+                      </button>
+                      <button
                         onClick={() => onDelete(p._id)}
                         className="text-red-500 hover:text-red-700 transition"
+                        title="Eliminar"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

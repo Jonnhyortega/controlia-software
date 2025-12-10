@@ -3,12 +3,14 @@
 export interface UserAPI {
   _id: string;
   name: string;
+  businessName: string;
   email: string;
   role?: string;
   membershipTier?: "basic" | "medium" | "pro";
   active?: boolean;
   isEmailVerified?: boolean;
   logoUrl?: string;
+  address?: string; // New field
   membershipStartDate?: string;
   trialDaysRemaining?: string | number;
 }
@@ -16,6 +18,7 @@ export interface UserAPI {
 export interface AuthResponse {
   _id: string;
   name: string;
+  businessName: string;
   email: string;
   role?: string;
   membershipTier?: "basic" | "medium" | "pro";

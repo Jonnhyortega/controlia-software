@@ -11,6 +11,8 @@ import { Progress } from "../../../components/ui/progress";
 import { CheckCircle2, AlertCircle, Sparkles } from "lucide-react";
 import Link from "next/link";
 
+import RoleGuard from "@/components/auth/RoleGuard";
+
 export default function SubscriptionPage() {
   const { user } = useAuth();
   const [trialDaysRemaining, setTrialDaysRemaining] = useState<string | number>(user?.trialDaysRemaining || 0);
@@ -42,6 +44,7 @@ export default function SubscriptionPage() {
   const progress = ((totalTrialDays - daysRemaining) / totalTrialDays) * 100;
 
   return (
+    <RoleGuard role="admin">
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
@@ -123,5 +126,6 @@ export default function SubscriptionPage() {
         </Card>
       </div>
     </div>
+    </RoleGuard>
   );
 }

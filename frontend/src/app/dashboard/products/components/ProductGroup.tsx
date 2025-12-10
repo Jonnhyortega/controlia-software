@@ -7,9 +7,10 @@ type Props = {
   products: Product[];
   onEdit: (p: Product) => void;
   onDelete: (id: string) => void;
+  onHistory: (p: Product) => void;
 };
 
-export function ProductGroup({ products, onEdit, onDelete }: Props) {
+export function ProductGroup({ products, onEdit, onDelete, onHistory }: Props) {
   const groups: Record<string, Product[]> = products.reduce((acc, p) => {
     const prov = p.supplier?.name || "Sin proveedor";
     if (!acc[prov]) acc[prov] = [];
@@ -26,6 +27,7 @@ export function ProductGroup({ products, onEdit, onDelete }: Props) {
           productos={items}
           onEdit={onEdit}
           onDelete={onDelete}
+          onHistory={onHistory}
         />
       ))}
     </>

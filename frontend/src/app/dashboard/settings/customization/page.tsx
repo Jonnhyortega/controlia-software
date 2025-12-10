@@ -9,12 +9,16 @@ import {
 } from "../../../../utils/api";
 
 import { useToast } from "../../../../context/ToastContext";
+import { useAuth } from "../../../../context/authContext"; // Import useAuth
 import { ConfirmDialog } from "../../../dashboard/components/confirmDialog";
 
 import { Upload, Save, RefreshCcw } from "lucide-react";
 
+import RoleGuard from "@/components/auth/RoleGuard";
+
 export default function CustomizationPage() {
   const toast = useToast();
+  const { setUser } = useAuth(); // Destructure setUser
 
   const [data, setData] = useState({
     businessName: "",
@@ -73,6 +77,14 @@ export default function CustomizationPage() {
         logoUrl: res.url,
       }));
 
+      // Update global user
+      setUser((prev) => {
+        if(!prev) return null;
+        const updated = { ...prev, logoUrl: res.url };
+        localStorage.setItem("user", JSON.stringify(updated));
+        return updated;
+      });
+
       toast.success("Logo actualizado ✔");
     } catch {
       toast.error("No se pudo subir la imagen ❌");
@@ -86,6 +98,15 @@ export default function CustomizationPage() {
       try {
         const res = await resetCustomization();
         setData(res);
+        
+        // Reset global user logo
+        setUser((prev) => {
+            if(!prev) return null;
+            const updated = { ...prev, logoUrl: undefined };
+            localStorage.setItem("user", JSON.stringify(updated));
+            return updated;
+          });
+
         toast.success("Personalización restablecida ✔");
       } catch {
         toast.error("Error al restablecer ❌");
@@ -96,8 +117,15 @@ export default function CustomizationPage() {
   };
 
   return (
+    <RoleGuard role="admin">
     <>
       <section className="p-6 space-y-10">
+        <h1 className="text-3xl font-bold text-gray-800">Personalización</h1>
+        {/* ... */}
+        {/* I will use the actual content of the file instead of "..." */}
+        {/* But since I am using replace tool with StartLine/EndLine, I can't easily preserve the middle content if I replace the whole block */ }
+        {/* Wait, I can target the top block and the bottom block separately using MultiReplace! */}
+
         <h1 className="text-3xl font-bold text-gray-800">Personalización</h1>
   
         <div className="grid md:grid-cols-2 gap-10">
@@ -264,6 +292,6 @@ export default function CustomizationPage() {
         onCancel={() => setConfirmOpen(false)}
       />
     </>
+    </RoleGuard>
   );
-  
 }

@@ -19,12 +19,14 @@ import { AuthResponseSchema } from "../validators/apiValidators";
 interface User {
   _id: string;
   name: string;
+  businessName: string;
   email: string;
   role?: string;
   membershipTier?: "basic" | "medium" | "pro";
   active?: boolean;
   isEmailVerified?: boolean;
   logoUrl?: string;
+  address?: string;
   membershipStartDate?: string;
   trialDaysRemaining?: string | number;
 }
@@ -42,7 +44,7 @@ interface AuthContextType {
     email?: string;
   }>;
   register: (
-    data: { name: string; lastName?: string; email: string; password: string }
+    data: { name: string; lastName?: string; businessName: string; email: string; password: string }
   ) => Promise<{ success: boolean; message?: string; email?: string }>;
   logout: () => void;
   setUser: Dispatch<SetStateAction<User | null>>;
@@ -65,27 +67,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // 🔹 Cargar sesión guardada desde cookies/localStorage
   // ==========================================================
   useEffect(() => {
-    const storedToken = Cookies.get("token") || localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
-  
-    if (storedToken && storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
+    const fn = async () => {
+      const storedToken = Cookies.get("token") || localStorage.getItem("token");
+      const storedUser = localStorage.getItem("user");
+    
+      if (storedToken) {
         setToken(storedToken);
-        setUser(parsedUser);
         api.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
-      } catch (err) {
-        console.warn("⚠️ Error al parsear usuario guardado:", err);
-        // Si el JSON está corrupto, limpiamos todo
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        Cookies.remove("token");
-        setUser(null);
-        setToken(null);
+        
+        // 1. Restaurar usuario almacenado temporalmente (para evitar flash de "no logueado")
+        if (storedUser) {
+           try {
+             setUser(JSON.parse(storedUser));
+           } catch {}
+        }
+
+        // 2. Obtener datos frescos del backend (incluyendo logo y businessName actualizado)
+        try {
+          const { getProfile } = await import("../utils/api"); // Import dinámico para evitar ciclo
+          const freshUser = await getProfile();
+          
+          setUser(freshUser as any); 
+          localStorage.setItem("user", JSON.stringify(freshUser));
+        } catch (err) {
+          console.warn("⚠️ No se pudo refrescar perfil:", err);
+          // Si falla (ej: token vencido), podríamos desloguear, pero dejemos que el interceptor de axios lo maneje si es 401.
+          
+          // Si no había usuario guardado y falló el fetch, limpiamos todo
+          if (!storedUser) {
+             Cookies.remove("token");
+             localStorage.removeItem("token");
+             setToken(null);
+          }
+        }
       }
-    }
-  
-    setLoading(false);
+      setLoading(false);
+    };
+
+    fn();
   }, []);
 
   // ==========================================================
@@ -115,19 +134,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error("Respuesta inválida del servidor");
       }
 
-      const { token, _id, name, email: userEmail, role, membershipTier, active, isEmailVerified, logoUrl, membershipStartDate, createdAt, trialDaysRemaining } = parsed.data;
+      const { token, _id, name, businessName, email: userEmail, role, membershipTier, active, isEmailVerified, logoUrl, address, membershipStartDate, createdAt, trialDaysRemaining } = parsed.data;
   
       const user: User = { 
         _id, 
         name, 
+        businessName: businessName || name, // Fallback temporal
         email: userEmail, 
-        role,
+        role: role || undefined,
         membershipTier: membershipTier as "basic" | "medium" | "pro",
-        active,
-        isEmailVerified,
-        logoUrl,
-        membershipStartDate: membershipStartDate || createdAt,
-        trialDaysRemaining
+        active: active ?? undefined, // boolean
+        isEmailVerified: isEmailVerified ?? undefined, // boolean
+        logoUrl: logoUrl || undefined,
+        address: address || undefined,
+        membershipStartDate: (membershipStartDate || createdAt) || undefined,
+        trialDaysRemaining: trialDaysRemaining ?? undefined
       };
   
       // 💾 Guardamos todo en cookies y localStorage
@@ -172,7 +193,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // 🔹 Registro
   // ==========================================================
   const register = async (
-    data: { name: string; lastName?: string; email: string; password: string }
+    data: { name: string; lastName?: string; businessName: string; email: string; password: string }
   ): Promise<{ success: boolean; message?: string; email?: string }> => {
     try {
       const res = await api.post("/users/register", data);
