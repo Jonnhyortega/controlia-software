@@ -44,6 +44,8 @@ export function useProducts() {
     supplier: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // cargar productos y proveedores
     useEffect(() => {
       if (!user) return;
@@ -102,16 +104,63 @@ export function useProducts() {
     });
 
   const handleSubmit = async () => {
+    if (isSubmitting) return; // 🔒 Evitar doble click
+    setIsSubmitting(true);
+
     try {
+      const payload: any = { ...form };
+
+      // 🔢 Convertir a números para asegurar el tipo
+      payload.price =  Number(payload.price);
+      payload.cost = Number(payload.cost);
+      payload.stock = Number(payload.stock);
+
+      // 🧹 Sanitizar Barcode
+      // Create schema (Zod) no acepta null, solo undefined/string. Update acepta null.
+      if (!payload.barcode || payload.barcode.trim() === "") {
+         if (editingId) {
+            payload.barcode = null; 
+         } else {
+            delete payload.barcode; 
+         }
+      }
+      
+      // 🧹 Clean category (Backend defaults to "Otros" if missing)
+      if (!payload.category || payload.category === "") {
+         delete payload.category;
+      }
+
+      // 🧹 Clean supplier
+      if (!payload.supplier) {
+          delete payload.supplier;
+      }
+
       if (editingId) {
-        const updated = await updateProduct(editingId, form);
+        const updated = await updateProduct(editingId, payload);
+        
+        // 🔧 POPULATE MANUAL
+        if (updated.supplier && typeof updated.supplier === 'string') {
+           const foundSup = suppliers.find((s) => s._id === updated.supplier);
+           if (foundSup) updated.supplier = foundSup;
+        } else if (payload.supplier && !updated.supplier) {
+            const foundSup = suppliers.find((s) => s._id === payload.supplier);
+            if (foundSup) updated.supplier = foundSup;
+        }
+
         setProducts((prev) =>
           prev.map((p) => (p._id === editingId ? updated : p))
         );
         toast.success("Producto actualizado");
       } else {
-        const created = await createProduct(form);
-        setProducts((prev) => [...prev, created]);
+        const created = await createProduct(payload);
+
+        // 🔧 POPULATE MANUAL
+        if (created.supplier && typeof created.supplier === 'string') {
+            const foundSup = suppliers.find((s) => s._id === created.supplier);
+            if (foundSup) created.supplier = foundSup;
+        }
+
+        setProducts((prev) => [created, ...prev]);
         toast.success("Producto agregado");
       }
       resetForm();
@@ -127,6 +176,8 @@ export function useProducts() {
       } else {
         toast.error(msg || "Error al guardar el producto");
       }
+    } finally {
+      setIsSubmitting(false); // 🔓 Liberar
     }
   };
 
@@ -199,6 +250,7 @@ export function useProducts() {
     setForm,
     showForm,
     setShowForm,
+    isSubmitting, // 👈 Nuevo
     handleSubmit,
     handleEdit,
 

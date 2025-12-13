@@ -1,358 +1,273 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  getDailyCashByDate,
-  getClosedCashDays,
-} from "../../../utils/api";
-
-import {
-  ChevronDown,
-  ChevronUp,
-  ShoppingCart,
-  DollarSign,
-  TrendingUp,
-  Lock,
-  Printer 
-} from "lucide-react";
-
-import { formatLocalDate, formatLocalTime } from "../../../utils/dateUtils";
-import InfoCard from "../components/infoCard";
-import Loading from "../../../components/loading";
-import { AnimatePresence, motion } from "framer-motion";
-import CloseCashForm from "../components/CloseCashForm";
-import { useToast } from "../../../context/ToastContext";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, ChevronUp, Printer, Calendar, Search } from "lucide-react";
+import { getClosedCashDays } from "../../../utils/api";
+import { useCustomization } from "../../../context/CustomizationContext";
 import ReceiptModal from "../components/SalesTable/ReceiptModal";
+import { useAuth } from "../../../context/authContext";
+
+// Helper Component for Metrics
+function InfoCard({ title, value, color = "text-gray-900 dark:text-gray-100" }: { title: string; value: string; color?: string }) {
+  return (
+    <div className="flex flex-col bg-gray-50 dark:bg-white/5 px-3 py-2 rounded-lg border border-gray-100 dark:border-white/10">
+      <span className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">{title}</span>
+      <span className={`font-bold text-sm md:text-base ${color}`}>{value}</span>
+    </div>
+  );
+}
+
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export default function HistorySales() {
-  const toast = useToast();
-
-  const [showCloseCashForm, setShowCloseCashForm] = useState(false);
-  const [selectedCash, setSelectedCash] = useState<any>(null);
-  const [dates, setDates] = useState<any[]>([]);
-  const [openDate, setOpenDate] = useState<string | null>(null);
-  const [salesData, setSalesData] = useState<Record<string, any>>({});
+  const { user } = useAuth();
+  const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // State for ticket modal
+  // Accordion states
+  const [expandedId, setExpandedId] = useState<string | null>(null); // For Daily Items
+  const [expandedMonth, setExpandedMonth] = useState<string | null>(null); // For Month Groups
+
   const [selectedReceiptSale, setSelectedReceiptSale] = useState<any>(null);
+  const { formatCurrency } = useCustomization();
+
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const fetchDays = async () => {
+    (async () => {
+      if (!user?._id) return;
       try {
-        const days = await getClosedCashDays();
-
-        const sorted = [...days].sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        const data = await getClosedCashDays(user._id);
+        const sorted = data.sort((a: any, b: any) => 
+            new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime()
         );
+        setHistory(sorted);
 
-        // Remove duplicates by UTC date (YYYY-MM-DD)
-        const unique = sorted.filter(
-          (d, index, self) =>
-            index ===
-            self.findIndex((t) => {
-              const d1 = new Date(t.date);
-              const d2 = new Date(d.date);
-              
-              // Comparar solo la fecha UTC para evitar desfasajes de zona horaria
-              const k1 = `${d1.getUTCFullYear()}-${d1.getUTCMonth()}-${d1.getUTCDate()}`;
-              const k2 = `${d2.getUTCFullYear()}-${d2.getUTCMonth()}-${d2.getUTCDate()}`;
-              return k1 === k2;
-            })
-        );
-
-        setDates(unique);
-      } catch (err) {
-        console.error("Error al obtener días:", err);
-        toast.error("Error al obtener días ❌");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDays();
-  }, []);
-
-  const truncate = (str: string, max = 35) => {
-  return str.length > max ? str.slice(0, max) + "…" : str;
-  };
-
-  const formatProductsTooltip = (products: any[]) => {
-  return products
-    .map((p) => `${p.product?.name || p.name} x${p.quantity}`)
-    .join("\n");
-  };
-
-  const toggleDate = async (date: string) => {
-    if (openDate === date) return setOpenDate(null);
-
-    if (!salesData[date]) {
-      try {
-        const data = await getDailyCashByDate(date);
-        setSalesData((prev) => ({ ...prev, [date]: data }));
-      } catch (err: any) {
-        // Si es 404 o "No se encontró", simplemente no hay datos para ese día
-        if (err.message?.includes("No se encontró") || err.response?.status === 404) {
-             setSalesData((prev) => ({ ...prev, [date]: null }));
-        } else {
-             console.error("Error al obtener ventas:", err);
-             toast.error("Error al cargar ventas ❌");
+        // Auto-expand the newest month if available
+        if (sorted.length > 0) {
+             const date = new Date(sorted[0].date || sorted[0].createdAt || new Date().toISOString());
+             const key = capitalize(date.toLocaleDateString("es-AR", { month: 'long', year: 'numeric' }));
+             setExpandedMonth(key);
         }
-      }
-    }
 
-    setOpenDate(date);
+      } catch (error) {
+        console.error("Error loading history:", error);
+      } finally {
+         setLoading(false);
+      }
+    })();
+  }, [user]);
+
+  const formatLocalTime = (dateStr: string) => {
+    if (!dateStr) return "-";
+    return new Date(dateStr).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" });
   };
 
-  if (loading) return <Loading />;
+  const calculateTotalOut = (d: any) => {
+    // Sum extra expenses + supplier payments if any
+    const expenses = d.extraExpenses?.reduce((acc: number, curr: any) => acc + curr.amount, 0) || 0;
+    return expenses; 
+  };
+
+  if (loading) return <div className="py-8 text-center text-gray-500">Cargando historial...</div>;
+  if (!history.length) return <div className="py-8 text-center text-gray-500">No hay registros de cajas cerradas anteriores.</div>;
+
+  // Filter logic
+  const filteredHistory = history.filter(d => {
+     const date = new Date(d.date || d.createdAt).toLocaleDateString("es-AR");
+     return date.includes(searchTerm);
+  });
+
+  // Group by Month (using capitalized keys like "Diciembre 2025")
+  const groupedHistory = filteredHistory.reduce((acc, d) => {
+      const date = new Date(d.date || d.createdAt);
+      const key = capitalize(date.toLocaleDateString("es-AR", { month: 'long', year: 'numeric' }));
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(d);
+      return acc;
+  }, {} as Record<string, any[]>);
+
+  const monthKeys = Object.keys(groupedHistory);
 
   return (
-    <section className="w-full flex justify-center px-3 sm:px-6 py-4">
-      <div className="w-full max-w-3xl space-y-6">
-        <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-md border border-gray-100">
-          <h2 className="font-display text-lg sm:text-xl font-semibold text-primary mb-6">
-            Historial de cajas diarias
-          </h2>
-
-          {dates.length === 0 ? (
-            <p className="text-gray-500 text-center py-6">
-              No hay registros 📭
-            </p>
-          ) : (
-            dates.map((d, index) => {
-              // Convertir fecha UTC a YYYY-MM-DD sin ajuste de zona horaria
-              const dateObj = new Date(d.date);
-              const year = dateObj.getUTCFullYear();
-              const month = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
-              const day = String(dateObj.getUTCDate()).padStart(2, '0');
-              const date = `${year}-${month}-${day}`;
-              
-              const daily = salesData[date];
-              const isOpen = openDate === date;
-
-              return (
-                <div
-                  key={d._id || index}
-                   className="mb-4 border border-gray-200 rounded-2xl overflow-hidden shadow-sm"
-                >
-                  {/* HEADER */}
-                  <button
-                    onClick={() => toggleDate(date)}
-                    className={`w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-3 transition-all text-left
-                      ${
-                        d.status === "cerrada"
-                          ? "bg-green-50 hover:bg-green-100"
-                          : "bg-amber-50 hover:bg-amber-100"
-                      }
-                    `}
-                  >
-                    {/* FECHA */}
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-gray-800">
-                        {dateObj.toLocaleDateString("es-AR", {
-                            timeZone: "UTC",
-                            day: "numeric",
-                            month: "long"
-                        })}
-                      </span>
-                      <p
-                        className={`text-xs ${
-                          d.status === "cerrada"
-                            ? "text-green-600"
-                            : "text-amber-600"
-                        }`}
-                      >
-                        {d.status === "cerrada" ? "Cerrada" : "Abierta"}
-                      </p>
-                    </div>
-
-                    {/* MÉTRICAS (WRAP EN MOBILE) */}
-                    <div className="flex flex-wrap items-center gap-3 text-sm sm:text-xs md:text-sm">
-
-                      <span className="hidden md:flex items-center gap-1 text-primary-300 whitespace-nowrap">
-                        <DollarSign size={16} strokeWidth={3} />
-                        {d.totalSalesAmount.toLocaleString("es-AR")}
-                      </span>
-
-                      <span className="hidden md:flex items-center gap-1 text-red-500 whitespace-nowrap">
-                        -<DollarSign size={16} strokeWidth={3} />
-                        {d.totalOut.toLocaleString("es-AR")}
-                      </span>
-
-                      <span className="hidden md:flex items-center  gap-1 text-green-600 whitespace-nowrap">
-                        <TrendingUp size={16} strokeWidth={3} />
-                        {d.finalExpected.toLocaleString("es-AR", {
-                          style: "currency",
-                          currency: "ARS",
-                        })}
-                      </span>
-
-                      {d.status === "abierta" && (
-                        <div
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedCash(d);
-                            setShowCloseCashForm(true);
-                          }}
-                          className="
-                            flex items-center gap-1 px-3 py-1.5 text-xs sm:text-sm 
-                            text-amber-700 bg-amber-100 border border-amber-300 
-                            rounded-lg hover:bg-amber-200 cursor-pointer whitespace-nowrap
-                          "
-                        >
-                          <Lock size={14} /> Cerrar caja
-                        </div>
-                      )}
-
-                      {isOpen ? (
-                        <ChevronUp className="text-gray-500" />
-                      ) : (
-                        <ChevronDown className="text-gray-500" />
-                      )}
-                    </div>
-                  </button>
-
-                  {/* CUERPO EXPANDIBLE */}
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.35 }}
-                        className="overflow-hidden bg-white border-t"
-                      >
-                        <div className="p-4 sm:p-5 space-y-6">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <InfoCard
-                              title="Ventas"
-                              value={d.totalSalesAmount.toLocaleString("es-AR", {
-                          style: "currency",
-                          currency: "ARS",
-                        })}
-                            />
-                            <InfoCard
-                              title="Gastos y pagos"
-                              value={d.totalOut.toLocaleString("es-AR", {
-                          style: "currency",
-                          currency: "ARS",
-                        })}
-                            />
-                            <InfoCard
-                              title="Esperado"
-                              value={d.finalExpected.toLocaleString("es-AR", {
-                          style: "currency",
-                          currency: "ARS",
-                        })}
-                            />
-                            <InfoCard
-                              title="Diferencia"
-                              value={d.difference.toLocaleString("es-AR", {
-                          style: "currency",
-                          currency: "ARS",
-                        })}
-                              color={d.difference === 0 ? "text-green-600" : "text-red-600"}
-                            />
-                          </div>
-
-                          {daily && (
-                            <div>
-                              <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                                <ShoppingCart size={18} /> Ventas
-                              </h3>
-
-                              <div className="overflow-x-auto rounded-xl border bg-white">
-                                <table className="w-full text-sm">
-                                  <thead className="bg-gray-100 border-b text-gray-700">
-                                    <tr>
-                                      <th className="p-2">Hora</th>
-                                      <th className="hidden md:table-cell p-2">Productos</th>
-                                      <th className="hidden md:table-cell p-2">Método</th>
-                                      <th className="p-2 text-right">Total</th>
-                                      <th className="p-2 text-center w-10">Ver</th>
-                                    </tr>
-                                  </thead>
-
-                                  <tbody>
-                                    {daily.sales.map((sale: any) => (
-                                      <tr key={sale._id} className="border-t hover:bg-gray-50">
-                                        <td className="p-4">{formatLocalTime(sale.createdAt)}</td>
-                                        <td
-                                          className="hidden md:table-cell p-4 max-w-[250px] truncate cursor-help"
-                                          title={formatProductsTooltip(sale.products)}
-                                          style={{ whiteSpace: "pre-line" }} 
-                                        >
-                                          {truncate(
-                                            sale.products
-                                              .map((p: any) => `${p.product?.name || p.name} x${p.quantity}`)
-                                              .join(", "),
-                                            35
-                                          )}
-                                        </td>
-                                        <td className="hidden md:table-cell p-4 capitalize">{sale.paymentMethod}</td>
-                                        <td className="p-4 text-right font-medium">
-                                          {sale.total.toLocaleString("es-AR", {
-                                            style: "currency",
-                                            currency: "ARS",
-                                          })}
-                                        </td>
-                                        <td className="p-2 text-center">
-                                            <button 
-                                                onClick={() => setSelectedReceiptSale(sale)}
-                                                className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
-                                                title="Ver Ticket"
-                                            >
-                                                <Printer size={16} />
-                                            </button>
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            })
-          )}
+    <div className="space-y-4">
+        {/* Search */}
+        <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 p-2 rounded-xl w-full max-w-sm mb-6">
+             <Search className="text-gray-400" size={18} />
+             <input 
+                type="text" 
+                placeholder="Buscar por fecha (DD/MM/AAAA)..." 
+                className="w-full bg-transparent focus:outline-none text-sm dark:text-white"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+             />
         </div>
+        
+        {monthKeys.length === 0 && <p className="text-gray-500 text-center py-4">No se encontraron resultados para la búsqueda.</p>}
 
-        {/* MODAL CIERRE */}
-        <AnimatePresence>
-          {showCloseCashForm && (
-            <motion.div
-              onClick={() => setShowCloseCashForm(false)}
-              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center px-4"
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-white rounded-2xl shadow-xl w-full max-w-lg"
-              >
-                <CloseCashForm
-                  cashId={selectedCash._id}
-                  onBack={() => setShowCloseCashForm(false)}
-                  onClosed={() => setShowCloseCashForm(false)}
-                />
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {monthKeys.map((month) => (
+             <div key={month} className="border border-gray-200 dark:border-gray-700/50 rounded-2xl overflow-hidden bg-white/50 dark:bg-zinc-900/30 mb-6 shadow-sm">
+                 
+                 {/* 🗓 Month Header Accordion Filter */}
+                 <div 
+                   onClick={() => setExpandedMonth(expandedMonth === month ? null : month)}
+                   className={`p-4 flex items-center justify-between cursor-pointer transition-colors ${expandedMonth === month ? 'bg-white dark:bg-zinc-800 shadow-sm' : 'hover:bg-white dark:hover:bg-zinc-800/50'}`}
+                 >
+                    <div className="flex items-center gap-4">
+                       <div className="p-2.5 bg-primary/10 text-primary rounded-xl">
+                          <Calendar size={20} />
+                       </div>
+                       <div>
+                           <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
+                                {month}
+                                <span className="text-xs font-medium text-gray-500 bg-gray-100 dark:bg-zinc-700 px-2 py-0.5 rounded-full">
+                                    {groupedHistory[month].length} cierres
+                                </span>
+                           </h3>
+                           <p className="text-xs text-gray-400 font-medium uppercase tracking-wider mt-0.5">Historial Mensual</p>
+                       </div>
+                    </div>
+                    <div className="text-gray-400">
+                        {expandedMonth === month ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                    </div>
+                 </div>
 
-        {/* MODAL TICKET */}
+                 {/* Month Content - List of Days */}
+                 <AnimatePresence>
+                   {expandedMonth === month && (
+                     <motion.div
+                       initial={{ height: 0, opacity: 0 }}
+                       animate={{ height: "auto", opacity: 1 }}
+                       exit={{ height: 0, opacity: 0 }}
+                       className="overflow-hidden"
+                     >
+                        <div className="p-4 bg-gray-50/50 dark:bg-zinc-900/50 space-y-4 border-t border-gray-100 dark:border-gray-800">
+                           {groupedHistory[month].map((d: any) => {
+                                // Original Item Render Logic
+                                const isExpanded = expandedId === d._id;
+                                const dateLabel = new Date(d.date || d.createdAt).toLocaleDateString("es-AR", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                                
+                                const totalSales = d.totalSalesAmount || 0;
+                                const totalOut = calculateTotalOut(d);
+                                const expected = (d.initialAmount || 0) + totalSales - totalOut;
+                                const real = d.finalReal || 0;
+                                const difference = real - expected;
+
+                                return (
+                                    <div key={d._id} className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                                        
+                                        {/* Day Card Header */}
+                                        <div 
+                                            onClick={() => setExpandedId(isExpanded ? null : d._id)}
+                                            className="p-4 cursor-pointer flex flex-col md:flex-row gap-4 justify-between items-center hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors"
+                                        >
+                                            <div className="flex items-center gap-4 w-full md:w-auto">
+                                                <div className={`p-2 rounded-full ${isExpanded ? 'bg-primary/10 text-primary' : 'bg-gray-100 dark:bg-zinc-800 text-gray-500'}`}>
+                                                    {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-semibold text-gray-800 dark:text-gray-200 capitalize">{dateLabel}</h3>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                        {(d.totalOperations || d.sales?.length) ? 
+                                                        `${d.totalOperations || d.sales?.length} ventas registradas` 
+                                                        : <span className="text-transparent">.</span>}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-4 md:gap-8 w-full md:w-auto justify-between md:justify-end">
+                                                <div className="text-right">
+                                                    <p className="text-[10px] uppercase text-gray-500 font-semibold">Total Ventas</p>
+                                                    <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(totalSales)}</p>
+                                                </div>
+                                                <div className="text-right hidden sm:block">
+                                                    <p className="text-[10px] uppercase text-gray-500 font-semibold">Real en Caja</p>
+                                                    <p className="font-bold text-primary">{formatCurrency(real)}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Day Card Content (Expanded) */}
+                                        <AnimatePresence>
+                                            {isExpanded && (
+                                                <motion.div
+                                                    initial={{ height: 0, opacity: 0 }}
+                                                    animate={{ height: "auto", opacity: 1 }}
+                                                    exit={{ height: 0, opacity: 0 }}
+                                                    className="overflow-hidden"
+                                                >
+                                                    <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-zinc-900/50">
+                                                        
+                                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                                                            <InfoCard title="Ventas Totales" value={formatCurrency(totalSales)} color="text-primary-600 dark:text-primary-400" />
+                                                            <InfoCard title="Gastos / Salidas" value={formatCurrency(totalOut)} color="text-red-500" />
+                                                            <InfoCard title="Esperado en Caja" value={formatCurrency(expected)} />
+                                                            <InfoCard 
+                                                                title="Diferencia" 
+                                                                value={formatCurrency(difference)} 
+                                                                color={difference === 0 ? "text-green-500" : (difference > 0 ? "text-green-500" : "text-red-500")} 
+                                                            />
+                                                        </div>
+
+                                                        {d.sales?.length > 0 ? (
+                                                            <div className="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden bg-white dark:bg-zinc-900">
+                                                                <table className="w-full text-sm">
+                                                                    <thead className="bg-gray-50 dark:bg-zinc-800/50 text-gray-600 dark:text-gray-400 font-medium">
+                                                                        <tr>
+                                                                            <th className="py-3 px-4 text-left">Hora</th>
+                                                                            <th className="py-3 px-4 text-left">Productos</th>
+                                                                            <th className="py-3 px-4 text-left hidden sm:table-cell">Método</th>
+                                                                            <th className="py-3 px-4 text-right">Total</th>
+                                                                            <th className="py-3 px-4 text-center">Acciones</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody className="divide-y divide-gray-100 dark:divide-gray-800 text-gray-700 dark:text-gray-300">
+                                                                        {d.sales.map((sale: any) => (
+                                                                            <tr key={sale._id} className="hover:bg-gray-50 dark:hover:bg-zinc-800/30 transition">
+                                                                                <td className="py-3 px-4 whitespace-nowrap">{formatLocalTime(sale.createdAt)}</td>
+                                                                                <td className="py-3 px-4 max-w-[150px] truncate" title={sale.products?.map((p:any) => p.product?.name || p.name).join(", ")}>
+                                                                                    {sale.products?.length} items
+                                                                                </td>
+                                                                                <td className="py-3 px-4 hidden sm:table-cell capitalize">{sale.paymentMethod || "Efectivo"}</td>
+                                                                                <td className="py-3 px-4 text-right font-medium">{formatCurrency(sale.total)}</td>
+                                                                                <td className="py-3 px-4 text-center">
+                                                                                    <button 
+                                                                                        onClick={(e) => { e.stopPropagation(); setSelectedReceiptSale(sale); }}
+                                                                                        className="p-1.5 text-indigo-600 hover:text-white hover:bg-indigo-500 rounded-md transition"
+                                                                                        title="Ver Ticket"
+                                                                                    >
+                                                                                        <Printer size={16} />
+                                                                                    </button>
+                                                                                </td>
+                                                                            </tr>
+                                                                        ))}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        ) : (
+                                                            <p className="text-center text-gray-500 py-4">No hay detalles de ventas disponibles para esta fecha.</p>
+                                                        )}
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                );
+                           })}
+                        </div>
+                     </motion.div>
+                   )}
+                 </AnimatePresence>
+             </div>
+        ))}
+        
         {selectedReceiptSale && (
-           <ReceiptModal 
-              sale={selectedReceiptSale}
-              onClose={() => setSelectedReceiptSale(null)}
-           />
+            <ReceiptModal 
+                sale={selectedReceiptSale}
+                onClose={() => setSelectedReceiptSale(null)}
+            />
         )}
-      </div>
-    </section>
+    </div>
   );
 }

@@ -53,17 +53,14 @@ export default function ProductsPage() {
 
       {/* MODAL → FORMULARIO DE PRODUCTO */}
       {p.showForm && (
-        <Overlay>
-          <div
-            className="relative bg-white rounded-2xl p-6 w-full max-w-lg mx-auto max-h-[90vh]"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <Overlay fullScreen={true}>
+          <div className="relative w-full max-w-4xl mx-auto my-10">
             {/*Boton para cerrar overlay  */}          
             <button
               onClick={() => p.setShowForm(false)}
-              className="absolute top-0 right-0 text-gray-100 hover:text-gray-600 transition"
+              className="absolute -top-4 -right-4 md:-right-10 text-gray-500 hover:text-red-500 transition p-2 bg-gray-100 rounded-full hover:bg-gray-200"
             >
-              <Undo2 size={30} className=" bg-blue-600 p-1 rounded-2xl hover:bg-black"/>
+              <Undo2 size={24} />
             </button>
 
             <ProductForm
@@ -74,9 +71,8 @@ export default function ProductsPage() {
               setShowCategories={setShowCategories}
               onSubmit={p.handleSubmit}
               setScannerOpen={p.setScannerOpen}
+              isSubmitting={p.isSubmitting}
             />
-
-
           </div>
         </Overlay>
       )}

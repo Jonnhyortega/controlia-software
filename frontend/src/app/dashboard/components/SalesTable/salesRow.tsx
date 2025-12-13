@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import React from "react";
 import { ConfirmDialog } from "../confirmDialog";
-import { Ban } from "lucide-react";
+import { Ban, Printer, Trash2 } from "lucide-react";
+import { useCustomization } from "@/context/CustomizationContext";
 
 interface SalesRowProps {
   sale: any;
@@ -23,6 +24,7 @@ export default function SalesRow({
   onShowReceipt,
 }: SalesRowProps) {
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const { formatCurrency } = useCustomization();
 
   return (
     <>
@@ -30,13 +32,13 @@ export default function SalesRow({
       <tr
         key={sale._id}
         onClick={() => onExpand(sale._id)}
-        className="hover:bg-primary-50 transition-colors cursor-pointer"
+        className="hover:bg-primary-50 dark:hover:bg-primary/5 transition-colors cursor-pointer"
       >
-        <td className="hidden md:table-cell py-3 px-4 font-semibold text-gray-700">
+        <td className="hidden md:table-cell py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">
           #{index + 1}
         </td>
 
-        <td className="py-3 px-4 text-gray-600 whitespace-nowrap">
+        <td className="py-3 px-4 text-gray-600 dark:text-gray-400 whitespace-nowrap">
           {new Date(sale.createdAt).toLocaleString("es-AR", {
             day: "2-digit",
             month: "2-digit",
@@ -46,11 +48,11 @@ export default function SalesRow({
           })}
         </td>
 
-        <td className="hidden md:table-cell py-3 px-4 capitalize text-primary-700 font-medium">
+        <td className="hidden md:table-cell py-3 px-4 capitalize text-primary font-medium">
           {sale.paymentMethod || "—"}
         </td>
 
-        <td className="hidden md:table-cell py-3 px-4 text-gray-700">
+        <td className="hidden md:table-cell py-3 px-4 text-gray-700 dark:text-gray-300">
           <div className="truncate max-w-xs">
             {sale.products
               ?.map(
@@ -60,11 +62,8 @@ export default function SalesRow({
           </div>
         </td>
 
-        <td className="py-3 px-4 text-right font-semibold text-gray-900">
-          {sale.total.toLocaleString("es-AR", {
-            style: "currency",
-            currency: "ARS",
-          })}
+        <td className="py-3 px-4 text-right font-semibold text-gray-900 dark:text-white">
+          {formatCurrency(sale.total)}
         </td>
 
         <td className="py-3 px-4 text-center">
@@ -76,16 +75,16 @@ export default function SalesRow({
                   onShowReceipt(sale);
                 }}
                 className="
-                  text-indigo-600 hover:text-white 
-                  bg-indigo-100 hover:bg-indigo-500 
+                  text-primary hover:text-white 
+                  bg-primary/10 hover:bg-primary 
                   p-2 rounded-md transition
                   font-semibold
-                  flex items-center justify-center
+                  flex items-center justify-center gap-1
                 "
                 title="Ver Ticket"
               >
-                <code className="text-xs mr-1 hidden md:inline">Ticket</code>
-                {/* Icon if needed */}
+                <Printer size={14} />
+                <span className="hidden md:inline text-xs">Ticket</span>
               </button>
             )}
 
@@ -96,15 +95,15 @@ export default function SalesRow({
               }}
               className="
                 text-red-600 hover:text-white 
-                bg-red-300 hover:bg-red-500 
+                bg-red-100 dark:bg-red-500/10 hover:bg-red-500 
                 p-2 rounded-md transition
                 font-semibold
-                flex items-center justify-center
+                flex items-center justify-center gap-1
               "
               title="Anular venta"
             >
-              <span className="hidden md:inline">Anular</span>
-              <Ban className="w-4 h-4 md:hidden" />
+              <Trash2 size={14} />
+              <span className="hidden md:inline text-xs">Anular</span>
             </button>
           </div>
 
@@ -125,7 +124,7 @@ export default function SalesRow({
 
       {/* FILA EXPANDIDA */}
       {expanded === sale._id && (
-        <tr className="bg-gray-50 border-y">
+        <tr className="bg-gray-50 dark:bg-zinc-900/50 border-y dark:border-gray-800">
           <td colSpan={6} className="py-3 px-4">
 
             <motion.div
@@ -133,30 +132,27 @@ export default function SalesRow({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.25 }}
-              className="rounded-xl border border-gray-200 bg-white shadow-sm p-4"
+              className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-zinc-800 shadow-sm p-4"
             >
-              <h4 className="font-semibold text-gray-800 mb-3">
+              <h4 className="font-semibold text-gray-800 dark:text-white mb-3">
                 Detalles de la operación
               </h4>
 
-              <ul className="space-y-1 text-sm text-gray-700">
+              <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
                 {sale.products?.map((p: any, j: number) => (
                   <li
                     key={j}
-                    className="flex justify-between border-b border-gray-100 py-1 px-2 rounded-md hover:bg-gray-50"
+                    className="flex justify-between border-b border-gray-100 dark:border-gray-700 py-1 px-2 rounded-md hover:bg-gray-50 dark:hover:bg-zinc-700"
                   >
                     <small>#{j + 1}</small>
 
-                    <span className="font-medium text-gray-900">
+                    <span className="font-medium text-gray-900 dark:text-white">
                       {p.product?.name || p.name}
                     </span>
 
-                    <span className="text-gray-600">
+                    <span className="text-gray-600 dark:text-gray-400">
                       {p.quantity} ×{" "}
-                      {p.price.toLocaleString("es-AR", {
-                        style: "currency",
-                        currency: "ARS",
-                      })}
+                      {formatCurrency(p.price)}
                     </span>
                   </li>
                 ))}

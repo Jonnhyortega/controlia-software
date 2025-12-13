@@ -92,9 +92,14 @@ export default function EmployeesPage() {
     setShowModal(true);
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // Save employee
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
     try {
       if (editingId) {
         const updated = await updateEmployee(editingId, form);
@@ -110,6 +115,8 @@ export default function EmployeesPage() {
       setShowModal(false);
     } catch {
       toast.error("Error al guardar ❌");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -332,9 +339,10 @@ export default function EmployeesPage() {
 
               <button
                 type="submit"
-                className="bg-primary hover:bg-primary-700 px-4 py-2 rounded-lg text-white"
+                disabled={isSubmitting}
+                className="bg-primary hover:bg-primary-700 px-4 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Guardar
+                {isSubmitting ? "Guardando..." : "Guardar"}
               </button>
             </div>
           </form>

@@ -163,27 +163,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
       return { success: true, user };
     } catch (err: any) {
-      const isUnverifiedError = err?.response?.status === 403 && err?.response?.data?.emailNotVerified;
+      const status = err?.response?.status;
+      const data = err?.response?.data;
 
-      // Solo loguear error si NO es un error de verificación de email (que es esperado)
-      if (!isUnverifiedError) {
-        console.error("❌ Error de login:", err.response?.data || err);
+      // 🔹 401: Credenciales inválidas (Manejo Graceful)
+      if (status === 401) {
+        return {
+          success: false,
+          message: data?.message || "Usuario o contraseña incorrectos.",
+        };
       }
-      
-      // ✉️ Detectar si el email no está verificado
-      if (err?.response?.status === 403 && err?.response?.data?.emailNotVerified) {
+
+      // 🔹 403: Email no verificado
+      if (status === 403 && data?.emailNotVerified) {
         return {
           success: false,
           emailNotVerified: true,
           email: email,
-          message: err?.response?.data?.message || "Email no verificado",
+          message: data?.message || "Email no verificado",
         };
       }
-      
+
+      // 🔹 Otros errores inesperados
+      console.error("❌ Error de login:", data || err);
+
       return {
         success: false,
         message:
-          err?.response?.data?.message ||
+          data?.message ||
           "Error al iniciar sesión. Intenta otra vez.",
       };
     }

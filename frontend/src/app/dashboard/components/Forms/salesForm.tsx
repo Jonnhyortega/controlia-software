@@ -24,7 +24,9 @@ import {
 import { api, getDashboardData } from "../../../../utils/api";
 import { useToast } from "../../../../context/ToastContext";
 import { useAuth } from "../../../../context/authContext";
+import { useCustomization } from "../../../../context/CustomizationContext";
 import ProductSearch from "./ProductSearch";
+import { FormattedPriceInput } from "../../../../components/FormattedPriceInput";
 
 export default function SalesForm({
   onBack,
@@ -40,6 +42,7 @@ export default function SalesForm({
 }) {
   const toast = useToast();
   const { user } = useAuth();
+  const { formatCurrency } = useCustomization();
 
   const [productsDB, setProductsDB] = useState<any[]>([]);
   const [newSale, setNewSale] = useState({
@@ -65,13 +68,6 @@ export default function SalesForm({
     const fetchProducts = async () => {
       try {
         const res = await api.get("/products");
-        
-        // 🔒 FILTER PRODUCTS BY USER ID (Removed - Backend handles this)
-        // const myProducts = (res.data || []).filter((prod: any) => {
-        //      const prodUserId = typeof prod.user === 'object' ? prod.user?._id : prod.user;
-        //      return prodUserId === user?._id;
-        // });
-
         setProductsDB(res.data || []);
       } catch (error) {
         console.error("Error al obtener productos:", error);
@@ -92,10 +88,6 @@ export default function SalesForm({
     onScannedConsumed?.();
   }, [scannedCode, productsDB]);
 
-
-
-
-  // dynamic import - ensure we return the component (not the module) so types match
   const BarcodeScanner = useMemo(
     () =>
       dynamic(() => import("../BarcodeScanner"), {
@@ -105,10 +97,6 @@ export default function SalesForm({
     []
   );
 
-
-
-
-  // Función reutilizable para agregar producto
   const addProductToSale = (product: any) => {
     const products = [...newSale.products];
 
@@ -163,9 +151,6 @@ export default function SalesForm({
       return;
     }
 
-    // ========================
-    // Producto NO encontrado
-    // ========================
     const products = [...newSale.products];
     const emptyIndex = products.findIndex((p) => !p.productId);
 
@@ -188,8 +173,6 @@ export default function SalesForm({
     setNewSale({ ...newSale, products });
     toast.info("Código no encontrado — agregado como producto manual");
   };
-
-
 
   const handleProductChange = (
     index: number,
@@ -228,7 +211,6 @@ export default function SalesForm({
     setNewSale({ ...newSale, products: updated });
   };
 
-  // Validaciones frontend antes de confirmar
   const validateSaleForm = () => {
     if (!newSale.paymentMethod || newSale.paymentMethod.trim() === "") {
       return "Seleccioná un método de pago.";
@@ -241,27 +223,19 @@ export default function SalesForm({
     const seenProducts = new Set();
 
     for (const p of newSale.products) {
-      // Producto elegido
       if (!p.productId || p.productId.trim() === "") {
         return "Hay un producto sin seleccionar.";
       }
-
-      // Nombre obligatorio si es otro
       if (p.productId === "otro" && (!p.name || p.name.trim() === "")) {
         return "Ingresá un nombre para el producto manual.";
       }
-
-      // Cantidad válida
       if (!p.quantity || Number(p.quantity) <= 0) {
         return "La cantidad debe ser mayor a 0.";
       }
-
-      // Precio válido
-      if (!p.price || Number(p.price) <= 0) {
-        return "El precio debe ser mayor a 0.";
+      if (!p.price || Number(p.price) < 0) { // Changed to allow 0 price theoretically, but kept logic mostly same.
+        return "El precio debe ser mayor o igual a 0.";
       }
 
-      // Evitar duplicados (excepto “otro”)
       if (p.productId !== "otro") {
         if (seenProducts.has(p.productId)) {
           return "Hay productos duplicados en la venta.";
@@ -269,7 +243,6 @@ export default function SalesForm({
         seenProducts.add(p.productId);
       }
 
-      // Validación de stock si no es producto manual
       if (p.productId !== "otro") {
           const dbProd = productsDB.find((item) => item._id === p.productId);
           if (!dbProd) return "Error interno: producto inexistente.";
@@ -280,14 +253,12 @@ export default function SalesForm({
       }
     }
 
-    return null; // Todo ok
+    return null;
   };
 
-  // Registrar venta
   const handleSubmit = async () => {
     if (loading) return;
 
-    // Validación antes de abrir confirmación
     const validationError = validateSaleForm();
     if (validationError) {
       toast.error(validationError);
@@ -302,7 +273,6 @@ export default function SalesForm({
         try {
           setLoading(true);
 
-          // Validación de stock del backend helper
           const stockError = validateStockBeforeSale(
             productsDB,
             newSale.products
@@ -317,13 +287,11 @@ export default function SalesForm({
           const payload = buildSalePayload(newSale);
           await submitSale(payload, async () => {
             onCreated({ ok: true });
-
-            // refrescar productos localmente
             try {
               const prodRes = await api.get("/products");
               setProductsDB(prodRes.data || []);
             } catch (err) {
-              console.warn("No se pudo refrescar products después de la venta:", err);
+              console.warn("No se pudo refrescar producs:", err);
             }
           });
 
@@ -331,11 +299,8 @@ export default function SalesForm({
           toast.success("✅ Venta registrada correctamente.");
           onBack();
         } catch (error: any) {
-          console.error("❌ Error al registrar venta:", error);
-          const msg =
-            error?.response?.data?.message ||
-            error?.message ||
-            "Error desconocido al registrar la venta.";
+          console.error("Error al registrar:", error);
+          const msg = error?.response?.data?.message || error?.message || "Error desconocido.";
           toast.error(`❌ ${msg}`);
         } finally {
           setLoading(false);
@@ -358,32 +323,21 @@ export default function SalesForm({
     return <Loading fullscreen message="Registrando venta..." />;
 
   return (
-    // Overlay completo con backdrop blur
     <motion.div
       key="add-sale"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="
-        fixed inset-0 z-[9999]
-        overflow-y-auto
-        w-full h-full
-        bg-gray-200
-      "
+      className="fixed inset-0 z-[9999] overflow-y-auto w-full h-full bg-gray-200"
     >
-      {/* Contenedor del formulario */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: -20 }}
         transition={{ duration: 0.35 }}
-        className="
-          w-full min-h-full
-          p-8 relative
-        "
+        className="w-full min-h-full p-8 relative"
       >
-        {/* Encabezado */}
         <div className="relative flex justify-between items-center mb-6 pb-3 border-b border-gray-200 ">
           <div className="flex items-center gap-3">
             <ShoppingCart className="text-primary w-7 h-7" />
@@ -395,22 +349,15 @@ export default function SalesForm({
           <div className="flex items-center gap-2 fixed right-5 top-5 z-[10000]">
             <button
               onClick={onBack}
-              className="
-              group
-              p-2 rounded-xl border border-gray-200
-              text-gray-600 hover:text-gray-800
-              hover:bg-red-600 transition
-            "
+              className="group p-2 rounded-xl border border-gray-200 text-gray-600 hover:text-gray-800 hover:bg-red-600 transition"
             >
               <Undo2 className="w-8 h-8" color="black"/>
             </button>
           </div>
         </div>
 
-        {/* Buscador de productos */}
         <ProductSearch products={productsDB} onSelect={addProductToSale} />
 
-        {/* Formulario */}
         <div className="space-y-8">
         {newSale.products.map((p, i) => {
          const isOther = p.productId === "otro";
@@ -421,13 +368,9 @@ export default function SalesForm({
               key={i}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="
-                bg-white border border-gray-200 rounded-2xl shadow-sm 
-                p-6 space-y-6 transition-all z-50
-              "
+              className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 space-y-6 transition-all z-50"
             >
 
-              {/* HEADER DEL PRODUCTO */}
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <Package className="w-5 h-5 text-gray-500" />
@@ -439,20 +382,14 @@ export default function SalesForm({
                 {i > 0 && (
                   <button
                     onClick={() => removeProductField(i)}
-                    className="
-                      text-red-600 hover:text-red-500
-                      flex items-center gap-1 font-medium
-                    "
+                    className="text-red-600 hover:text-red-500 flex items-center gap-1 font-medium"
                   >
                     <Trash2 className="w-4 h-4" /> Quitar
                   </button>
                 )}
               </div>
 
-              {/* GRID DE CAMPOS */}
               <div className="grid grid-cols-12 gap-5">
-
-                {/* SELECT PRODUCTO */}
                 <div className="col-span-12 md:col-span-6">
                   <label className="text-sm font-semibold text-gray-700 mb-1 block">
                     Producto
@@ -462,11 +399,7 @@ export default function SalesForm({
                     onChange={(e) =>
                       handleProductChange(i, "productId", e.target.value)
                     }
-                    className="
-                      w-full rounded-lg border border-gray-300 bg-white
-                      px-3 py-2 text-gray-900
-                      focus:outline-none focus:ring-2 focus:ring-primary-400
-                    "
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-400"
                   >
                     <option value="">Seleccionar producto</option>
                     {productsDB.map((prod) => (
@@ -478,7 +411,6 @@ export default function SalesForm({
                   </select>
                 </div>
 
-                {/* NOMBRE MANUAL */}
                 {isOther && (
                   <div className="col-span-12 md:col-span-6">
                     <label className="text-sm font-semibold text-gray-700 mb-1 block">
@@ -491,15 +423,11 @@ export default function SalesForm({
                       onChange={(e) =>
                         handleProductChange(i, "name", e.target.value)
                       }
-                      className="
-                        w-full rounded-lg border border-gray-300 px-3 py-2
-                        focus:outline-none focus:ring-2 focus:ring-primary-400
-                      "
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-400"
                     />
                   </div>
                 )}
 
-                {/* CANTIDAD */}
                 <div className="col-span-12 md:col-span-3">
                   <label className="text-sm font-semibold text-gray-700 mb-1 block">
                     Cantidad
@@ -511,30 +439,22 @@ export default function SalesForm({
                     onChange={(e) =>
                       handleProductChange(i, "quantity", e.target.value)
                     }
-                    className="
-                      w-full rounded-lg border border-gray-300 px-3 py-2
-                        focus:outline-none focus:ring-2 focus:ring-primary-400
-                    "
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-400"
                   />
                 </div>
 
-                {/* PRECIO */}
                 <div className="col-span-12 md:col-span-3">
                   <label className="text-sm font-semibold text-gray-700 mb-1 block">
                     Precio
                   </label>
-                  <input
-                    type="number"
+                  <FormattedPriceInput
+                    name="price"
                     value={p.price}
                     disabled={!isOther && !!selectedProduct}
                     onChange={(e) =>
                       handleProductChange(i, "price", e.target.value)
                     }
-                    className={`
-                      w-full rounded-lg border border-gray-300 px-3 py-2
-                        focus:outline-none focus:ring-2 focus:ring-primary-400
-                      ${!isOther && !!selectedProduct ? "bg-gray-100 cursor-not-allowed" : ""}
-                    `}
+                    // placeholder="0"
                   />
                 </div>
               </div>
@@ -542,25 +462,14 @@ export default function SalesForm({
           );
         })}
 
-
-          {/* Botón agregar */}
           <button
             onClick={addProductField}
-            className="
-              flex items-center gap-2 text-blue-600 font-bold text-sm
-              hover:underline
-            "
+            className="flex items-center gap-2 text-blue-600 font-bold text-sm hover:underline"
           >
             <PlusCircle className="w-4 h-4" /> Agregar producto
           </button>
 
-          {/* Método de pago */}
-          <div
-            className="
-              bg-gray-50 p-5 rounded-xl space-y-4 
-              border border-gray-200 shadow-sm
-            "
-          >
+          <div className="bg-gray-50 p-5 rounded-xl space-y-4 border border-gray-200 shadow-sm">
             <label className="text-gray-700 flex items-center gap-2 font-medium">
               <CreditCard className="w-5 h-5 text-gray-500" />
               Método de pago
@@ -571,10 +480,7 @@ export default function SalesForm({
               onChange={(e) =>
                 setNewSale({ ...newSale, paymentMethod: e.target.value })
               }
-                className="
-                w-full rounded-lg border border-gray-300 px-3 py-2 bg-white
-                focus:outline-none focus:ring-2 focus:ring-primary-200
-              "
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary-200"
             >
               <option value="efectivo">Efectivo</option>
               <option value="tarjeta">Tarjeta</option>
@@ -584,35 +490,24 @@ export default function SalesForm({
             </select>
           </div>
 
-          {/* Total Calculation */}
           <div className="flex justify-end items-center gap-4 mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
             <span className="text-lg font-medium text-gray-600">Total a pagar:</span>
             <span className="text-3xl font-bold text-primary">
-              ${newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0).toLocaleString("es-AR")}
+              {formatCurrency(newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0))}
             </span>
           </div>
 
-          {/* Botón submit */}
           <motion.button
             whileTap={{ scale: 0.97 }}
             disabled={loading}
             onClick={handleSubmit}
-            className="
-              w-full mt-6 py-3
-              bg-primary hover:bg-primary-700
-              text-white font-semibold
-              rounded-xl shadow-md
-              flex items-center justify-center gap-2
-              transition-all
-              disabled:opacity-50 disabled:cursor-not-allowed
-            "
+            className="w-full mt-6 py-3 bg-primary hover:bg-primary-700 text-white font-semibold rounded-xl shadow-md flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ShoppingCart className="w-5 h-5" />
             {loading ? "Guardando..." : "Registrar venta"}
           </motion.button>
         </div>
 
-        {/* Confirm Dialog */}
         <ConfirmDialog
           open={confirmDialog.open}
           title={confirmDialog.title}
@@ -622,7 +517,6 @@ export default function SalesForm({
           onConfirm={confirmDialog.onConfirm}
           onCancel={confirmDialog.onCancel}
         />
-        {/* Scanner modal */}
         {scannerOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
             <div className="max-w-3xl w-full rounded-2xl p-4">

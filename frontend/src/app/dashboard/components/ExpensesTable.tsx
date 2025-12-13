@@ -1,14 +1,17 @@
 "use client";
 
 import { ArrowDownRight } from "lucide-react";
+import { useCustomization } from "@/context/CustomizationContext";
 
 interface ExpensesTableProps {
   expenses: { description: string; amount: number }[];
 }
 
 export default function ExpensesTable({ expenses }: ExpensesTableProps) {
+  const { formatCurrency } = useCustomization();
+  
   if (!expenses || expenses.length === 0) return null;
-  console.log(expenses)
+  
   return (
     <div className="mt-8 mb-8">
       <div className="flex items-center gap-2 mb-4 px-1">
@@ -33,7 +36,7 @@ export default function ExpensesTable({ expenses }: ExpensesTableProps) {
                   {expense.description}
                 </td>
                 <td className="py-3 px-6 text-right font-bold text-red-600">
-                  - ${expense.amount.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
+                  - {formatCurrency(expense.amount)}
                 </td>
               </tr>
             ))}

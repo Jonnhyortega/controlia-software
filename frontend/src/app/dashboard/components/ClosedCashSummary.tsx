@@ -1,12 +1,17 @@
+"use client";
+
 import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Wallet, AlertCircle, CheckCircle2, DollarSign, CreditCard } from "lucide-react";
 import { DailyCash } from "../../../types/api";
+import { useCustomization } from "../../../context/CustomizationContext";
 
 interface ClosedCashSummaryProps {
   data: DailyCash;
 }
 
 export default function ClosedCashSummary({ data }: ClosedCashSummaryProps) {
+  const { formatCurrency } = useCustomization();
+  
   if (!data) return null;
 
   const {
@@ -37,13 +42,6 @@ export default function ClosedCashSummary({ data }: ClosedCashSummaryProps) {
 
   // 2. Calcular Ganancia Pura
   // Ganancia = (Ventas - Costos) - Gastos(Salidas)
-  // Nota: totalOut incluye gastos extra y pagos proveedores
-  // Si los pagos a proveedores son de deuda anterior, tal vez no deberian restar a la ganancia del DIA operativo,
-  // pero "Ganancia Pura" (Cash Flow) sí se ve afectada.
-  // Usualmente Ganancia Operativa = (Ventas - Costos)
-  // Flujo de Caja = (Ventas - Gastos - Pagos)
-  // El usuario pidió: "Ganancia pura (teniendo en cuenta lo que sale de costo...)" y "Ingresos, Egresos".
-  // Vamos a mostrar: Ingresos, Egresos, y Ganancia (Venta - Costo - Gasto).
   const grossProfit = totalSalesAmount - totalCost; 
   const netProfit = grossProfit - (totalOut || 0);
 
@@ -60,13 +58,6 @@ export default function ClosedCashSummary({ data }: ClosedCashSummaryProps) {
       paymentMethods[method].total += sale.total;
     }
   });
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("es-AR", {
-      style: "currency",
-      currency: "ARS",
-    }).format(amount);
-  };
 
   // Fix fecha
   const closedDateObj = closedAt ? new Date(closedAt) : null;
@@ -111,7 +102,7 @@ export default function ClosedCashSummary({ data }: ClosedCashSummaryProps) {
       </div>
 
       {/* Grid de Métricas Principales */}
-      <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="p-6 grid grid-cols-1 justify-center sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Ingresos (Ventas) */}
         <div className="relative overflow-hidden rounded-xl bg-blue-50/50 p-4 border border-blue-100">
           <div className="flex items-center gap-3 mb-2">
@@ -151,7 +142,7 @@ export default function ClosedCashSummary({ data }: ClosedCashSummaryProps) {
         </div>
 
         {/* Real en Caja (Lo que se contó) */}
-        <div className="relative overflow-hidden rounded-xl bg-slate-900 p-4 text-white shadow-lg ring-1 ring-black/5">
+        {/* <div className="relative overflow-hidden rounded-xl bg-slate-900 p-4 text-white shadow-lg ring-1 ring-black/5">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-slate-800 text-slate-300 rounded-lg">
               <AlertCircle size={20} />
@@ -159,7 +150,7 @@ export default function ClosedCashSummary({ data }: ClosedCashSummaryProps) {
             <span className="text-sm font-medium text-slate-300">Real en Efectivo</span>
           </div>
           <p className="text-2xl font-bold text-white">{formatCurrency(finalReal || 0)}</p>
-        </div>
+        </div> */}
       </div>
 
       {/* Desglose de Métodos de Pago */}

@@ -30,7 +30,7 @@ export default function SalesTable({
     if (simpleMode) return true;
 
     // Filtro por método de pago
-    if (filterMethod !== "all" && sale.paymentMethod !== filterMethod) {
+    if (filterMethod !== "all" && sale.paymentMethod?.toLowerCase() !== filterMethod.toLowerCase()) {
       return false;
     }
 
@@ -85,17 +85,17 @@ export default function SalesTable({
       
       {/* 🛠️ Barra de Herramientas (Solo si NO es simpleMode) */}
       {!simpleMode && (
-        <div className="flex flex-col md:flex-row gap-3 justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-200">
+        <div className="flex flex-col md:flex-row gap-3 justify-between items-center bg-gray-50 dark:bg-zinc-900 p-3 rounded-xl border border-gray-200 dark:border-gray-800">
           
           {/* Buscador */}
           <div className="relative w-full md:w-auto flex-1 max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               <input 
                 type="text"
                 placeholder="Buscar producto o ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
               />
           </div>
 
@@ -106,20 +106,21 @@ export default function SalesTable({
                   <select 
                     value={filterMethod}
                     onChange={(e) => setFilterMethod(e.target.value)}
-                    className="pl-9 pr-8 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-primary text-sm appearance-none cursor-pointer"
+                    className="pl-9 pr-8 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm appearance-none cursor-pointer"
                   >
                       <option value="all">Todos los métodos</option>
-                      <option value="Efectivo">Efectivo</option>
-                      <option value="Transferencia">Transferencia</option>
-                      <option value="Mercado Pago">Mercado Pago</option>
-                      <option value="Otros">Otros</option>
+                      <option value="efectivo">Efectivo</option>
+                      <option value="tarjeta">Tarjeta</option>
+                      <option value="transferencia">Transferencia</option>
+                      <option value="mercado pago">Mercado Pago</option>
+                      <option value="otro">Otro</option>
                   </select>
               </div>
 
               {/* Exportar */}
               <button 
                   onClick={handleExport}
-                  className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+                  className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-700 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-zinc-700 transition"
               >
                   <Download size={16} />
                   <span className="hidden sm:inline">Exportar</span>
@@ -129,9 +130,9 @@ export default function SalesTable({
       )}
 
       {/* 📋 Tabla */}
-      <div className="border border-gray-200 rounded-2xl overflow-hidden">
+      <div className="border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-primary-50 text-gray-700 border-b">
+          <thead className="bg-primary-50 dark:bg-primary/10 text-gray-700 dark:text-gray-200 border-b dark:border-gray-800">
             <tr>
               <th className="hidden md:table-cell py-3 px-4 text-left font-semibold">#</th>
               <th className="py-3 px-4 text-left font-semibold">Hora</th>
@@ -142,7 +143,7 @@ export default function SalesTable({
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-100 bg-white">
+          <tbody className="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-zinc-900">
             {filteredSales.length > 0 ? (
                 filteredSales.map((sale, i) => (
                 <SalesRow

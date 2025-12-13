@@ -4,16 +4,22 @@ import { useEffect, useState } from "react";
 import { getClosedCashDays } from "@/utils/api"; 
 import { TrendingUp, Calendar, AlertCircle } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
+import { useCustomization } from "@/context/CustomizationContext";
+
+import { useAuth } from "@/context/authContext";
 
 export default function HistoricalStats() {
+  const { user } = useAuth();
   const [dates, setDates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const toast = useToast();
+  const { formatCurrency } = useCustomization();
 
   useEffect(() => {
     const fetchDays = async () => {
+      if (!user?._id) return;
       try {
-        const days = await getClosedCashDays();
+        const days = await getClosedCashDays(user._id);
         // Ordenar cronológicamente descendente
         const sorted = [...days].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         setDates(sorted);
@@ -24,7 +30,7 @@ export default function HistoricalStats() {
       }
     };
     fetchDays();
-  }, []);
+  }, [user]);
 
   if (loading || dates.length === 0) return null;
 
@@ -51,8 +57,6 @@ export default function HistoricalStats() {
   const bestMonthName = bestMonthEntry ? bestMonthEntry[0] : "N/A";
   const bestMonthAmount = bestMonthEntry ? bestMonthEntry[1] : 0;
 
-
-  const formatCurrency = (val: number) => new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 }).format(val);
   const formatDate = (val: string) => new Date(val).toLocaleDateString("es-AR", { timeZone: "UTC", day:"numeric", month:"short" });
 
   return (

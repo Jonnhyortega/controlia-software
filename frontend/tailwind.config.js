@@ -8,15 +8,15 @@ export const theme = {
     extend: {
         colors: {
             primary: {
-                DEFAULT: '#2563eb',
-                50: '#eef6ff',
+                DEFAULT: 'var(--primary-color)',
+                50: '#eef6ff', // Keeping shades static for now as calculating them requires JS helper in config or many variables
                 100: '#dbeeff',
                 200: '#b6ddff',
                 300: '#8acbff',
                 400: '#57b4ff',
                 500: '#1e90ff',
-                600: '#2563eb',
-                700: '#1d4ed8',
+                600: 'var(--primary-color)',
+                700: '#1d4ed8', // Ideally this should be darker variance of primary
                 800: '#1a3ab0',
                 900: '#153087',
             },

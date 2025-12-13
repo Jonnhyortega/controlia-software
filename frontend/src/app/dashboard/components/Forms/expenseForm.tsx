@@ -6,6 +6,8 @@ import { Undo2, CheckCircle2, DollarSign, User, FileText } from "lucide-react";
 import { updateDailyCash, getSuppliers } from "../../../../utils/api";
 import { useToast } from "../../../../context/ToastContext";
 
+import { FormattedPriceInput } from "../../../../components/FormattedPriceInput";
+
 interface ExpenseFormProps {
   cashId: string;
   currentExpenses: { description: string; amount: number }[];
@@ -25,7 +27,7 @@ export default function ExpenseForm({
   
   // Form State
   const [type, setType] = useState<"general" | "supplier">("general");
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState<number>(0);
   const [description, setDescription] = useState("");
   const [selectedSupplier, setSelectedSupplier] = useState("");
 
@@ -38,9 +40,12 @@ export default function ExpenseForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
+    setLoading(true);
 
-    if (!amount || Number(amount) <= 0) {
+    if (!amount || amount <= 0) {
       toast.error("Ingresa un monto válido");
+      setLoading(false);
       return;
     }
 
@@ -48,17 +53,19 @@ export default function ExpenseForm({
     if (type === "supplier") {
       if (!selectedSupplier) {
         toast.error("Selecciona un proveedor");
+        setLoading(false);
         return;
       }
       finalDescription = `Pago a Proveedor: ${suppliers.find(s => s._id === selectedSupplier)?.name || "Desconocido"} - ${description}`;
     } else {
       if (!description.trim()) {
         toast.error("Ingresa una descripción");
+        setLoading(false);
         return;
       }
     }
 
-    setLoading(true);
+    // setLoading(true); // removed
 
     try {
       const newExpense = {
@@ -140,18 +147,10 @@ export default function ExpenseForm({
           <label className="block text-sm font-semibold text-gray-700 mb-1.5 ml-1">
             Monto
           </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-              <DollarSign size={18} />
-            </div>
-            <input
-              type="number"
-              placeholder="0.00"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition text-lg font-medium text-gray-800"
-            />
-          </div>
+          <FormattedPriceInput
+            value={amount}
+            onChange={(e: any) => setAmount(Number(e.target.value))}
+            name={""}          />
         </div>
 
         {/* Dynamic Fields */}

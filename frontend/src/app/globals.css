@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Default Branding Colors */
+  --primary-color: #2563eb;
+  --secondary-color: #1e40af;
+}
+
 /* Removed CSS variables — using fixed values and Tailwind defaults so build stays stable */
 
 /* removed theme inline variables to avoid runtime var() usage — prefer Tailwind utilities */
@@ -36,9 +42,8 @@ input[type="number"] {
 
 
 /* Dark theme variables */
-@media (prefers-color-scheme: dark) {
-  body { background: #0b0b0b; color: #e6eef8; }
-}
+/* Dark theme variables */
+.dark body { background: #0b0b0b; color: #e6eef8; }
 
 /* Small helpers for the app */
 .card {
@@ -107,14 +112,18 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 .btn-secondary:hover { box-shadow: 0 6px 18px rgba(2,6,23,0.12); background: #8acbff; }
 
 /* dark-mode overrides: keep contrast when user prefers dark */
-@media (prefers-color-scheme: dark) {
-  input[type="text"], input[type="email"], input[type="password"], textarea, select,
-  .app-input, .app-select {
+/* dark-mode overrides: keep contrast when user prefers dark */
+.dark input[type="text"], 
+.dark input[type="email"], 
+.dark input[type="password"], 
+.dark textarea, 
+.dark select,
+.dark .app-input, 
+.dark .app-select {
     background: #0f0f0f;
     border: 1px solid #1f1f1f;
     color: white;
   }
-}
 
 /* small utility to center content in panels */
 .panel-center { display: flex; align-items: center; justify-content: center; }

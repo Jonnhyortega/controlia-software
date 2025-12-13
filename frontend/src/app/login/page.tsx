@@ -1,23 +1,69 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/authContext";
-import axios from "axios";
-import { useEffect } from "react";
-import { useToast } from "../../context/ToastContext"; // 👈 opcional si usás toasts globales
+import { useToast } from "../../context/ToastContext";
 import { api } from "../../utils/api";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
+
+// Componente Reutilizable de Input Flotante
+const FloatingInput = ({
+  label,
+  value,
+  onChange,
+  name,
+  type = "text",
+  required = false,
+  showPasswordToggle = false,
+  showPassword = false,
+  onTogglePassword,
+  autoComplete
+}: any) => {
+  return (
+    <div className="relative bg-[#1c1c1c] rounded-xl border border-gray-800 focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/20 transition-all duration-200">
+      <input
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        required={required}
+        placeholder=" "
+        autoComplete={autoComplete}
+        className={`block w-full px-4 pt-8 pb-3 text-white bg-transparent rounded-xl outline-none peer leading-normal placeholder-transparent ${showPasswordToggle ? 'pr-10' : ''}`}
+      />
+      <label
+        className={`absolute left-0 w-full px-4 transition-all duration-200 pointer-events-none 
+                   peer-focus:top-2 peer-focus:text-right peer-focus:text-[11px] peer-focus:text-primary peer-focus:-translate-y-0
+                   peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-left peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:-translate-y-1/2
+                   top-2 text-right text-[11px] text-gray-500 -translate-y-0 ${showPasswordToggle ? 'pr-10' : ''}`}
+      >
+        {label}
+      </label>
+      {showPasswordToggle && (
+        <button
+            type="button"
+            onClick={onTogglePassword}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors p-1"
+        >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      )}
+    </div>
+  );
+};
 
 export default function AuthPage() {
   const router = useRouter();
-  const { login, register } = useAuth();   // 👈 AHORA TENÉS REGISTER
+  const { login, register } = useAuth();
   const toast = useToast?.();
 
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -47,11 +93,9 @@ export default function AuthPage() {
           toast?.success?.(`Bienvenido ${res.user?.name || ""} 👋`);
           setTimeout(() => router.push("/dashboard"), 150);
         } else if (res.emailNotVerified) {
-          // ✉️ Email no verificado - mostrar link a verificación
           setError(
             `${res.message || "Email no verificado"}. Verifica tu cuenta para continuar.`
           );
-          // Guardar email para el link
           if (res.email) {
             sessionStorage.setItem("unverifiedEmail", res.email);
           }
@@ -67,7 +111,6 @@ export default function AuthPage() {
           setError(res.message ?? "Ocurrió un error desconocido");
         } else {
           toast?.success?.("Revisa tu email para verificar tu cuenta 📧");
-          // Redirigir a verificación con el email
           if (res.email) {
             setTimeout(() => {
               router.push(`/verify-email?email=${encodeURIComponent(res.email!)}`);
@@ -83,10 +126,9 @@ export default function AuthPage() {
     }
   };
 
-  // ✅ Init Google Sign-In script (client-side)
+  // ✅ Init Google Sign-In script
   useEffect(() => {
     if (typeof window === "undefined") return;
-    // Carga la librería si no existe
     if (!(window as any).google) {
       const script = document.createElement("script");
       script.src = "https://accounts.google.com/gsi/client";
@@ -96,7 +138,7 @@ export default function AuthPage() {
     }
   }, []);
 
-  // Open register form when ?register=1 is present in URL
+  // Open register form when ?register=1
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
@@ -106,14 +148,13 @@ export default function AuthPage() {
     }
   }, []);
 
-  // Initialize Google Sign-In client and render the button reliably
+  // Initialize Google Sign-In
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
     if (!clientId) {
-      // no client configured; nothing to do
-      console.warn("NEXT_PUBLIC_GOOGLE_CLIENT_ID no encontrado. Google Sign-In deshabilitado.");
+      console.warn("NEXT_PUBLIC_GOOGLE_CLIENT_ID no encontrado.");
       return;
     }
 
@@ -121,14 +162,12 @@ export default function AuthPage() {
 
     function handleCredentialResponse(credential: string | undefined) {
       if (!credential) return;
-      // callback that mirrors the previous inline script behaviour
       (async function (id_token: string) {
         try {
           const res = await api.post('/users/google', { id_token });
           const data = res.data;
           
           localStorage.setItem('token', data.token);
-          localStorage.setItem('user', JSON.stringify({ _id: data._id, name: data.name, email: data.email }));
           localStorage.setItem('user', JSON.stringify({ _id: data._id, name: data.name, email: data.email }));
           
           if (data.isNewUser) {
@@ -157,7 +196,6 @@ export default function AuthPage() {
       return false;
     }
 
-    // if script already there, try init; otherwise try repeatedly until loaded
     if (!tryInit()) {
       interval = setInterval(() => {
         if (tryInit()) {
@@ -172,46 +210,39 @@ export default function AuthPage() {
     };
   }, []);
 
-  // ==========================================================
-  // 🔹 Render principal
-  // ==========================================================
   return (
-    <section className="min-h-screen flex items-center justify-center bg-[#0b0b0b] text-white px-4">
-      <div className="max-w-5xl w-full flex flex-col md:flex-row items-center justify-between">
-        {/* Imagen izquierda (opcional) */}
-        <div className="hidden md:block w-1/2">
-          {/* <Image src="/login-dashboard-preview.png" width={500} height={500} alt="Preview" /> */}
-        </div>
-
-        {/* Panel derecho */}
-        <div className="w-full md:w-1/2 flex flex-col gap-6 bg-[#121212] p-8 rounded-2xl border border-gray-800 relative overflow-hidden">
+    <section className="min-h-screen flex items-center justify-center bg-[#0b0b0b] text-white px-4 py-8">
+      <div className="max-w-5xl w-full flex flex-col md:flex-row items-center justify-center gap-12">
+        
+        {/* Panel derecho (Central) */}
+        <div className="w-full max-w-md flex flex-col gap-6 bg-[#121212] p-8 rounded-3xl border border-gray-800 relative shadow-2xl">
           {/* Header */}
           <div className="text-center">
-            <h1 className="text-sm tracking-[0.3em] text-gray-400 mb-2">
-              CONTROLIA
+            <h1 className="text-xs tracking-[0.4em] font-bold text-gray-500 mb-4 uppercase">
+              Controlia
             </h1>
-            <h2 className="text-2xl font-bold">
-              {isLogin ? "Inicia sesión en tu cuenta" : "Crea tu cuenta"}
+            <h2 className="text-3xl font-bold tracking-tight mb-2">
+              {isLogin ? "¡Hola de nuevo!" : "Crear cuenta"}
             </h2>
-            <p className="text-gray-400 text-sm mt-2">
+            <p className="text-gray-400 text-sm">
               {isLogin
-                ? "Accedé a tu panel de gestión y mantené el control de tu negocio."
-                : "Registrate para empezar a usar el sistema de gestión."}
+                ? "Ingresa tus datos para acceder al panel."
+                : "Registrate en segundos y administra tu negocio."}
             </p>
           </div>
 
           {/* Toggle */}
-          <div className="relative flex bg-[#1c1c1c] rounded-lg overflow-hidden">
+          <div className="relative flex bg-[#1c1c1c] p-1 rounded-xl">
             <motion.div
-              className="absolute top-0 left-0 h-full w-1/2 bg-primary rounded-lg"
+              className="absolute top-1 left-1 bottom-1 w-[calc(50%-4px)] bg-primary rounded-lg shadow-lg"
               animate={{ x: isLogin ? "0%" : "100%" }}
-              transition={{ type: "spring", stiffness: 250, damping: 25 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
             />
             <button
               type="button"
               onClick={() => setIsLogin(true)}
-              className={`relative z-10 w-1/2 py-2 font-semibold transition ${
-                isLogin ? "text-white" : "text-gray-400"
+              className={`relative z-10 w-1/2 py-2.5 text-sm font-medium transition ${
+                isLogin ? "text-white" : "text-gray-400 hover:text-gray-200"
               }`}
             >
               Iniciar sesión
@@ -219,11 +250,11 @@ export default function AuthPage() {
             <button
               type="button"
               onClick={() => setIsLogin(false)}
-              className={`relative z-10 w-1/2 py-2 font-semibold transition ${
-                !isLogin ? "text-white" : "text-gray-400"
+              className={`relative z-10 w-1/2 py-2.5 text-sm font-medium transition ${
+                !isLogin ? "text-white" : "text-gray-400 hover:text-gray-200"
               }`}
             >
-              Crear cuenta
+              Registrarse
             </button>
           </div>
 
@@ -234,49 +265,50 @@ export default function AuthPage() {
               <motion.form
                 key="login"
                 onSubmit={handleSubmit}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.35 }}
-                className="flex flex-col gap-4"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-5"
               >
-                <div>
-                  <label className="block text-sm mb-1">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 rounded-lg app-input"
-                    placeholder="tucorreo@ejemplo.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm mb-1">Contraseña</label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 rounded-lg app-input"
-                    placeholder="********"
-                  />
-                  <div className="flex justify-end mt-1">
-                    <Link 
-                      href="/forgot-password" 
-                      className="text-xs text-primary-400 hover:text-primary-300"
-                    >
-                      ¿Olvidaste tu contraseña?
-                    </Link>
-                  </div>
+                <div className="space-y-5">
+                    <FloatingInput 
+                        label="Correo Electrónico"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        type="email"
+                        required
+                        autoComplete="email"
+                    />
+                    
+                    <div>
+                        <FloatingInput 
+                            label="Contraseña"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            type={showPassword ? "text" : "password"}
+                            required
+                            showPasswordToggle={true}
+                            showPassword={showPassword}
+                            onTogglePassword={() => setShowPassword(!showPassword)}
+                            autoComplete="current-password"
+                        />
+                        <div className="flex justify-end mt-2">
+                            <Link 
+                            href="/forgot-password" 
+                            className="text-xs text-gray-500 hover:text-primary transition-colors font-medium cursor-pointer"
+                            >
+                            ¿Olvidaste tu contraseña?
+                            </Link>
+                        </div>
+                    </div>
                 </div>
 
                 {error && (
-                  <div className="space-y-2">
-                    <p className="text-red-500 text-sm font-medium">{error}</p>
+                  <div className="space-y-2 bg-red-500/10 border border-red-500/20 p-3 rounded-lg">
+                    <p className="text-red-400 text-sm font-medium">{error}</p>
                     {error.includes("verifica") && sessionStorage.getItem("unverifiedEmail") && (
                       <button
                         type="button"
@@ -286,9 +318,9 @@ export default function AuthPage() {
                             router.push(`/verify-email?email=${encodeURIComponent(email)}`);
                           }
                         }}
-                        className="text-primary hover:text-primary-400 text-sm font-medium underline"
+                        className="text-white text-xs font-semibold hover:underline"
                       >
-                        Verificar ahora →
+                        Verificar ahora
                       </button>
                     )}
                   </div>
@@ -297,132 +329,110 @@ export default function AuthPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`w-full py-3 mt-2 rounded-lg font-semibold transition ${
+                  className={`w-full py-3.5 mt-2 rounded-xl font-bold text-sm tracking-wide transition-all transform active:scale-[0.98] ${
                     loading
-                      ? "bg-primary-200 cursor-not-allowed text-primary-700"
-                      : "bg-primary hover:bg-primary-700 text-white"
+                      ? "bg-primary/20 text-primary-300 cursor-not-allowed"
+                      : "bg-primary hover:bg-primary-600 text-white shadow-lg hover:shadow-primary/30"
                   }`}
                 >
-                  {loading ? "Procesando..." : "Iniciar sesión"}
+                  {loading ? "INICIANDO..." : "INGRESAR"}
                 </button>
-
-                {/* NOTE: el botón de Google estaba dentro del formulario de login
-                    y desaparecía cuando se cambiaba a registro. Lo movemos fuera
-                    del formulario condicional para que esté siempre disponible. */}
               </motion.form>
             ) : (
               // 🔹 REGISTER FORM
               <motion.form
                 key="register"
                 onSubmit={handleSubmit}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.35 }}
-                className="flex flex-col gap-4"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-5"
               >
                  {/* 🎁 Alerta de Prueba Gratuita */}
-                <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-2">
-                  <div className="flex items-start gap-3">
-                    <span className="text-xl">🎁</span>
-                    <div className="text-sm">
-                      <p className="font-semibold text-primary-300">¡Comienza tu prueba gratuita de 90 días!</p>
-                      <p className="text-gray-400 mt-1">
-                        Disfruta del Plan Básico sin costo. Después de 90 días, el precio será de <span className="text-white font-medium">$15.000 ARS/mes</span>.
-                      </p>
+                <div className="bg-gradient-to-r from-primary/20 to-transparent border border-primary/20 rounded-xl p-4">
+                    <p className="font-bold text-primary-300 text-sm mb-1">🎁 Prueba Gratis de 90 días</p>
+                    <p className="text-xs text-gray-400">
+                      Disfruta del Plan Básico sin costo. Luego $15.000 ARS/mes.
+                    </p>
+                </div>
+
+                <div className="space-y-4">
+                    <FloatingInput 
+                        label="Nombre de tu Negocio"
+                        name="businessName"
+                        value={formData.businessName}
+                        onChange={handleChange}
+                        required
+                        autoComplete="organization"
+                    />
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <FloatingInput 
+                            label="Nombre"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            autoComplete="given-name"
+                        />
+                        <FloatingInput 
+                            label="Apellido"
+                            name="lastName"
+                            value={formData.lastName}
+                            onChange={handleChange}
+                            required
+                            autoComplete="family-name"
+                        />
                     </div>
-                  </div>
-                </div>
 
-                <div>
-                  <label className="block text-sm mb-1">Nombre del Negocio</label>
-                  <input
-                    type="text"
-                    name="businessName"
-                    value={formData.businessName}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 rounded-lg app-input"
-                    placeholder="Mi Negocio S.A."
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm mb-1">Nombre</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-2 rounded-lg app-input"
-                      placeholder="Tu nombre"
+                    <FloatingInput 
+                        label="Correo Electrónico"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        type="email"
+                        required
+                        autoComplete="email"
                     />
-                  </div>
-                  <div>
-                    <label className="block text-sm mb-1">Apellido</label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-2 rounded-lg app-input"
-                      placeholder="Tu apellido"
+
+                    <FloatingInput 
+                        label="Contraseña"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        type={showPassword ? "text" : "password"}
+                        required
+                        showPasswordToggle={true}
+                        showPassword={showPassword}
+                        onTogglePassword={() => setShowPassword(!showPassword)}
+                        autoComplete="new-password"
                     />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm mb-1">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 rounded-lg app-input"
-                    placeholder="tucorreo@ejemplo.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm mb-1">Contraseña</label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 rounded-lg app-input"
-                    placeholder="********"
-                  />
                 </div>
 
                 {error && (
-                  <p className="text-red-500 text-sm font-medium">{error}</p>
+                  <p className="text-red-400 text-sm bg-red-500/10 p-2 rounded-lg border border-red-500/20">{error}</p>
                 )}
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`w-full py-3 mt-2 rounded-lg font-semibold transition ${
+                  className={`w-full py-3.5 mt-2 rounded-xl font-bold text-sm tracking-wide transition-all transform active:scale-[0.98] ${
                     loading
-                      ? "bg-primary-200 cursor-not-allowed text-primary-700"
-                      : "bg-primary hover:bg-primary-700 text-white"
+                      ? "bg-primary/20 text-primary-300 cursor-not-allowed"
+                      : "bg-primary hover:bg-primary-600 text-white shadow-lg hover:shadow-primary/30"
                   }`}
                 >
-                  {loading ? "Creando cuenta..." : "Registrarme"}
+                  {loading ? "REGISTRANDO..." : "CREAR CUENTA"}
                 </button>
               </motion.form>
             )}
           </AnimatePresence>
 
-            {/* Google Sign-In - siempre visible (login o registro) */}
-            <div className="mt-4 text-center">
-              <p className="text-sm text-gray-400 mb-2">O continuar con</p>
-              <div id="gsi-button" className="flex items-center justify-center" />
+            {/* Google SIEMPRE VISIBLE */}
+            <div className="pt-4 border-t border-gray-800 text-center">
+              <p className="text-xs text-gray-500 mb-4 font-medium uppercase tracking-wider">O continúa con</p>
+              <div id="gsi-button" className="flex items-center justify-center w-full" />
             </div>
         </div>
       </div>

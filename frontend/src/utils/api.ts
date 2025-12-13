@@ -284,17 +284,31 @@ export const createSale = async (
 };
 
 // LISTAR VENTAS DE CAJAS
-export const getClosedCashDays = async (): Promise<DailyCash[]> => {
+// LISTAR VENTAS DE CAJAS
+// LISTAR VENTAS DE CAJAS
+export const getClosedCashDays = async (userId: string): Promise<DailyCash[]> => {
   const token = localStorage.getItem("token");
-  const res = await fetch(`${API_URL}/daily-cash/days`, {
+  
+  // New endpoint: /daily-cash/days/:id (Always returns details)
+  const url = `${API_URL}/daily-cash/days/${userId}`;
+  console.log("Fetching History from:", url);
+
+  const res = await fetch(url, {
     cache: "no-store",
     headers: {
       Authorization: `Bearer ${token}`,
     },  
   });
 
-  if (!res.ok) throw new Error("Error al obtener días con cierres de caja");
-  return res.json();
+  if (!res.ok) {
+     const text = await res.text();
+     console.error("Error fetching history:", text);
+     throw new Error("Error al obtener días con cierres de caja");
+  }
+  
+  const data = await res.json();
+  console.log("History Items Received:", data?.length);
+  return data;
 };
 
 
@@ -322,7 +336,7 @@ export const createProduct = async (data: {
   price: number;
   cost?: number;
   stock?: number;
-  barcode?: string;
+  barcode?: string | null;
   description?: string;
   supplier?:string;
 }): Promise<Product> => {

@@ -17,8 +17,8 @@ export function useSales() {
         month: "2-digit",
         day: "2-digit",
       });
+
       const argentinaDate = formatter.format(now); // YYYY-MM-DD
-      
       const res = await getDailyCashByDate(argentinaDate);
       setData(res);
     } catch {

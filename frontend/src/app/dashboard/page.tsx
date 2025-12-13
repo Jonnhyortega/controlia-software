@@ -7,7 +7,7 @@ import { ReceiptText } from "lucide-react";
 import { useSales } from "./hooks/useSales";
 import { useClock } from "./hooks/useClock";
 // import { useScanner } from "./hooks/useScanner"; // Seems unused in original file imports list in Step 54 but maybe I missed it. Step 54 shows line 9: import { useScanner } from "./hooks/useScanner";
-import { useScanner } from "./hooks/useScanner";
+// import { useScanner } from "./hooks/useScanner";
 import { useAuth } from "../../context/authContext";
 
 import DashboardHeader from "../dashboard/components/dashboardHeader";
@@ -26,7 +26,7 @@ import Loading from "../../components/loading";
 import { api } from "../../utils/api";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { X, Gift, Sparkles, ChevronDown, ChevronUp, BarChart3 } from "lucide-react";
+import { X, Gift, Sparkles, ChevronDown, ChevronUp, BarChart3, TrendingDown } from "lucide-react";
 
 
 export default function DashboardPage() {
@@ -42,6 +42,7 @@ export default function DashboardPage() {
   const [showCloseCashForm, setShowCloseCashForm] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [showStats, setShowStats] = useState(false);
+  const [showExpenses, setShowExpenses] = useState(false); // 👈 Nuevo estado
 
   // 🎁 Welcome Modal Logic
   const searchParams = useSearchParams();
@@ -117,6 +118,7 @@ export default function DashboardPage() {
           setShowSalesForm(false);
           setShowExpenseForm(false);
         }}
+        totalRevenue={data?.totalSalesAmount || 0}
         onAddExpense={() => {
            if (data?.status === "cerrada") {
              toast.error("La caja está cerrada");
@@ -127,6 +129,33 @@ export default function DashboardPage() {
            setShowCloseCashForm(false);
         }}
       />
+
+      {/* 📉 Gastos Desplegables */}
+      <div className="mt-6 px-1">
+         <button
+            onClick={() => setShowExpenses(!showExpenses)}
+            className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-rose-500 transition-colors bg-gray-50 px-4 py-2 rounded-lg border border-gray-100 mb-2"
+         >
+            <TrendingDown size={16} />
+            {showExpenses ? "Ocultar gastos y pagos" : "Ver gastos y pagos del día"}
+            {showExpenses ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+         </button>
+
+         <AnimatePresence>
+            {showExpenses && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="pt-2">
+                  <ExpensesTable expenses={data?.extraExpenses || []} />
+                </div>
+              </motion.div>
+            )}
+         </AnimatePresence>
+      </div>
 
 
       <AnimatePresence>
@@ -299,14 +328,6 @@ export default function DashboardPage() {
         )}
       </motion.div>
 
-      {/* 📉 Expenses Table */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-      >
-        <ExpensesTable expenses={data?.extraExpenses || []} />
-      </motion.div>
     </>
 
   );

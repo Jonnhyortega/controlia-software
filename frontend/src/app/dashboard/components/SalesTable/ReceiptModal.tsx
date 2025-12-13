@@ -1,7 +1,10 @@
+"use client";
+
 import { motion } from "framer-motion";
 import { X, Printer, Store, MapPin, Phone } from "lucide-react";
-import { useAuth } from "@/context/authContext";
+import { useAuth } from "../../../../context/authContext";
 import { useEffect, useState } from "react";
+import { useCustomization } from "../../../../context/CustomizationContext";
 
 interface ReceiptModalProps {
   sale: any;
@@ -9,22 +12,18 @@ interface ReceiptModalProps {
 }
 
 export default function ReceiptModal({ sale, onClose }: ReceiptModalProps) {
-  const { user } = useAuth();   
+  const { user } = useAuth();
+  const { formatCurrency, settings } = useCustomization();
   const [imgPerfil, setImgPerfil] = useState<string | null>(null);
 
   useEffect(()=>{
     if(user?.logoUrl){
       setImgPerfil(user.logoUrl);
     }
-    console.log(imgPerfil);
-  },[])
+  },[user])
   
   if (!sale) return null;
 
-  // Formatters
-  const formatCurrency = (amount: number) =>
-    new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(amount);
-  
   const formatDate = (dateString: string) => 
     new Date(dateString).toLocaleString("es-AR", { 
        day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" 
@@ -73,7 +72,7 @@ export default function ReceiptModal({ sale, onClose }: ReceiptModalProps) {
                         )}
                 </div>
                 <h2 className="text-xl font-bold uppercase tracking-wider mb-1 line-clamp-1">
-                  {user?.businessName || user?.name || "CONTROLIA STORE"}
+                  {(settings?.businessName && settings.businessName !== "Mi Comercio" && settings.businessName.toUpperCase() !== "BUSSINES") ? settings.businessName : (user?.businessName || user?.name || "CONTROLIA STORE")}
                 </h2>
                 <div className="text-gray-500 text-xs flex flex-col gap-1 items-center">
                     <span className="flex items-center gap-1 text-center">
@@ -116,7 +115,6 @@ export default function ReceiptModal({ sale, onClose }: ReceiptModalProps) {
                                     <td className="py-1 font-bold">{p.quantity}x</td>
                                     <td className="py-1 pr-2">
                                         <div className="font-semibold line-clamp-2">{name}</div>
-                                        {/* <div className="text-[10px] text-gray-400">@ {formatCurrency(price)}</div> */}
                                     </td>
                                     <td className="py-1 text-right font-bold">{formatCurrency(subtotal)}</td>
                                 </tr>
@@ -142,8 +140,13 @@ export default function ReceiptModal({ sale, onClose }: ReceiptModalProps) {
             <div className="text-center text-[10px] text-gray-400 mt-6">
                 <p>¡Gracias por su compra!</p>
                 <p className="mt-1">Conservar este ticket para cambios</p>
-                <div className="mt-4 pt-2 border-t border-gray-100">
-                    <p>Sistema Controlia</p>
+                <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col items-center gap-1 opacity-60 print:opacity-100">
+                    <div className="flex items-center gap-2 justify-center">
+                        {/* Logo Controlia */}
+                        <img src="/logosinfondo.png" alt="Controlia" className="h-5 w-auto object-contain grayscale" />
+                        <span className="font-bold tracking-wide text-gray-600">CONTROLIA</span>
+                    </div>
+                    <p className="text-[8px] font-medium">controlia-software.vercel.app</p>
                 </div>
             </div>
             

@@ -1,32 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  getCustomization,
-  updateCustomization,
-  uploadLogo,
-  resetCustomization,
-} from "../../../../utils/api";
-
+import { uploadLogo, resetCustomization } from "../../../../utils/api";
 import { useToast } from "../../../../context/ToastContext";
-import { useAuth } from "../../../../context/authContext"; // Import useAuth
+import { useAuth } from "../../../../context/authContext";
+import { useCustomization, CustomizationData } from "../../../../context/CustomizationContext"; // New Import
 import { ConfirmDialog } from "../../../dashboard/components/confirmDialog";
-
 import { Upload, Save, RefreshCcw } from "lucide-react";
-
 import RoleGuard from "@/components/auth/RoleGuard";
 
 export default function CustomizationPage() {
   const toast = useToast();
-  const { setUser } = useAuth(); // Destructure setUser
+  const { setUser } = useAuth();
+  const { settings, updateSettings } = useCustomization(); // Use Context
 
-  const [data, setData] = useState({
+  const [data, setData] = useState<Partial<CustomizationData>>({
     businessName: "",
     businessEmail: "",
     businessPhone: "",
-    primaryColor: "",
+    primaryColor: "#2563eb",
     secondaryColor: "",
-    accentColor: "",
     logoUrl: "",
     currency: "ARS",
     theme: "dark",
@@ -38,16 +31,18 @@ export default function CustomizationPage() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<null | (() => void)>(null);
 
+  // Sync local form with global settings when they load
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await getCustomization();
-        setData((prev) => ({ ...prev, ...res }));
-      } catch {
-        toast.error("Error al cargar configuración ❌");
-      }
-    })();
-  }, []);
+    if (settings) {
+      setData((prev) => ({
+        ...prev,
+        ...settings,
+        // Ensure defaults if missing
+        primaryColor: settings.primaryColor || "#2563eb",
+        currency: settings.currency || "ARS",
+      }));
+    }
+  }, [settings]);
 
   const handleChange = (field: string, value: any) => {
     setData((prev: any) => ({ ...prev, [field]: value }));
@@ -55,8 +50,7 @@ export default function CustomizationPage() {
 
   const saveChanges = async () => {
     try {
-      const res = await updateCustomization(data);
-      setData(res);
+      await updateSettings(data);
       toast.success("Configuración guardada ✔");
     } catch {
       toast.error("Error al guardar ❌");
@@ -168,14 +162,7 @@ export default function CustomizationPage() {
           <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-6">
             <h2 className="text-xl font-semibold text-gray-800">Información general</h2>
   
-            <div>
-              <label className="text-gray-600 text-sm">Nombre del comercio</label>
-              <input
-                value={data.businessName}
-                onChange={(e) => handleChange("businessName", e.target.value)}
-                className="w-full mt-1 p-2 rounded border border-gray-300 bg-gray-50 text-gray-800"
-              />
-            </div>
+
   
             <div>
               <label className="text-gray-600 text-sm">Moneda</label>

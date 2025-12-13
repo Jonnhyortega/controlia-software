@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, Plus, Package } from "lucide-react";
+import { useCustomization } from "../../../../context/CustomizationContext";
 
 interface Product {
   _id: string;
@@ -15,6 +16,7 @@ interface ProductSearchProps {
 }
 
 export default function ProductSearch({ products, onSelect }: ProductSearchProps) {
+  const { formatCurrency } = useCustomization();
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -104,7 +106,7 @@ export default function ProductSearch({ products, onSelect }: ProductSearchProps
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="font-bold text-gray-700">${product.price}</span>
+                    <span className="font-bold text-gray-700">{formatCurrency(product.price)}</span>
                     <button className="p-1 bg-primary text-white rounded-full hover:bg-primary-700">
                       <Plus className="w-4 h-4" />
                     </button>

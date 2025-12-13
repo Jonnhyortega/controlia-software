@@ -6,6 +6,8 @@ import { closeDailyCashById } from "../../../utils/api";
 import OverlayNotification from "../../../components/overlayNotification";
 import { Undo2 } from "lucide-react";
 
+import { FormattedPriceInput } from "../../../components/FormattedPriceInput";
+
 export default function CloseCashForm({
   cashId,
   onBack,
@@ -71,6 +73,7 @@ export default function CloseCashForm({
   // 🟢 SUBMIT — ahora cierra caja por ID
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return; // 🔒 Prevent double submit
     setResponse(null);
 
     const validationError = validateForm();
@@ -155,7 +158,7 @@ export default function CloseCashForm({
             </h4>
 
             {extraExpenses.map((e, i) => (
-              <div key={i} className="flex gap-2 mb-2">
+              <div key={i} className="flex gap-2 mb-2 items-center">
                 <input
                   type="text"
                   placeholder="Descripción"
@@ -172,22 +175,18 @@ export default function CloseCashForm({
                   className="border p-2 rounded w-2/3"
                 />
 
-                <input
-                  type="number"
-                  placeholder="Monto"
-                  value={e.amount}
-                  onChange={(ev) =>
-                    handleChange(
+                <div className="w-1/3">
+                  <FormattedPriceInput
+                    value={e.amount}
+                    onChange={(ev: any) => handleChange(
                       extraExpenses,
                       setExpenses,
                       i,
                       "amount",
                       Number(ev.target.value)
-                    )
-                  }
-                  className="border p-2 rounded w-1/3"
-                  min={0}
-                />
+                    )}
+                    placeholder="Monto" name={""}                  />
+                </div>
               </div>
             ))}
 
@@ -207,7 +206,7 @@ export default function CloseCashForm({
             </h4>
 
             {supplierPayments.map((p, i) => (
-              <div key={i} className="flex gap-2 mb-2">
+              <div key={i} className="flex gap-2 mb-2 items-center">
                 <select
                   value={p.metodo}
                   onChange={(ev) =>
@@ -227,22 +226,18 @@ export default function CloseCashForm({
                   <option value="otro">Otro</option>
                 </select>
 
-                <input
-                  type="number"
-                  placeholder="Monto"
-                  value={p.total}
-                  onChange={(ev) =>
-                    handleChange(
+                <div className="w-1/3">
+                  <FormattedPriceInput
+                    value={p.total}
+                    onChange={(ev: any) => handleChange(
                       supplierPayments,
                       setPayments,
                       i,
                       "total",
                       Number(ev.target.value)
-                    )
-                  }
-                  className="border p-2 rounded w-1/3"
-                  min={0}
-                />
+                    )}
+                    placeholder="Monto" name={""}                  />
+                </div>
               </div>
             ))}
 
@@ -264,6 +259,7 @@ export default function CloseCashForm({
             {loading ? "Cerrando..." : "Cerrar caja"}
           </button>
         </form>
+
 
         {/* 🧾 RESULTADO */}
         {response && (

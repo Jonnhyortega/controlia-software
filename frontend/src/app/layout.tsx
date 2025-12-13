@@ -1,6 +1,7 @@
 import "./globals.css";
 import { ToastProvider } from "../context/ToastContext";
 import { AuthProvider } from "../context/authContext";
+import { CustomizationProvider } from "../context/CustomizationContext";
 import { Inter, Inter_Tight } from "next/font/google";
 
 const inter = Inter({
@@ -13,7 +14,6 @@ const interTight = Inter_Tight({
   variable: "--font-inter-tight",
 });
 
-
 export const metadata = {
   title: "Controlia",
   description: "Sistema de gestión comercial",
@@ -21,14 +21,15 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    // Use className (stable) instead of font "variable" to avoid SSR/CSR mismatch
     <html lang="es" className={`${inter.className} ${interTight.className}`} suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <AuthProvider>
-          <ToastProvider>
-            {children}
-          </ToastProvider>
-        </AuthProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <CustomizationProvider>
+              {children}
+            </CustomizationProvider>
+          </AuthProvider>
+        </ToastProvider>
       </body>
     </html>
   );
