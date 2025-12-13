@@ -12,6 +12,7 @@ import type {
   Supplier,
   Employee,
   UserAPI,
+  Client,
 } from "../types/api";
 import { CreateSaleResponseSchema, DailyCashSchema } from "../validators/apiValidators";
 
@@ -262,6 +263,17 @@ export async function closeDailyCashById(
 }
 
 
+// OBTENER VENTAS PAGINADAS
+export const getSales = async (page = 1, limit = 20): Promise<{
+  sales: Sale[];
+  page: number;
+  pages: number;
+  total: number;
+}> => {
+  const res = await api.get(`/sales?page=${page}&limit=${limit}`);
+  return res.data;
+};
+
 // CREAR VENTA
 export const createSale = async (
   data: { products: SaleProduct[]; total: number; paymentMethod?: string }
@@ -393,6 +405,30 @@ export const updateSupplier = async (id: string, data: Partial<Supplier>): Promi
 // Borrar proveedor
 export const deleteSupplier = async (id: string): Promise<{ message: string }> => {
   const res = await api.delete(`/suppliers/${id}`);
+  return res.data;
+};
+
+
+// ===========================
+//   CLIENTES - CRUD
+// ===========================
+export const getClients = async (): Promise<Client[]> => {
+  const res = await api.get("/clients");
+  return res.data;
+};
+
+export const createClient = async (data: Partial<Client>): Promise<Client> => {
+  const res = await api.post("/clients", data);
+  return res.data;
+};
+
+export const updateClient = async (id: string, data: Partial<Client>): Promise<Client> => {
+  const res = await api.put(`/clients/${id}`, data);
+  return res.data;
+};
+
+export const deleteClient = async (id: string): Promise<{ message: string }> => {
+  const res = await api.delete(`/clients/${id}`);
   return res.data;
 };
 

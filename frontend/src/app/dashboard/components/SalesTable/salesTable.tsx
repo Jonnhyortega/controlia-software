@@ -135,7 +135,7 @@ export default function SalesTable({
           <thead className="bg-primary-50 dark:bg-primary/10 text-gray-700 dark:text-gray-200 border-b dark:border-gray-800">
             <tr>
               <th className="hidden md:table-cell py-3 px-4 text-left font-semibold">#</th>
-              <th className="py-3 px-4 text-left font-semibold">Hora</th>
+              <th className="py-3 px-4 text-left font-semibold">Fecha y hora</th>
               <th className="hidden md:table-cell py-3 px-4 text-left font-semibold">Método</th>
               <th className="hidden md:table-cell py-3 px-4 text-left font-semibold">Productos</th>
               <th className="py-3 px-4 text-right font-semibold">Total</th>

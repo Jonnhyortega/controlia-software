@@ -18,6 +18,7 @@ const mainLinks = [
   { label: "Ventas", icon: ShoppingCart, path: "/dashboard/sales" },
   { label: "Productos", icon: Package, path: "/dashboard/products" },
   { label: "Proveedores", icon: Truck, path: "/dashboard/providers" },
+  { label: "Clientes", icon: Truck, path: "/dashboard/clients" },
 ];
 
 const pluginLinks = [

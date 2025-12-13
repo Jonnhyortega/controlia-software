@@ -103,3 +103,14 @@ export interface Supplier {
   address?: string;
   createdAt?: string;
 }
+
+export interface Client {
+  _id: string;
+  name: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  dni?: string;
+  notes?: string;
+  createdAt?: string;
+}
