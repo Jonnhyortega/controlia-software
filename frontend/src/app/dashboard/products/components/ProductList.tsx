@@ -12,14 +12,14 @@ import { PackageOpen } from "lucide-react";
 export function ProductList({ products, onEdit, onDelete, onHistory }: ProductListProps) {
   if (products.length === 0) {
     return (
-      <div className="bg-white p-10 rounded-2xl shadow-md border border-gray-100 flex flex-col items-center justify-center text-center space-y-4">
-        <div className="bg-gray-100 p-6 rounded-full">
-          <PackageOpen size={48} className="text-gray-400" />
+      <div className="bg-white dark:bg-[#18181b] p-10 rounded-2xl shadow-md border border-gray-100 dark:border-[#27272a] flex flex-col items-center justify-center text-center space-y-4 transition-colors">
+        <div className="bg-gray-100 dark:bg-[#27272a] p-6 rounded-full transition-colors">
+          <PackageOpen size={48} className="text-gray-400 dark:text-gray-500" />
         </div>
-        <h3 className="text-xl font-semibold text-gray-800">
+        <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
           No se encontraron productos
         </h3>
-        <p className="text-gray-500 max-w-sm">
+        <p className="text-gray-500 dark:text-gray-400 max-w-sm">
           Intenta ajustar los filtros de búsqueda o agrega un nuevo producto a tu inventario.
         </p>
       </div>
@@ -27,8 +27,8 @@ export function ProductList({ products, onEdit, onDelete, onHistory }: ProductLi
   }
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
-      <h2 className="text-lg font-semibold text-primary mb-6">
+    <div className="bg-white dark:bg-background p-6 rounded-2xl shadow-md border border-gray-100 dark:border-border transition-colors">
+      <h2 className="text-lg font-semibold text-primary dark:text-blue-400 mb-6">
         Lista de productos
       </h2>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { BadgePlus, BookOpenCheck, XCircle, TrendingDown, DollarSign } from "lucide-react";
+import { BadgePlus, BookOpenCheck, XCircle, TrendingDown, Wallet } from "lucide-react";
 import { useCustomization } from "../../../context/CustomizationContext";
 
 export default function DashboardHeader({
@@ -12,80 +12,96 @@ export default function DashboardHeader({
   showExpenseForm,
   userRole,
   isCashClosed,
-  totalRevenue = 0, // 👈 Nueva prop
+  totalRevenue = 0,
 }: any) {
   const { formatCurrency } = useCustomization();
 
   return (
-    <header className="relative flex flex-col md:flex-row justify-between items-center w-full gap-4 md:gap-6 bg-primary text-white py-4 px-4 md:py-6 md:px-8 rounded-2xl shadow-lg overflow-hidden">
-      {/* Background Gradient Overlay to simulate depth without hardcoded colors */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/40 pointer-events-none" />
-      
-      {/* Content wrapper for z-index */}
-      <div className="relative z-10 flex flex-col md:flex-row justify-between items-center w-full gap-4 md:gap-6">
+    <header className="relative w-full bg-white dark:bg-[#09090b] border border-gray-100 dark:border-zinc-800 p-6 md:p-8 rounded-3xl shadow-sm overflow-hidden group">
+      {/* Decorative Blob */}
+      <div className="absolute top-0 right-0 p-32 bg-primary/5 dark:bg-primary/10 rounded-full blur-[90px] pointer-events-none -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-colors duration-700 opacity-50 dark:opacity-100" />
 
-      {/* IZQUIERDA */}
-      <div className="flex flex-col items-center md:items-start text-center md:text-left">
-        <h2 className="text-2xl md:text-3xl font-bold leading-tight">Ventas del día</h2>
-        <span className="text-xs md:text-sm opacity-80 mt-1 mb-3">Panel general de actividad</span>
-        
-        {/* Recaudación Final destacada */}
-        <div className="bg-white text-green-600 px-4 py-1.5 rounded-full font-bold text-sm md:text-base shadow-sm flex items-center gap-2">
-            {/* <DollarSign size={18} className="text-green-600 stroke-[3]" /> */}
-            <span>Recaudación: {formatCurrency(totalRevenue)}</span>
+      <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
+        {/* Left Side: Title & Revenue */}
+        <div className="text-center md:text-left space-y-3">
+          <div className="flex items-center justify-center md:justify-start gap-3">
+            <div className="p-2.5 bg-primary/10 dark:bg-primary/20 rounded-2xl text-primary shadow-sm">
+              <Wallet size={26} />
+            </div>
+            <div>
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">
+                    Ventas del día
+                </h2>
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mt-1">
+                    Panel general de actividad
+                </p>
+            </div>
+          </div>
+
+          {/* Revenue Badge */}
+          <div className="inline-flex items-center gap-2 mt-2 px-5 py-2.5 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30 rounded-2xl font-bold text-xl shadow-sm">
+            <span>{formatCurrency(totalRevenue)}</span>
+          </div>
         </div>
-      </div>
 
-      {/* DERECHA (Botones) */}
-      <div className="flex gap-2 md:gap-4 w-full md:w-auto justify-center">
-        {/* BTN Nueva venta */}
-        <button
-          onClick={onNewSale}
-          disabled={isCashClosed}
-          className={`flex-1 md:flex-none flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 transition-all px-4 py-2 md:px-5 md:py-2.5 rounded-xl shadow-md font-medium text-sm md:text-base ${
-             isCashClosed ? "opacity-50 cursor-not-allowed hover:bg-white/20" : ""
-          }`}
-        >
-          {showSalesForm ? (
-            <XCircle className="w-4 h-4 md:w-5 md:h-5" />
-          ) : (
-            <BadgePlus className="w-4 h-4 md:w-5 md:h-5" />
-          )}
-          <span>{showSalesForm ? "Cerrar" : "Nueva venta"}</span>
-        </button>
+        {/* Right Side - Actions */}
+        <div className="flex flex-wrap justify-center gap-3 w-full md:w-auto">
+          {/* New Sale (Primary Action) */}
+          <button
+            onClick={onNewSale}
+            disabled={isCashClosed}
+            className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl font-semibold shadow-lg shadow-primary/20 transition-all active:scale-95 hover:-translate-y-0.5
+                  ${
+                    isCashClosed
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-zinc-800 dark:text-zinc-600 shadow-none hover:translate-y-0"
+                      : "bg-primary hover:bg-primary-600 text-white"
+                  }
+               `}
+          >
+            {showSalesForm ? <XCircle size={20} /> : <BadgePlus size={20} />}
+            {showSalesForm ? "Cerrar" : "Nueva Venta"}
+          </button>
 
-         {/* BTN Registrar Gasto */}
-         <button
-          onClick={onAddExpense}
-          disabled={isCashClosed}
-          className={`flex-1 md:flex-none flex items-center justify-center gap-2 bg-rose-500/20 hover:bg-rose-500/30 transition-all px-4 py-2 md:px-5 md:py-2.5 rounded-xl shadow-md font-medium text-sm md:text-base border border-rose-200/20 ${
-             isCashClosed ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          {showExpenseForm ? (
-             <XCircle className="w-4 h-4 md:w-5 md:h-5" />
-          ) : (
-             <TrendingDown className="w-4 h-4 md:w-5 md:h-5" />
-          )}
-          <span>{showExpenseForm ? "Cerrar" : "Gasto / Pago"}</span>
-        </button>
+          {/* Expense (Secondary Action) */}
+          <button
+            onClick={onAddExpense}
+            disabled={isCashClosed}
+            className={`flex items-center gap-2 px-5 py-3.5 rounded-2xl font-medium border transition-all active:scale-95 hover:-translate-y-0.5
+                  ${
+                    isCashClosed
+                      ? "opacity-50 cursor-not-allowed bg-gray-50 border-gray-100 text-gray-400 shadow-none hover:translate-y-0"
+                      : "bg-rose-50 border-rose-100 text-rose-600 hover:bg-rose-100 dark:bg-rose-900/10 dark:border-rose-900/30 dark:text-rose-400 dark:hover:bg-rose-900/20"
+                  }
+               `}
+          >
+            {showExpenseForm ? (
+              <XCircle size={20} />
+            ) : (
+              <TrendingDown size={20} />
+            )}
+            {showExpenseForm ? "Cerrar" : "Gasto / Pago"}
+          </button>
 
-        {/* BTN Cerrar caja */}
-        <button
-          onClick={onCloseCash}
-          disabled={isCashClosed && userRole !== "admin"}
-          className={`flex-1 md:flex-none flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 transition-all px-4 py-2 md:px-5 md:py-2.5 rounded-xl shadow-md font-medium text-sm md:text-base ${
-             isCashClosed && userRole !== "admin" ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          {showCloseCashForm ? (
-            <XCircle className="w-4 h-4 md:w-5 md:h-5" />
-          ) : (
-            <BookOpenCheck className="w-4 h-4 md:w-5 md:h-5" />
-          )}
-          <span>{showCloseCashForm ? "Cerrar" : "Cerrar caja"}</span>
-        </button>
-      </div>
+          {/* Close Cash (Tertiary/Standard Action) */}
+          <button
+            onClick={onCloseCash}
+            disabled={isCashClosed && userRole !== "admin"}
+            className={`flex items-center gap-2 px-5 py-3.5 rounded-2xl font-medium border transition-all active:scale-95 hover:-translate-y-0.5
+                  ${
+                    isCashClosed && userRole !== "admin"
+                      ? "opacity-50 cursor-not-allowed"
+                      : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50 dark:bg-zinc-900 dark:border-zinc-800 dark:text-gray-300 dark:hover:bg-zinc-800"
+                  }
+               `}
+          >
+            {showCloseCashForm ? (
+              <XCircle size={20} />
+            ) : (
+              <BookOpenCheck size={20} />
+            )}
+            {showCloseCashForm ? "Cerrar" : "Cerrar Caja"}
+          </button>
+        </div>
       </div>
     </header>
   );

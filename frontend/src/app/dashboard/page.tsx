@@ -134,7 +134,7 @@ export default function DashboardPage() {
       <div className="mt-6 px-1">
          <button
             onClick={() => setShowExpenses(!showExpenses)}
-            className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-rose-500 transition-colors bg-gray-50 px-4 py-2 rounded-lg border border-gray-100 mb-2"
+            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-rose-500 transition-colors bg-muted/40 hover:bg-muted px-4 py-2 rounded-lg border border-border mb-2"
          >
             <TrendingDown size={16} />
             {showExpenses ? "Ocultar gastos y pagos" : "Ver gastos y pagos del día"}
@@ -290,7 +290,7 @@ export default function DashboardPage() {
           <div className="mt-6 mb-8">
              <button
                 onClick={() => setShowStats(!showStats)}
-                className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-primary transition-colors bg-gray-50 px-4 py-2 rounded-lg border border-gray-100"
+                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors bg-muted/40 hover:bg-muted px-4 py-2 rounded-lg border border-border"
              >
                 <BarChart3 size={16} />
                 {showStats ? "Ocultar gráficos y estadísticas" : "Ver gráficos generales de hoy"}

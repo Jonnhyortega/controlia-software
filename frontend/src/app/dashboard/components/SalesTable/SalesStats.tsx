@@ -53,18 +53,18 @@ export default function SalesStats({ sales }: SalesStatsProps) {
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white p-4 rounded-xl border border-indigo-100 shadow-sm flex items-center gap-4"
+        className="bg-white dark:bg-[#18181b] p-4 rounded-xl border border-indigo-100 dark:border-indigo-900/30 shadow-sm flex items-center gap-4 transition-colors"
       >
-        <div className="p-3 bg-indigo-50 text-indigo-600 rounded-lg">
+        <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg">
           <ShoppingBag size={24} />
         </div>
         <div>
-          <p className="text-sm text-gray-500 font-medium">Más Vendido</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Más Vendido</p>
           <div className="flex items-baseline gap-2">
-             <h4 className="text-lg font-bold text-gray-800 truncate max-w-[150px]" title={topProductName}>
+             <h4 className="text-lg font-bold text-gray-800 dark:text-white truncate max-w-[150px]" title={topProductName}>
                {topProductName}
              </h4>
-             <span className="text-xs text-indigo-600 font-semibold bg-indigo-50 px-2 py-0.5 rounded-full">
+             <span className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold bg-indigo-50 dark:bg-indigo-900/40 px-2 py-0.5 rounded-full">
                x{topProductCount}
              </span>
           </div>
@@ -76,14 +76,14 @@ export default function SalesStats({ sales }: SalesStatsProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-white p-4 rounded-xl border border-orange-100 shadow-sm flex items-center gap-4"
+        className="bg-white dark:bg-[#18181b] p-4 rounded-xl border border-orange-100 dark:border-orange-900/30 shadow-sm flex items-center gap-4 transition-colors"
       >
-        <div className="p-3 bg-orange-50 text-orange-600 rounded-lg">
+        <div className="p-3 bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 rounded-lg">
           <Clock size={24} />
         </div>
         <div>
-          <p className="text-sm text-gray-500 font-medium">Hora Pico</p>
-          <h4 className="text-lg font-bold text-gray-800">{peakHour}</h4>
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Hora Pico</p>
+          <h4 className="text-lg font-bold text-gray-800 dark:text-white">{peakHour}</h4>
         </div>
       </motion.div>
 
@@ -92,14 +92,14 @@ export default function SalesStats({ sales }: SalesStatsProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm flex items-center gap-4"
+        className="bg-white dark:bg-[#18181b] p-4 rounded-xl border border-emerald-100 dark:border-emerald-900/30 shadow-sm flex items-center gap-4 transition-colors"
       >
-        <div className="p-3 bg-emerald-50 text-emerald-600 rounded-lg">
+        <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg">
           <Receipt size={24} />
         </div>
         <div>
-          <p className="text-sm text-gray-500 font-medium">Ticket Promedio</p>
-          <h4 className="text-lg font-bold text-gray-800">{formatCurrency(avgTicket)}</h4>
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Ticket Promedio</p>
+          <h4 className="text-lg font-bold text-gray-800 dark:text-white">{formatCurrency(avgTicket)}</h4>
         </div>
       </motion.div>
 

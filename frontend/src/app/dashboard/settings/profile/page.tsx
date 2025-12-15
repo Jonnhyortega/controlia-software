@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "../../../../context/ToastContext";
 import { useAuth } from "../../../../context/authContext";
 import { getProfile, updateProfile, changeMyPassword } from "../../../../utils/api";
-import { Lock, Save, User } from "lucide-react";
+import { Lock, Save, User, Eye, EyeOff } from "lucide-react";
 
 export default function ProfilePage() {
   const toast = useToast();
@@ -12,6 +12,10 @@ export default function ProfilePage() {
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+
+  // State for password visibility
+  const [showOldPass, setShowOldPass] = useState(false);
+  const [showNewPass, setShowNewPass] = useState(false);
 
   // FORM: datos personales
   const [form, setForm] = useState({
@@ -109,7 +113,7 @@ export default function ProfilePage() {
       ====================================== */}
       <form
         onSubmit={handleSave}
-        className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-6 space-y-5"
+        className="bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] rounded-2xl p-6 space-y-5"
       >
         <h2 className="text-lg font-semibold text-primary-300 flex items-center gap-2">
           <User size={20} /> Información personal
@@ -122,7 +126,7 @@ export default function ProfilePage() {
             type="text"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="bg-[#121212] border border-[#1f1f1f] p-2 rounded text-gray-200"
+            className="bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             required
           />
         </div>
@@ -134,7 +138,7 @@ export default function ProfilePage() {
             type="text"
             value={form.businessName}
             onChange={(e) => setForm({ ...form, businessName: e.target.value })}
-            className="bg-[#121212] border border-[#1f1f1f] p-2 rounded text-gray-200"
+            className="bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             required
           />
         </div>
@@ -146,7 +150,7 @@ export default function ProfilePage() {
             type="text"
             value={form.address}
             onChange={(e) => setForm({ ...form, address: e.target.value })}
-            className="bg-[#121212] border border-[#1f1f1f] p-2 rounded text-gray-200"
+            className="bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             placeholder="Ej: Av. Rivadavia 1234, CABA"
           />
         </div>
@@ -159,7 +163,7 @@ export default function ProfilePage() {
               type="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="bg-[#121212] border border-[#1f1f1f] p-2 rounded text-gray-200"
+              className="bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
               required
             />
           </div>
@@ -194,7 +198,7 @@ export default function ProfilePage() {
       ====================================== */}
       <form
         onSubmit={handlePasswordChange}
-        className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-6 space-y-5"
+        className="bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] rounded-2xl p-6 space-y-5"
       >
         <h2 className="text-lg font-semibold text-primary-300 flex items-center gap-2">
           <Lock size={20} /> Cambiar contraseña
@@ -203,29 +207,47 @@ export default function ProfilePage() {
         {/* Contraseña actual */}
         <div className="flex flex-col">
           <label className="text-sm text-gray-400 mb-1">Contraseña actual</label>
-          <input
-            type="password"
-            value={passwordForm.oldPassword}
-            onChange={(e) =>
-              setPasswordForm({ ...passwordForm, oldPassword: e.target.value })
-            }
-            className="bg-[#121212] border border-[#1f1f1f] p-2 rounded text-gray-200"
-            required
-          />
+          <div className="relative">
+            <input
+              type={showOldPass ? "text" : "password"}
+              value={passwordForm.oldPassword}
+              onChange={(e) =>
+                setPasswordForm({ ...passwordForm, oldPassword: e.target.value })
+              }
+              className="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 pr-10 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowOldPass(!showOldPass)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+            >
+              {showOldPass ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
         </div>
 
         {/* Nueva contraseña */}
         <div className="flex flex-col">
           <label className="text-sm text-gray-400 mb-1">Nueva contraseña</label>
-          <input
-            type="password"
-            value={passwordForm.newPassword}
-            onChange={(e) =>
-              setPasswordForm({ ...passwordForm, newPassword: e.target.value })
-            }
-            className="bg-[#121212] border border-[#1f1f1f] p-2 rounded text-gray-200"
-            required
-          />
+          <div className="relative">
+            <input
+              type={showNewPass ? "text" : "password"}
+              value={passwordForm.newPassword}
+              onChange={(e) =>
+                setPasswordForm({ ...passwordForm, newPassword: e.target.value })
+              }
+              className="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 pr-10 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowNewPass(!showNewPass)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+            >
+              {showNewPass ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
         </div>
 
         {/* BOTÓN CAMBIAR */}

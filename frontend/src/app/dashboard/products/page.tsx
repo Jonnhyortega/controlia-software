@@ -16,7 +16,7 @@ import ConfigCategories from "./components/ConfigCategories";
 import { ProductHistoryModal } from "./components/ProductHistoryModal";
 
 import Loading from "../../../components/loading";
-import { Undo2, X } from "lucide-react";
+import { X } from "lucide-react";
 import Overlay from "../components/overlay";
 
 export default function ProductsPage() {
@@ -60,7 +60,7 @@ export default function ProductsPage() {
               onClick={() => p.setShowForm(false)}
               className="absolute -top-4 -right-4 md:-right-10 text-gray-500 hover:text-red-500 transition p-2 bg-gray-100 rounded-full hover:bg-gray-200"
             >
-              <Undo2 size={24} />
+              <X size={24} />
             </button>
 
             <ProductForm

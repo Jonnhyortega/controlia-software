@@ -2,6 +2,8 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -22,14 +24,31 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
-  return (
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [open]);
+
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
-          className="
-            fixed inset-0 z-[999] flex items-center justify-center 
-            bg-black/40 backdrop-blur-sm
-          "
+          className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -37,43 +56,45 @@ export function ConfirmDialog({
         >
           <motion.div
             onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.2 }}
             className="
-              bg-white/10 backdrop-blur-xl 
-              border border-white/20 
+              relative bg-zinc-900 border border-zinc-800 
               shadow-2xl rounded-2xl 
-              max-w-sm w-[90%] p-6 text-center
+              max-w-sm w-full p-6 text-center overflow-hidden
             "
           >
+            {/* Gradient Glow */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-24 bg-red-500/10 blur-3xl -z-10 pointer-events-none" />
+
             {/* Icono */}
-            <div className="flex justify-center mb-3">
-              <div className="bg-blue-500/15 p-3 rounded-full">
-                <AlertCircle className="text-blue-500 w-8 h-8" />
+            <div className="flex justify-center mb-5">
+              <div className="bg-red-500/10 p-4 rounded-2xl ring-1 ring-red-500/20">
+                <AlertCircle className="text-red-500 w-8 h-8" />
               </div>
             </div>
 
             {/* Título */}
-            <h2 className="text-xl font-semibold text-white mb-2 drop-shadow-sm">
+            <h2 className="text-xl font-bold text-white mb-2">
               {title}
             </h2>
 
             {/* Mensaje */}
-            <p className="text-gray-200 mb-6 text-[15px] leading-relaxed">
+            <p className="text-gray-400 mb-8 text-[15px] leading-relaxed">
               {message}
             </p>
 
             {/* Botones */}
-            <div className="flex justify-center gap-3">
+            <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={onCancel}
                 className="
-                  px-4 py-2 rounded-lg
-                  bg-white/20 hover:bg-white/30 
-                  text-white font-medium
-                  transition
+                  px-4 py-2.5 rounded-xl
+                  bg-zinc-800 hover:bg-zinc-700 
+                  text-gray-300 font-medium
+                  transition border border-zinc-700
                 "
               >
                 {cancelText}
@@ -82,10 +103,10 @@ export function ConfirmDialog({
               <button
                 onClick={onConfirm}
                 className="
-                  px-4 py-2 rounded-lg
+                  px-4 py-2.5 rounded-xl
                   bg-red-600 hover:bg-red-700 
                   text-white font-semibold
-                  transition shadow-lg
+                  transition shadow-lg shadow-red-500/20
                 "
               >
                 {confirmText}
@@ -94,6 +115,7 @@ export function ConfirmDialog({
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

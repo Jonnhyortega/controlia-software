@@ -51,7 +51,7 @@ export default function ProductSearch({ products, onSelect }: ProductSearchProps
   return (
     <div ref={wrapperRef} className="relative w-full mb-6 z-[100]">
       <div className="flex flex-col gap-2">
-        <label htmlFor="search-product" className="text-black font-bold text-lg px-1">
+        <label htmlFor="search-product" className="text-gray-800 dark:text-gray-500 font-bold text-lg px-1">
           Buscar producto por nombre o código...
         </label>
         <div className="relative">
@@ -91,6 +91,7 @@ export default function ProductSearch({ products, onSelect }: ProductSearchProps
                     px-4 py-3 hover:bg-gray-50 cursor-pointer
                     flex items-center justify-between
                     border-b border-gray-50 last:border-none
+                    dark:bg-gray-800 dark:hover:bg-gray-700
                   "
                 >
                   <div className="flex items-center gap-3">
@@ -98,16 +99,16 @@ export default function ProductSearch({ products, onSelect }: ProductSearchProps
                       <Package className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-800">{product.name}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="font-medium text-gray-800 dark:text-gray-200">{product.name}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         Stock: <span className={product.stock > 0 ? "text-green-600" : "text-red-500"}>{product.stock}</span>
                         {product.barcode && ` • Código: ${product.barcode}`}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="font-bold text-gray-700">{formatCurrency(product.price)}</span>
-                    <button className="p-1 bg-primary text-white rounded-full hover:bg-primary-700">
+                    <span className="font-bold text-gray-700 dark:text-gray-200">{formatCurrency(product.price)}</span>
+                    <button className="p-1 bg-primary text-white dark:text-gray-800 rounded-full hover:bg-primary-700">
                       <Plus className="w-4 h-4" />
                     </button>
                   </div>

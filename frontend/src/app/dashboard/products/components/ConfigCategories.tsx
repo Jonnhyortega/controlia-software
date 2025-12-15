@@ -79,24 +79,24 @@ export default function ConfigCategories({ onClose, reloadCategories }: Props) {
     <>
       {/* OVERLAY */}
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[999] flex items-center justify-center"
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[999] flex items-center justify-center transition-all"
         onClick={onClose}
       >
         <div
-          className="relative bg-white p-6 rounded-2xl w-full max-w-md shadow-lg"
+          className="relative bg-white dark:bg-[#18181b] p-6 rounded-2xl w-full max-w-md shadow-lg transition-colors border border-transparent dark:border-[#27272a]"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Botón cerrar */}
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
           >
             <Undo2 size={30} />
           </button>
 
-          <h2 className="text-xl font-extrabold text-primary mb-4 flex flex-col gap-1">
+          <h2 className="text-xl font-extrabold text-primary dark:text-primary-300 mb-4 flex flex-col gap-1">
             Configuracion de Categorías
-            <small className="text-sm font-[300] text-gray-600">Agrega categorias para identificar tus productos mas facilmente</small>
+            <small className="text-sm font-[300] text-gray-600 dark:text-gray-400">Agrega categorias para identificar tus productos mas facilmente</small>
           </h2>
 
           {/* LOADER CUANDO ESTÁ CARGANDO */}
@@ -112,11 +112,11 @@ export default function ConfigCategories({ onClose, reloadCategories }: Props) {
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value)}
                   placeholder="Nueva categoría"
-                  className="border px-3 py-2 rounded-lg flex-1"
+                  className="border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white px-3 py-2 rounded-lg flex-1 outline-none focus:ring-2 focus:ring-primary/20"
                 />
                 <button
                   onClick={handleAdd}
-                  className="bg-primary text-white px-3 rounded-lg hover:bg-primary-700"
+                  className="bg-primary text-white px-3 rounded-lg hover:bg-primary-700 transition"
                 >
                   <Plus className="w-5 h-5" />
                 </button>
@@ -124,21 +124,21 @@ export default function ConfigCategories({ onClose, reloadCategories }: Props) {
 
               {/* Lista */}
               {categories.length === 0 ? (
-                <p className="text-gray-500 text-sm text-center py-4">
+                <p className="text-gray-500 dark:text-gray-400 text-sm text-center py-4">
                   No hay categorías aún.
                 </p>
               ) : (
-                <ul className="space-y-2">
+                <ul className="space-y-2 max-h-60 overflow-y-auto pr-1">
                   {categories.map((cat) => (
                     <li
                       key={cat}
-                      className="flex items-center justify-between bg-gray-100 px-3 py-2 rounded-lg"
+                      className="flex items-center justify-between bg-gray-100 dark:bg-[#27272a] px-3 py-2 rounded-lg text-gray-800 dark:text-gray-200 border border-transparent dark:border-[#3f3f46]"
                     >
                       <span>{cat}</span>
 
                       <button
                         onClick={() => askDelete(cat)}
-                        className="text-red-500 hover:text-red-700"
+                        className="text-red-500 hover:text-red-700 dark:hover:text-red-400 transition"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -150,6 +150,8 @@ export default function ConfigCategories({ onClose, reloadCategories }: Props) {
           )}
         </div>
       </div>
+
+      {/* CONFIRM DIALOG - Should handle its own dark mode if implemented correctly contextually, but verify ConfirmDialog later if needed */}
 
       {/* CONFIRM DIALOG */}
       <ConfirmDialog

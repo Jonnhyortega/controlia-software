@@ -49,7 +49,7 @@ export default function SettingsPage() {
         Configuración del sistema
       </h1>
 
-      <p className="text-gray-400 mb-10">
+      <p className="text-gray-500 dark:text-gray-400 mb-10">
         Administrá tu cuenta, tus empleados y las preferencias de Controlia.
       </p>
 
@@ -59,17 +59,17 @@ export default function SettingsPage() {
           <button
             key={i}
             onClick={card.action}
-            className="group bg-[#0f0f0f] border border-[#1f1f1f] p-6 rounded-2xl 
+            className="group bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] p-6 rounded-2xl 
                       shadow-md hover:shadow-[0_10px_30px_rgba(37,99,235,0.08)] hover:border-primary/40 
                        transition-all text-left"
           >
             <div className="mb-3">{card.icon}</div>
 
-            <h3 className="text-lg font-semibold text-gray-200 group-hover:text-primary-300 transition">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-300 transition">
               {card.title}
             </h3>
 
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               {card.desc}
             </p>
           </button>

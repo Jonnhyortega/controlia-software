@@ -211,12 +211,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email: data.email, // Retornar email para redirección
       };
     } catch (err: any) {
-      console.error("❌ Error en registro:", err.response?.data || err);
+      // Usar warn en lugar de error para evitar overlay blocking en desarrollo
+      console.warn("⚠️ Error capturado en registro:", err.response?.data || err);
+      
+      // PREVENIR CRASH: Asegurar que message sea string
+      const rawMessage = err?.response?.data?.message;
+      let safeMessage = "Error al crear la cuenta. Intenta nuevamente.";
+
+      if (typeof rawMessage === "string") {
+        safeMessage = rawMessage;
+      } else if (Array.isArray(rawMessage)) {
+        safeMessage = rawMessage.map(String).join(", ");
+      } else if (typeof rawMessage === "object") {
+        // Si es objeto, intentamos mostrar algo genérico o stringify
+        safeMessage = "Error de validación (datos incorrectos).";
+      }
+
       return {
         success: false,
-        message:
-          err?.response?.data?.message ||
-          "Error al crear la cuenta. Intenta nuevamente.",
+        message: safeMessage,
       };
     }
   };

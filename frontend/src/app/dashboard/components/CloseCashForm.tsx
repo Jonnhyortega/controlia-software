@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { closeDailyCashById } from "../../../utils/api";
 import OverlayNotification from "../../../components/overlayNotification";
-import { Undo2 } from "lucide-react";
+import { X } from "lucide-react";
 
 import { FormattedPriceInput } from "../../../components/FormattedPriceInput";
 
@@ -133,19 +133,19 @@ export default function CloseCashForm({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
-        className="bg-white border border-gray-200 shadow-sm rounded-2xl p-6"
+        className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 shadow-sm rounded-2xl p-6"
       >
         {/* HEADER */}
         <div className="flex justify-between mb-6">
-          <h3 className="text-xl font-semibold text-gray-800">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
             Cerrar caja del día
           </h3>
 
           <button
             onClick={onBack}
-            className="text-sm px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100"
+            className="text-sm px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white"
           >
-            <Undo2 />
+            <X size={20} />
           </button>
         </div>
 
@@ -153,7 +153,7 @@ export default function CloseCashForm({
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* 🟣 GASTOS */}
           <section>
-            <h4 className="font-semibold text-gray-700 mb-2">
+            <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">
               Gastos extras
             </h4>
 
@@ -172,7 +172,7 @@ export default function CloseCashForm({
                       ev.target.value
                     )
                   }
-                  className="border p-2 rounded w-2/3"
+                  className="border border-gray-200 dark:border-gray-700 dark:bg-[#1a1a1a] dark:text-white p-2 rounded w-2/3"
                 />
 
                 <div className="w-1/3">
@@ -201,7 +201,7 @@ export default function CloseCashForm({
 
           {/* 🟡 PAGOS A PROVEEDORES */}
           <section>
-            <h4 className="font-semibold text-gray-700 mb-2">
+            <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">
               Pagos a proveedores
             </h4>
 
@@ -218,7 +218,7 @@ export default function CloseCashForm({
                       ev.target.value
                     )
                   }
-                  className="border p-2 rounded w-1/3"
+                  className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] dark:text-white p-2 rounded w-1/3"
                 >
                   <option value="efectivo">Efectivo</option>
                   <option value="transferencia">Transferencia</option>

@@ -130,13 +130,6 @@ export default function ClientForm({ initialData, onSubmit, onCancel, isSubmitti
           {/* Actions */}
           <div className="flex gap-3 pt-2">
             <button
-              type="button"
-              onClick={onCancel}
-              className="flex-1 py-3 order-1 md:order-none bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition"
-            >
-              Cancelar
-            </button>
-            <button
               type="submit"
               disabled={isSubmitting}
               className={`flex-1 py-3 order-2 bg-primary hover:bg-primary-600 text-white font-bold rounded-xl transition shadow-lg shadow-primary/20 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}

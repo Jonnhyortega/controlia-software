@@ -3,7 +3,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
-  Undo2,
   Package,
   Hash,
   DollarSign,
@@ -11,6 +10,7 @@ import {
   Trash2,
   CreditCard,
   ShoppingCart,
+  X,
 } from "lucide-react";
 
 import { ConfirmDialog } from "../../../dashboard/components/confirmDialog";
@@ -329,29 +329,29 @@ export default function SalesForm({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed inset-0 z-[9999] overflow-y-auto w-full h-full bg-gray-200"
+      className="fixed inset-0 z-50 flex justify-center items-start overflow-y-auto bg-black/60 backdrop-blur-md p-4 md:p-6"
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: -20 }}
         transition={{ duration: 0.35 }}
-        className="w-full min-h-full p-8 relative"
+        className="relative w-full max-w-5xl bg-gray-100 dark:bg-[#09090b] rounded-3xl shadow-2xl my-4 md:my-8 p-6 md:p-8 border border-white/20 dark:border-zinc-800"
       >
-        <div className="relative flex justify-between items-center mb-6 pb-3 border-b border-gray-200 ">
+        <div className="relative flex justify-between items-center mb-6 pb-3 border-b border-gray-200 dark:border-gray-800">
           <div className="flex items-center gap-3">
             <ShoppingCart className="text-primary w-7 h-7" />
-            <h3 className="font-display text-2xl font-semibold text-gray-800">
+            <h3 className="font-display text-2xl font-semibold text-gray-800 dark:text-white">
               Registrar nueva venta
             </h3>
           </div>
 
-          <div className="flex items-center gap-2 fixed right-5 top-5 z-[10000]">
+          <div className="flex items-center gap-2">
             <button
               onClick={onBack}
-              className="group p-2 rounded-xl border border-gray-200 text-gray-600 hover:text-gray-800 hover:bg-red-600 transition"
+              className="group p-2 rounded-xl border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800/50 text-gray-600 dark:text-gray-300 hover:bg-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:text-white transition-all shadow-sm"
             >
-              <Undo2 className="w-8 h-8" color="black"/>
+              <X className="w-6 h-6" />
             </button>
           </div>
         </div>
@@ -359,118 +359,102 @@ export default function SalesForm({
         <ProductSearch products={productsDB} onSelect={addProductToSale} />
 
         <div className="space-y-8">
-        {newSale.products.map((p, i) => {
-         const isOther = p.productId === "otro";
-          const selectedProduct = productsDB.find(item => item._id === p.productId);
+        <div className="bg-white dark:bg-zinc-900/50 rounded-xl border border-gray-200 dark:border-zinc-800 overflow-hidden shadow-sm">
+          {/* Table Header (Desktop) */}
+          <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-2 bg-gray-50 dark:bg-zinc-800/80 border-b border-gray-200 dark:border-zinc-800 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <div className="col-span-5">Producto</div>
+            <div className="col-span-2 text-center">Cant.</div>
+            <div className="col-span-3 text-right pr-4">Precio Unit.</div>
+            <div className="col-span-2 text-center">Acciones</div>
+          </div>
 
-          return (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 space-y-6 transition-all z-50"
-            >
+          <div className="divide-y divide-gray-100 dark:divide-zinc-800/50">
+            {newSale.products.map((p, i) => {
+              const isOther = p.productId === "otro";
+              const selectedProduct = productsDB.find((item) => item._id === p.productId);
 
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <Package className="w-5 h-5 text-gray-500" />
-                  <h4 className="font-display text-lg text-gray-800">
-                    Producto {i + 1}
-                  </h4>
-                </div>
-
-                {i > 0 && (
-                  <button
-                    onClick={() => removeProductField(i)}
-                    className="text-red-600 hover:text-red-500 flex items-center gap-1 font-medium"
-                  >
-                    <Trash2 className="w-4 h-4" /> Quitar
-                  </button>
-                )}
-              </div>
-
-              <div className="grid grid-cols-12 gap-5">
-                <div className="col-span-12 md:col-span-6">
-                  <label className="text-sm font-semibold text-gray-700 mb-1 block">
-                    Producto
-                  </label>
-                  <select
-                    value={p.productId}
-                    onChange={(e) =>
-                      handleProductChange(i, "productId", e.target.value)
-                    }
-                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-400"
-                  >
-                    <option value="">Seleccionar producto</option>
-                    {productsDB.map((prod) => (
-                      <option key={prod._id} value={prod._id}>
-                        {prod.name} — Stock: {prod.stock}
-                      </option>
-                    ))}
-                    <option value="otro">Otro (manual)</option>
-                  </select>
-                </div>
-
-                {isOther && (
-                  <div className="col-span-12 md:col-span-6">
-                    <label className="text-sm font-semibold text-gray-700 mb-1 block">
-                      Nombre del producto
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Ej: Cable HDMI 2m"
-                      value={p.name}
-                      onChange={(e) =>
-                        handleProductChange(i, "name", e.target.value)
-                      }
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-400"
-                    />
+              return (
+                <div key={i} className="p-3 md:px-4 md:py-2 grid grid-cols-1 md:grid-cols-12 gap-3 items-start md:items-center hover:bg-gray-50 dark:hover:bg-zinc-800/30 transition-colors group">
+                  
+                  {/* Product Select */}
+                  <div className="md:col-span-5 flex flex-col gap-2">
+                     <span className="md:hidden text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Producto</span>
+                     <select
+                        value={p.productId}
+                        onChange={(e) => handleProductChange(i, "productId", e.target.value)}
+                        className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-400/50"
+                      >
+                        <option value="">Seleccionar producto</option>
+                        {productsDB.map((prod) => (
+                          <option key={prod._id} value={prod._id}>
+                            {prod.name} — Stock: {prod.stock}
+                          </option>
+                        ))}
+                        <option value="otro">Otro (manual)</option>
+                      </select>
+                      
+                      {isOther && (
+                        <input
+                          type="text"
+                          placeholder="Nombre del producto..."
+                          value={p.name}
+                          onChange={(e) => handleProductChange(i, "name", e.target.value)}
+                          className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent dark:text-white px-3 py-1.5 text-sm focus:ring-2 focus:ring-primary-400/50"
+                        />
+                      )}
                   </div>
-                )}
 
-                <div className="col-span-12 md:col-span-3">
-                  <label className="text-sm font-semibold text-gray-700 mb-1 block">
-                    Cantidad
-                  </label>
-                  <input
-                    type="number"
-                    min={1}
-                    value={p.quantity}
-                    onChange={(e) =>
-                      handleProductChange(i, "quantity", e.target.value)
-                    }
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-400"
-                  />
+                  {/* Quantity */}
+                  <div className="md:col-span-2">
+                     <span className="md:hidden text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-1 block">Cantidad</span>
+                     <input
+                        type="number"
+                        min={1}
+                        value={p.quantity}
+                        onChange={(e) => handleProductChange(i, "quantity", e.target.value)}
+                        className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white px-2 py-1.5 text-sm text-center focus:ring-2 focus:ring-primary-400/50"
+                      />
+                  </div>
+
+                  {/* Price */}
+                  <div className="md:col-span-3">
+                     <span className="md:hidden text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-1 block">Precio</span>
+                     <FormattedPriceInput
+                        name="price"
+                        value={p.price}
+                        disabled={!isOther && !!selectedProduct}
+                        onChange={(e) => handleProductChange(i, "price", e.target.value)}
+                     />
+                  </div>
+
+                  {/* Actions */}
+                  <div className="md:col-span-2 flex justify-end md:justify-center items-center">
+                    <button
+                      onClick={() => removeProductField(i)}
+                      className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
+                      title="Quitar producto"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+
                 </div>
+              );
+            })}
+          </div>
 
-                <div className="col-span-12 md:col-span-3">
-                  <label className="text-sm font-semibold text-gray-700 mb-1 block">
-                    Precio
-                  </label>
-                  <FormattedPriceInput
-                    name="price"
-                    value={p.price}
-                    disabled={!isOther && !!selectedProduct}
-                    onChange={(e) =>
-                      handleProductChange(i, "price", e.target.value)
-                    }
-                    // placeholder="0"
-                  />
-                </div>
-              </div>
-            </motion.div>
-          );
-        })}
+          <div className="p-2 border-t border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/30">
+             <button
+                onClick={addProductField}
+                className="w-full py-2 flex items-center justify-center gap-2 text-primary font-medium text-sm hover:bg-white dark:hover:bg-zinc-800 rounded-lg transition-all border border-transparent hover:border-gray-200 dark:hover:border-zinc-700 hover:shadow-sm"
+             >
+                <PlusCircle size={16} /> Agregar otra línea
+             </button>
+          </div>
+        </div>
 
-          <button
-            onClick={addProductField}
-            className="flex items-center gap-2 text-blue-600 font-bold text-sm hover:underline"
-          >
-            <PlusCircle className="w-4 h-4" /> Agregar producto
-          </button>
-
-          <div className="bg-gray-50 p-5 rounded-xl space-y-4 border border-gray-200 shadow-sm">
-            <label className="text-gray-700 flex items-center gap-2 font-medium">
+          <div className="bg-gray-50 dark:bg-muted/10 p-5 rounded-xl space-y-4 border border-gray-200 dark:border-border shadow-sm">
+            <label className="text-gray-700 dark:text-gray-300 flex items-center gap-2 font-medium">
               <CreditCard className="w-5 h-5 text-gray-500" />
               Método de pago
             </label>
@@ -480,7 +464,7 @@ export default function SalesForm({
               onChange={(e) =>
                 setNewSale({ ...newSale, paymentMethod: e.target.value })
               }
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary-200"
+                className="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-2 bg-white dark:bg-[#1a1a1a] dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-200"
             >
               <option value="efectivo">Efectivo</option>
               <option value="tarjeta">Tarjeta</option>
@@ -490,9 +474,9 @@ export default function SalesForm({
             </select>
           </div>
 
-          <div className="flex justify-end items-center gap-4 mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
-            <span className="text-lg font-medium text-gray-600">Total a pagar:</span>
-            <span className="text-3xl font-bold text-primary">
+          <div className="flex justify-end items-center gap-4 mt-6 p-4 bg-gray-50 dark:bg-muted/10 rounded-xl border border-gray-200 dark:border-border">
+            <span className="text-lg font-medium text-gray-600 dark:text-gray-300">Total a pagar:</span>
+            <span className="text-3xl font-bold text-primary dark:text-primary-400">
               {formatCurrency(newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0))}
             </span>
           </div>

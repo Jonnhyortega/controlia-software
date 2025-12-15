@@ -48,7 +48,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   // ✅ Render normal del dashboard
   return (
-    <div className="flex h-screen bg-gray-100 overflow-hidden">
+    <div className="flex h-screen bg-gray-100 dark:bg-background overflow-hidden">
       <Sidebar />
       <div className="flex flex-col flex-1 overflow-hidden">
         <Navbar />

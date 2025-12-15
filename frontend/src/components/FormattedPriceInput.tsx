@@ -70,9 +70,9 @@ export function FormattedPriceInput({
   };
 
   return (
-      <div className="relative">
+      <div className="relative w-full">
           {/* Prefix with Currency Symbol */}
-          <div className={`absolute left-1 top-1/2 -translate-y-1/2 bottom-0 rounded-l-md w-14 h-[85%] flex items-center justify-center border-r border-gray-200 bg-gray-50 text-gray-500 font-medium rounded-sm pointer-events-none z-10 ${disabled ? "bg-gray-100" : ""}`}>
+          <div className={`absolute left-1 top-1/2 -translate-y-1/2 bottom-0 w-10 flex items-center justify-center text-green-500 font-medium pointer-events-none z-10 ${disabled ? "text-gray-400" : ""}`}>
               {symbol}
           </div>
           
@@ -84,10 +84,9 @@ export function FormattedPriceInput({
               onChange={handleChange}
               placeholder={placeholder}
               disabled={disabled}
-              className={`border border-gray-200 rounded-xl pl-20 pr-4 py-3 w-full transition-all focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary 
-                ${disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white text-gray-900"}
+              className={`border border-gray-200 dark:border-gray-700 rounded-lg pl-3 pr-10 py-2 w-full transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-right
+                ${disabled ? "bg-gray-100 dark:bg-gray-800 text-gray-500 cursor-not-allowed" : "bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white"}
               `}
-              style={{ paddingLeft: '23%' }}
               autoComplete="off"
           />
       </div>

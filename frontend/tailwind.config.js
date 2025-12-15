@@ -7,27 +7,54 @@ export const darkMode = 'class';
 export const theme = {
     extend: {
         colors: {
+            border: "hsl(var(--border))",
+            input: "hsl(var(--input))",
+            ring: "hsl(var(--ring))",
+            background: "hsl(var(--background))",
+            foreground: "hsl(var(--foreground))",
             primary: {
-                DEFAULT: 'var(--primary-color)',
-                50: '#eef6ff', // Keeping shades static for now as calculating them requires JS helper in config or many variables
+                DEFAULT: "hsl(var(--primary))",
+                foreground: "hsl(var(--primary-foreground))",
+                50: '#eef6ff',
                 100: '#dbeeff',
                 200: '#b6ddff',
                 300: '#8acbff',
                 400: '#57b4ff',
                 500: '#1e90ff',
-                600: 'var(--primary-color)',
-                700: '#1d4ed8', // Ideally this should be darker variance of primary
+                600: "hsl(var(--primary))", // Linked to main primary
+                700: '#1d4ed8',
                 800: '#1a3ab0',
                 900: '#153087',
             },
-            accent: '#7c3aed',
+            secondary: {
+                DEFAULT: "hsl(var(--secondary))",
+                foreground: "hsl(var(--secondary-foreground))",
+            },
+            destructive: {
+                DEFAULT: "hsl(var(--destructive))",
+                foreground: "hsl(var(--destructive-foreground))",
+            },
+            muted: {
+                DEFAULT: "hsl(var(--muted))",
+                foreground: "hsl(var(--muted-foreground))",
+            },
+            accent: {
+                DEFAULT: "hsl(var(--accent))",
+                foreground: "hsl(var(--accent-foreground))",
+            },
+            popover: {
+                DEFAULT: "hsl(var(--popover))",
+                foreground: "hsl(var(--popover-foreground))",
+            },
+            card: {
+                DEFAULT: "hsl(var(--card))",
+                foreground: "hsl(var(--card-foreground))",
+            },
             surface: {
                 DEFAULT: '#0b0b0b',
                 50: '#ffffff',
             },
-            muted: '#6b7280',
             success: '#16a34a',
-            destructive: '#dc2626',
         },
         fontFamily: {
             sans: ['Inter', 'system-ui', 'sans-serif'],

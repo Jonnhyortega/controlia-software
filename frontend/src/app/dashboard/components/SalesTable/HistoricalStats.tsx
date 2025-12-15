@@ -63,48 +63,48 @@ export default function HistoricalStats() {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
        
        {/* 🏆 Día Récord Ventas */}
-       <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-5 rounded-2xl border border-green-100 shadow-sm">
+       <div className="bg-gradient-to-br from-green-500/50 to-green-500/50 dark:from-green-900/20 dark:to-emerald-900/20 p-5 rounded-2xl border border-green-100 dark:border-green-900/40 shadow-sm transition-colors">
           <div className="flex items-center gap-3 mb-2">
-             <div className="p-2 bg-green-200 text-green-700 rounded-lg">
+             <div className="p-2 bg-green-400 dark:bg-green-800 text-green-700 dark:text-green-200 rounded-lg">
                 <TrendingUp size={20} />
              </div>
-             <p className="text-sm font-semibold text-green-800">Día Récord de Ventas</p>
+             <p className="text-sm font-semibold text-green-800 dark:text-green-100">Día Récord de Ventas</p>
           </div>
           <div className="mt-2">
-             <h3 className="text-2xl font-bold text-gray-900">{formatCurrency(bestSalesDay?.totalSalesAmount || 0)}</h3>
-             <p className="text-xs text-green-600 mt-1 font-medium">
+             <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(bestSalesDay?.totalSalesAmount || 0)}</h3>
+             <p className="text-xs text-black  dark:text-green-600 dark:text-green-300mt-1 font-medium">
                📅 {bestSalesDay ? formatDate(bestSalesDay.date) : "-"}
              </p>
           </div>
        </div>
 
        {/* ⚠️ Día Máx Gastos */}
-       <div className="bg-gradient-to-br from-red-50 to-orange-50 p-5 rounded-2xl border border-red-100 shadow-sm">
+       <div className="bg-gradient-to-br from-red-600/50 to-red-800/50 dark:from-red-600/20 dark:to-red-800/20  p-5 rounded-2xl border border-red-100 dark:border-red-900/40 shadow-sm transition-colors">
           <div className="flex items-center gap-3 mb-2">
-             <div className="p-2 bg-red-200 text-red-700 rounded-lg">
+             <div className="p-2 bg-gray-100/20 dark:bg-red-800 text-red-700 dark:text-red-200 rounded-lg">
                 <AlertCircle size={20} />
              </div>
-             <p className="text-sm font-semibold text-red-800">Mayor Gasto Diario</p>
+             <p className="text-sm font-semibold text-red-900 dark:text-red-500">Mayor Gasto Diario</p>
           </div>
           <div className="mt-2">
-             <h3 className="text-2xl font-bold text-gray-900">{formatCurrency(maxExpensesDay?.totalOut || 0)}</h3>
-             <p className="text-xs text-red-600 mt-1 font-medium">
+             <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(maxExpensesDay?.totalOut || 0)}</h3>
+             <p className="text-xs text-red-900 dark:text-red-500 mt-1 font-medium">
                📅 {maxExpensesDay ? formatDate(maxExpensesDay.date) : "-"}
              </p>
           </div>
        </div>
 
        {/* 📅 Mejor Mes */}
-       <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-2xl border border-blue-100 shadow-sm">
+       <div className="bg-gradient-to-br from-blue-500/50 to-indigo-500/50 dark:from-blue-900/20 dark:to-indigo-900/20 p-5 rounded-2xl border border-blue-100 dark:border-blue-900/40 shadow-sm transition-colors">
           <div className="flex items-center gap-3 mb-2">
-             <div className="p-2 bg-blue-200 text-blue-700 rounded-lg">
+             <div className="p-2 bg-blue-200 dark:bg-blue-800 text-blue-700 dark:text-blue-200 rounded-lg">
                 <Calendar size={20} />
              </div>
-             <p className="text-sm font-semibold text-blue-800">Mejor Mes ({currentYear})</p>
+             <p className="text-sm font-semibold text-blue-800 dark:text-blue-100">Mejor Mes ({currentYear})</p>
           </div>
           <div className="mt-2 text-wrap">
-             <h3 className="text-2xl font-bold text-gray-900 capitalize">{bestMonthName}</h3>
-             <p className="text-xs text-blue-600 mt-1 font-medium">
+             <h3 className="text-2xl font-bold text-gray-900 dark:text-white capitalize">{bestMonthName}</h3>
+             <p className="text-xs text-blue-600 dark:text-blue-300 mt-1 font-medium">
                 Total: {formatCurrency(bestMonthAmount as number)}
              </p>
           </div>

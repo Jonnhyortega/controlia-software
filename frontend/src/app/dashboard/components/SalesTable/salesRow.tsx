@@ -32,7 +32,7 @@ export default function SalesRow({
       <tr
         key={sale._id}
         onClick={() => onExpand(sale._id)}
-        className="hover:bg-primary-50 dark:hover:bg-primary/5 transition-colors cursor-pointer"
+        className="hover:bg-gray-50 dark:hover:bg-[#1f1f1f] transition-colors cursor-pointer text-sm border-b border-transparent dark:border-[#27272a]"
       >
         <td className="hidden md:table-cell py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">
           #{index + 1}
@@ -48,7 +48,7 @@ export default function SalesRow({
           })}
         </td>
 
-        <td className="hidden md:table-cell py-3 px-4 capitalize text-primary font-medium">
+        <td className="hidden md:table-cell py-3 px-4 capitalize text-primary dark:text-primary-300 font-medium">
           {sale.paymentMethod || "—"}
         </td>
 
@@ -75,8 +75,8 @@ export default function SalesRow({
                   onShowReceipt(sale);
                 }}
                 className="
-                  text-primary hover:text-white 
-                  bg-primary/10 hover:bg-primary 
+                  text-blue-600 dark:text-blue-400 hover:text-white 
+                  bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-600 
                   p-2 rounded-md transition
                   font-semibold
                   flex items-center justify-center gap-1
@@ -94,8 +94,8 @@ export default function SalesRow({
                 setIsExpanded(true); // ← Abrir confirm dialog
               }}
               className="
-                text-red-600 hover:text-white 
-                bg-red-100 dark:bg-red-500/10 hover:bg-red-500 
+                text-red-600 dark:text-red-400 hover:text-white 
+                bg-red-50 dark:bg-red-900/20 hover:bg-red-600 
                 p-2 rounded-md transition
                 font-semibold
                 flex items-center justify-center gap-1
@@ -124,7 +124,7 @@ export default function SalesRow({
 
       {/* FILA EXPANDIDA */}
       {expanded === sale._id && (
-        <tr className="bg-gray-50 dark:bg-zinc-900/50 border-y dark:border-gray-800">
+        <tr className="bg-gray-50 dark:bg-[#0f0f0f] border-t border-gray-100 dark:border-[#27272a]">
           <td colSpan={6} className="py-3 px-4">
 
             <motion.div
@@ -132,7 +132,7 @@ export default function SalesRow({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.25 }}
-              className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-zinc-800 shadow-sm p-4"
+              className="rounded-xl border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#18181b] shadow-sm p-4"
             >
               <h4 className="font-semibold text-gray-800 dark:text-white mb-3">
                 Detalles de la operación
@@ -142,7 +142,7 @@ export default function SalesRow({
                 {sale.products?.map((p: any, j: number) => (
                   <li
                     key={j}
-                    className="flex justify-between border-b border-gray-100 dark:border-gray-700 py-1 px-2 rounded-md hover:bg-gray-50 dark:hover:bg-zinc-700"
+                    className="flex justify-between border-b border-gray-100 dark:border-[#27272a] py-1 px-2 rounded-md hover:bg-gray-50 dark:hover:bg-[#1f1f1f]"
                   >
                     <small>#{j + 1}</small>
 

@@ -3,32 +3,98 @@
 @tailwind utilities;
 
 :root {
-  /* Default Branding Colors */
-  --primary-color: #2563eb;
-  --secondary-color: #1e40af;
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+ 
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+ 
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+ 
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+ 
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+ 
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+ 
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 221.2 83.2% 53.3%;
+ 
+  --radius: 0.5rem;
+}
+ 
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+ 
+  --card: 240 10% 9%; /* Optimized dark card color */
+  --card-foreground: 0 0% 98%;
+ 
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+ 
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+ 
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+ 
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+ 
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+ 
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+ 
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
 }
 
-/* Removed CSS variables — using fixed values and Tailwind defaults so build stays stable */
-
-/* removed theme inline variables to avoid runtime var() usage — prefer Tailwind utilities */
-
 body {
-  /* base colors — prefer Tailwind utilities in components; keep neutral defaults here */
   background: #ffffff;
   color: #0b0b0b;
   font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
-  /* background/text applied via properties above, no @apply here */
+  transition: background-color 0.3s ease, color 0.3s ease;
 
   ::-webkit-scrollbar {
     height: 6px;
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #ccc;
+    background: #d4d4d8; /* zinc-300 */
     border-radius: 4px;
   }
+}
 
-}/* Chrome, Edge, Safari */
+.dark body {
+  background: #09090b; /* zinc-950 */
+  color: #e4e4e7; /* zinc-200 */
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #3f3f46; /* zinc-700 */
+}
+
+/* Chrome, Edge, Safari */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -40,39 +106,44 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-
-/* Dark theme variables */
-/* Dark theme variables */
-.dark body { background: #0b0b0b; color: #e6eef8; }
-
-/* Small helpers for the app */
 .card {
   border-radius: 14px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-  box-shadow: 0 6px 18px rgba(2,6,23,0.35);
+  background: #ffffff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.dark .card {
+  background: #18181b; /* zinc-900 */
+  border: 1px solid #27272a; /* zinc-800 */
+  box-shadow: none;
 }
 
 .muted { color: #6b7280; }
+.dark .muted { color: #a1a1aa; }
+
 .brand-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px; /* similar to rounded-lg */
+  border-radius: 12px;
   font-weight: 600;
   color: white;
-  padding: 0.75rem 1.5rem; /* px-6 py-3 */
-  transition: filter 0.15s ease;
-  background: linear-gradient(180deg,#2563eb, #1d4ed8);
-  box-shadow: 0 6px 22px rgba(37,99,235,0.18);
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s ease;
+  background: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
-.brand-btn:hover { filter: brightness(0.95); }
+.brand-btn:hover { 
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
 
 /* consistent input style */
 /* default (light) inputs use the landing palette so they match the landing page visual identity */
-input[type="text"], input[type="email"], input[type="password"], textarea, select {
-  background: #eef6ff; /* primary-50 */
-  border: 1px solid #b6ddff; /* primary-200 */
-  color: #153087; /* primary-900 */
+input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select {
+  background: #ffffff; /* primary-50 */
+  border: 1px solid #e5e7eb; /* primary-200 */
+  color: #1f2937; /* primary-900 */
   padding: 0.5rem 1rem; /* px-4 py-2 */
   border-radius: 8px;
   outline: none;
@@ -80,17 +151,17 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 
 /* helper classes for more explicit usage */
 .app-input {
-  background: #eef6ff;
-  border: 1px solid #b6ddff;
-  color: #153087;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #1f2937;
   padding: 0.5rem 1rem;
   border-radius: 8px;
   outline: none;
 }
 .app-select {
-  background: #eef6ff;
-  border: 1px solid #b6ddff;
-  color: #153087;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #1f2937;
   padding: 0.5rem 1rem;
   border-radius: 8px;
   outline: none;
@@ -116,6 +187,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 .dark input[type="text"], 
 .dark input[type="email"], 
 .dark input[type="password"], 
+.dark input[type="number"], 
 .dark textarea, 
 .dark select,
 .dark .app-input, 

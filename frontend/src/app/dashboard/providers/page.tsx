@@ -17,7 +17,6 @@ import {
   Trash2,
   Phone,
   MapPin,
-  Undo2,
   Search
 } from "lucide-react";
 import { Button } from "../components/button";
@@ -165,14 +164,14 @@ export default function SuppliersPage() {
     <section className="p-6 space-y-6 max-w-7xl mx-auto">
       
       {/* 🔹 HEADER: Título y Acciones */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 dark:bg-background bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
          
-         <div className="flex items-center gap-3 w-full md:w-auto">
+         <div className="flex items-center gap-3 w-full md:w-auto ">
             <div className="bg-primary/10 p-3 rounded-xl text-primary">
                <Building2 className="w-6 h-6" />
             </div>
             <div>
-               <h1 className="text-xl font-bold text-gray-800">Proveedores</h1>
+               <h1 className="text-xl font-bold text-gray-900 dark:text-white">Proveedores</h1>
                <p className="text-sm text-gray-500 hidden md:block">Gestión de empresas y distribuidores</p>
             </div>
          </div>
@@ -186,7 +185,7 @@ export default function SuppliersPage() {
                   placeholder="Buscar..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-sm"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-sm"
                 />
              </div>
 
@@ -213,13 +212,13 @@ export default function SuppliersPage() {
 
 
       {/* 📋 Lista */}
-      <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 min-h-[50vh]">
-        <h2 className="text-lg font-semibold text-gray-700 mb-6 flex items-center gap-2">
+      <div className="p-6 rounded-2xl shadow-md border border-gray-100 min-h-[50vh] dark:bg-background bg-white">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-400 mb-6 flex items-center gap-2">
            Listado ({filteredSuppliers.length})
         </h2>
 
         {filteredSuppliers.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-gray-400 border-2 border-dashed border-gray-100 rounded-xl bg-gray-50">
+          <div className="flex flex-col items-center justify-center py-12 text-gray-400 border-2 border-dashed border-gray-100 rounded-xl dark:bg-background bg-white">
              <Building2 size={48} className="opacity-20 mb-3" />
             <p>No se encontraron proveedores</p>
           </div>
@@ -236,7 +235,7 @@ export default function SuppliersPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className={`group bg-white border border-gray-100 rounded-2xl overflow-hidden transition-all duration-300 ${
+                  className={`group dark:bg-background bg-white border border-gray-100 rounded-2xl overflow-hidden transition-all duration-300 ${
                     isOpen ? "shadow-xl ring-1 ring-primary/10 z-10" : "shadow-sm hover:shadow-md"
                   }`}
                 >
@@ -247,15 +246,15 @@ export default function SuppliersPage() {
                   >
                     <div className="flex items-center gap-5">
                        {/* Enhanced Avatar */}
-                       <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-xl shadow-sm transition-colors ${isOpen ? "bg-primary text-white" : "bg-gray-100 text-gray-500 group-hover:bg-gray-200"}`}>
+                       <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-xl shadow-sm transition-colors ${isOpen ? "bg-primary text-white" : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 group-hover:bg-gray-200 dark:group-hover:bg-gray-700"}`}>
                           {s.name?.charAt(0).toUpperCase()}
                        </div>
                        
                        <div className="space-y-1">
-                         <h3 className={`font-bold text-lg leading-tight transition-colors ${isOpen ? "text-primary" : "text-gray-800"}`}>
+                         <h3 className={`font-bold text-lg leading-tight transition-colors ${isOpen ? "text-primary" : "text-gray-800 dark:text-gray-100"}`}>
                             {s.name || "Sin nombre"}
                          </h3>
-                         <p className="text-sm text-gray-500 font-medium">
+                         <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                             {s.email || "Sin email registrado"}
                          </p>
                        </div>
@@ -272,7 +271,7 @@ export default function SuppliersPage() {
                           ${new Intl.NumberFormat("es-AR").format(s.debt || 0)}
                         </span>
                       </div>
-                      <div className={`transition-transform duration-300 p-2 rounded-full ${isOpen ? "rotate-180 bg-primary/10 text-primary" : "text-gray-400 group-hover:bg-gray-50"}`}>
+                      <div className={`transition-transform duration-300 p-2 rounded-full ${isOpen ? "rotate-180 bg-primary/10 text-primary" : "text-gray-400 group-hover:bg-gray-600"}`}>
                          <ChevronDown className="w-5 h-5" />
                       </div>
                     </div>
@@ -285,13 +284,13 @@ export default function SuppliersPage() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="bg-gray-50/50 border-t border-gray-100"
+                        className="bg-gray-50/50 dark:bg-muted/10 border-t border-gray-100 dark:border-gray-800"
                       >
                          <div className="p-5 md:px-20 grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
                             {/* Items cleanly listed without boxes */}
                             {/* Phone -> WhatsApp */}
-                            <div className="flex items-center gap-4 text-gray-700">
-                                <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-primary shadow-sm shrink-0">
+                            <div className="flex items-center gap-4 text-gray-700 dark:text-gray-300">
+                                <div className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-primary shadow-sm shrink-0">
                                    <Phone size={18} />
                                 </div>
                                 <div>
@@ -301,7 +300,7 @@ export default function SuppliersPage() {
                                        href={`https://wa.me/${s.phone.replace(/[^0-9]/g, "")}`}
                                        target="_blank"
                                        rel="noopener noreferrer"
-                                       className="font-medium text-base text-gray-800 hover:text-green-600 hover:underline transition-colors flex items-center gap-1"
+                                       className="font-medium text-base text-gray-800 dark:text-gray-200 hover:text-green-600 hover:underline transition-colors flex items-center gap-1"
                                      >
                                        {s.phone}
                                      </a>
@@ -312,8 +311,8 @@ export default function SuppliersPage() {
                             </div>
 
                             {/* Address -> Google Maps */}
-                            <div className="flex items-center gap-4 text-gray-700">
-                                <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-primary shadow-sm shrink-0">
+                            <div className="flex items-center gap-4 text-gray-700 dark:text-gray-300">
+                                <div className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-primary shadow-sm shrink-0">
                                    <MapPin size={18} />
                                 </div>
                                 <div>
@@ -323,7 +322,7 @@ export default function SuppliersPage() {
                                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.address)}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="font-medium text-base text-gray-800 hover:text-blue-600 hover:underline transition-colors"
+                                        className="font-medium text-base text-gray-800 dark:text-gray-200 hover:text-blue-600 hover:underline transition-colors"
                                       >
                                         {s.address}
                                       </a>
@@ -334,8 +333,8 @@ export default function SuppliersPage() {
                             </div>
                             
                              {/* Mobile Debt */}
-                            <div className="md:hidden flex items-center gap-4 text-gray-700">
-                                <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 shadow-sm shrink-0">
+                            <div className="md:hidden flex items-center gap-4 text-gray-700 dark:text-gray-300">
+                                <div className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 shadow-sm shrink-0">
                                    <span className="font-bold text-lg">$</span>
                                 </div>
                                 <div>
@@ -354,13 +353,13 @@ export default function SuppliersPage() {
                          <div className="px-5 pb-6 md:px-20 pt-2 flex justify-end gap-3">
                              <Button
                             onClick={() => handleEdit(s)}
-                            className="bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 flex items-center gap-2 py-2.5 px-6 rounded-xl shadow-sm font-semibold transition-all active:scale-95"
+                            className="bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 flex items-center gap-2 py-2.5 px-6 rounded-xl shadow-sm font-semibold transition-all active:scale-95"
                           >
                             <Edit3 className="w-4 h-4" /> Editar
                           </Button>
                           <Button
                             onClick={() => handleDelete(s._id)}
-                            className="bg-white hover:bg-rose-50 text-rose-600 border border-gray-200 hover:border-rose-200 flex items-center gap-2 py-2.5 px-6 rounded-xl shadow-sm font-semibold transition-all active:scale-95"
+                            className="bg-white dark:bg-gray-800 hover:bg-rose-50 dark:hover:bg-rose-900/20 text-rose-600 border border-gray-200 dark:border-gray-700 hover:border-rose-200 flex items-center gap-2 py-2.5 px-6 rounded-xl shadow-sm font-semibold transition-all active:scale-95"
                           >
                             <Trash2 className="w-4 h-4" /> Eliminar
                           </Button>
@@ -380,19 +379,13 @@ export default function SuppliersPage() {
       {showForm && (
         <Overlay fullScreen={true}>
           <div className="relative w-full max-w-4xl mx-auto my-10">
-             <button
-              onClick={() => setShowForm(false)}
-              className="absolute -top-4 -right-4 md:-right-10 text-gray-500 hover:text-red-500 transition p-2 bg-gray-100 rounded-full hover:bg-gray-200 z-50"
-            >
-              <Undo2 size={24} />
-            </button>
-
             <SupplierForm 
                 form={form}
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
                 editingId={editingId}
                 isSubmitting={isSubmitting}
+                onClose={() => setShowForm(false)}
             />
           </div>
         </Overlay>

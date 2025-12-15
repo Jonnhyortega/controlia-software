@@ -46,6 +46,16 @@ export function CustomizationProvider({ children }: { children: React.ReactNode 
 
   // 1. Fetch data on mount or when user changes
   useEffect(() => {
+    // Initial local theme check
+    const localTheme = typeof window !== "undefined" ? localStorage.getItem("theme") as "light" | "dark" : null;
+    
+    // If not logged in yet, we can at least apply local theme?
+    if (localTheme) {
+        const temp = { ...defaultSettings, theme: localTheme };
+        applyTheme(temp);
+        setSettings(temp);
+    }
+
     if (!user) {
       setLoading(false);
       return;
@@ -54,8 +64,14 @@ export function CustomizationProvider({ children }: { children: React.ReactNode 
     (async () => {
       try {
         const res = await getCustomization();
-        // Merge with defaults to avoid nulls
+        // Merge with defaults
         const merged = { ...defaultSettings, ...res };
+        
+        // Prioritize Local Storage for Theme if present
+        if (localTheme) {
+            merged.theme = localTheme;
+        }
+
         setSettings(merged);
         applyTheme(merged);
       } catch (error) {
@@ -68,6 +84,7 @@ export function CustomizationProvider({ children }: { children: React.ReactNode 
 
   // 2. Apply theme to CSS Variables
   const applyTheme = (data: CustomizationData) => {
+    if (typeof document === "undefined") return;
     const root = document.documentElement;
 
     // Toggle Dark Mode Class
@@ -78,16 +95,12 @@ export function CustomizationProvider({ children }: { children: React.ReactNode 
     }
 
     // Set Primary Color
-    // We can't easily generate infinite tailwind shades in runtime without a library like 'tinycolor2'
-    // But we can set the main variable which we will map in tailwind.config.js
     root.style.setProperty("--primary-color", data.primaryColor || "#2563eb");
     
     // Optional: Secondary
     if (data.secondaryColor) {
       root.style.setProperty("--secondary-color", data.secondaryColor);
     }
-
-    // Font or other variables can go here
   };
 
   const updateSettings = async (newSettings: Partial<CustomizationData>) => {
@@ -97,15 +110,31 @@ export function CustomizationProvider({ children }: { children: React.ReactNode 
       setSettings(updated);
       applyTheme(updated);
 
-      // Persist
-      await updateCustomization(updated);
+      // Persist Theme locally
+      if (newSettings.theme) {
+          localStorage.setItem("theme", newSettings.theme);
+      }
+
+      // If modification is ONLY theme, and user is NOT admin, skip API call
+      if (newSettings.theme && Object.keys(newSettings).length === 1 && user?.role !== 'admin') {
+          return;
+      }
+
+      // Persist to API
+      const { businessName, businessEmail, businessPhone, ...payload } = updated;
       
-      // If businessName changed, we might want to refresh user? 
-      // Actually userController.js already syncs User model, fetching fresh profile on reload handles it.
+      // If user is employee, they might trigger 403 if they try to save global settings.
+      // But we handled the common case (theme toggle) above.
+      // If they try to change something else, we let it fail or handled by backend.
+      if (user?.role === 'admin') {
+          await updateCustomization(payload);
+      } else {
+         // Employee safety: Don't call updateCustomization unless we are sure?
+         // For now, only Admin persists global config.
+      }
 
     } catch (error) {
       toast.error("Error al actualizar configuración");
-      // Revert? (Complex for now, assume success)
     }
   };
 

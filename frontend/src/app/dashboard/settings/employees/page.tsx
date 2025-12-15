@@ -190,7 +190,7 @@ export default function EmployeesPage() {
         {employees.map((emp) => (
           <div
             key={emp.name}
-            className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl p-5 relative shadow-xl hover:shadow-2xl transition"
+            className="bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] rounded-xl p-5 relative shadow-xl hover:shadow-2xl transition"
           >
             {/* Badge de estado */}
             <span
@@ -203,8 +203,8 @@ export default function EmployeesPage() {
               {emp.disabled ? "Desactivado" : "Activo"}
             </span>
 
-            <h3 className="text-lg font-semibold text-gray-100">{emp.name}</h3>
-            <p className="text-gray-400 text-sm">{emp.email}</p>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{emp.name}</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">{emp.email}</p>
             <p className="text-primary-300 text-xs mt-1 capitalize">
               {emp.role === "admin" && <ShieldCheck className="inline w-3 mr-1" />}
               {emp.role}
@@ -284,7 +284,7 @@ export default function EmployeesPage() {
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <form
             onSubmit={handleSubmit}
-            className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-6 w-full max-w-md space-y-4"
+            className="bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] rounded-2xl p-6 w-full max-w-md space-y-4"
           >
             <h3 className="text-lg font-semibold text-primary-300">
               {editingId ? "Editar empleado" : "Nuevo empleado"}
@@ -295,7 +295,7 @@ export default function EmployeesPage() {
               placeholder="Nombre"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full p-2 rounded bg-[#121212] border border-[#1f1f1f] text-gray-200"
+              className="w-full p-2 rounded bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50"
               required
             />
 
@@ -304,7 +304,7 @@ export default function EmployeesPage() {
               placeholder="Correo"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full p-2 rounded bg-[#121212] border border-[#1f1f1f] text-gray-200"
+              className="w-full p-2 rounded bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50"
               required
             />
 
@@ -314,7 +314,7 @@ export default function EmployeesPage() {
                 placeholder="Contraseña"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="w-full p-2 rounded bg-[#121212] border border-[#1f1f1f] text-gray-200"
+                className="w-full p-2 rounded bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50"
                 required
               />
             )}
@@ -322,7 +322,7 @@ export default function EmployeesPage() {
             <select
               value={form.role}
               onChange={(e) => setForm({ ...form, role: e.target.value })}
-              className="w-full p-2 rounded bg-[#121212] border border-[#1f1f1f] text-gray-200"
+              className="w-full p-2 rounded bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50"
             >
               <option value="empleado">Empleado</option>
               <option value="admin">Admin</option>

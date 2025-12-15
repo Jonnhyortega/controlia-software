@@ -156,7 +156,7 @@ function FormattedPriceInput({
 
     return (
         <div className="relative">
-            {/* <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium select-none pointer-events-none">
+             {/* <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium select-none pointer-events-none">
                 {symbol}
             </span> */}
             <input
@@ -166,7 +166,7 @@ function FormattedPriceInput({
                 value={localStr}
                 onChange={handleChange}
                 placeholder={placeholder}
-                className="border rounded-md pl-8 pr-3 py-2 w-full bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="border border-gray-200 dark:border-[#27272a] rounded-md pl-8 pr-3 py-2 w-full bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 autoComplete="off"
             />
         </div>
@@ -188,15 +188,15 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
         e.preventDefault();
         if (!isSubmitting) onSubmit();
       }}
-      className="bg-white p-6 rounded-2xl border-gray-100 space-y-4 flex flex-col"
+      className="bg-white dark:bg-[#18181b] p-6 rounded-2xl border border-gray-100 dark:border-[#27272a] space-y-4 flex flex-col transition-colors"
     >
-      <h2 className="text-2xl font-semibold text-primary w-full text-center">
+      <h2 className="text-2xl font-semibold text-primary dark:text-primary-300 w-full text-center">
         {form._id ? "Editar producto" : "Agregar producto"}
       </h2>
 
       {/* 1️⃣ Nombre */}
       <div className="space-y-1">
-        <label htmlFor="name" className="text-sm font-medium text-gray-700">
+        <label htmlFor="name" className="text-sm font-medium text-gray-700 dark:text-gray-200">
           Nombre
         </label>
         <input
@@ -206,13 +206,13 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
           onChange={handleChange}
           placeholder="Ej: Alfajor Jorgito"
           required
-          className="border rounded-md px-3 py-2 w-full"
+          className="border border-gray-200 dark:border-[#27272a] rounded-md px-3 py-2 w-full bg-white dark:bg-[#09090b] text-gray-900 dark:text-white"
         />
       </div>
 
       {/* 2️⃣ Categoría */}
       <div className="space-y-1">
-        <label htmlFor="category" className="text-sm font-medium text-gray-700">
+        <label htmlFor="category" className="text-sm font-medium text-gray-700 dark:text-gray-200">
           Categoría (opcional)
         </label>
 
@@ -222,7 +222,7 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
             name="category"
             value={form.category}
             onChange={handleChange}
-            className="border rounded-md px-3 py-2 w-full"
+            className="border border-gray-200 dark:border-[#27272a] rounded-md px-3 py-2 w-full bg-white dark:bg-[#09090b] text-gray-900 dark:text-white"
           >
             <option value="">Seleccionar categoría</option>
             {categories.map((cat) => (
@@ -245,7 +245,7 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
 
       {/* 3️⃣ Proveedor */}
       <div className="space-y-1">
-        <label htmlFor="supplier" className="text-sm font-medium text-gray-700">
+        <label htmlFor="supplier" className="text-sm font-medium text-gray-700 dark:text-gray-200">
           Proveedor
         </label>
         <select
@@ -253,7 +253,7 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
           name="supplier"
           value={form.supplier}
           onChange={handleChange}
-          className="border rounded-md px-3 py-2 w-full"
+          className="border border-gray-200 dark:border-[#27272a] rounded-md px-3 py-2 w-full bg-white dark:bg-[#09090b] text-gray-900 dark:text-white"
         >
           <option value="">Sin proveedor</option>
           {suppliers.map((s) => (
@@ -269,7 +269,7 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
 
         {/* Stock */}
         <div className="space-y-1">
-          <label htmlFor="stock" className="text-sm font-medium text-gray-700">
+          <label htmlFor="stock" className="text-sm font-medium text-gray-700 dark:text-gray-200">
             Stock inicial
           </label>
           <input
@@ -279,13 +279,13 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
             value={form.stock}
             onChange={handleChange}
             placeholder="Ej: 20"
-            className="border rounded-md px-3 py-2 w-full"
+            className="border border-gray-200 dark:border-[#27272a] rounded-md px-3 py-2 w-full bg-white dark:bg-[#09090b] text-gray-900 dark:text-white"
           />
         </div>
 
         {/* Costo */}
         <div className="space-y-1">
-          <label htmlFor="cost" className="text-sm font-medium text-gray-700">
+          <label htmlFor="cost" className="text-sm font-medium text-gray-700 dark:text-gray-200">
             Costo
           </label>
           <FormattedPriceInput
@@ -299,7 +299,7 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
 
         {/* Precio de venta */}
         <div className="space-y-1">
-          <label htmlFor="price" className="text-sm font-medium text-gray-700">
+          <label htmlFor="price" className="text-sm font-medium text-gray-700 dark:text-gray-200">
             Precio venta
           </label>
           <FormattedPriceInput
@@ -315,7 +315,7 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
 
       {/* 5️⃣ Código de barras */}
       <div className="space-y-1">
-        <label htmlFor="barcode" className="text-sm font-medium text-gray-700">
+        <label htmlFor="barcode" className="text-sm font-medium text-gray-700 dark:text-gray-200">
           Código de barras
         </label>
 
@@ -326,13 +326,13 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
             value={form.barcode || ""}
             onChange={handleChange}
             placeholder="Escanear o escribir código..."
-            className="border rounded-md px-3 py-2 w-full"
+            className="border border-gray-200 dark:border-[#27272a] rounded-md px-3 py-2 w-full bg-white dark:bg-[#09090b] text-gray-900 dark:text-white"
           />
 
           <button
             type="button"
             onClick={() => setScannerOpen(true)}  // 👈 LLAMA AL SCANNER
-            className="bg-primary text-white px-3 rounded-md hover:bg-primary-700"
+            className="bg-primary text-white px-3 rounded-md hover:bg-primary-700 transition"
           >
             <ScanBarcode />
           </button>
@@ -342,7 +342,7 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
 
       {/* 6️⃣ Descripción */}
       <div className="space-y-1">
-        <label htmlFor="description" className="text-sm font-medium text-gray-700">
+        <label htmlFor="description" className="text-sm font-medium text-gray-700 dark:text-gray-200">
           Descripción (opcional)
         </label>
         <textarea
@@ -351,7 +351,7 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
           value={form.description}
           onChange={handleChange}
           placeholder="Notas adicionales del producto..."
-          className="border rounded-md px-3 py-2 w-full"
+          className="border border-gray-200 dark:border-[#27272a] rounded-md px-3 py-2 w-full bg-white dark:bg-[#09090b] text-gray-900 dark:text-white"
         />
       </div>
 

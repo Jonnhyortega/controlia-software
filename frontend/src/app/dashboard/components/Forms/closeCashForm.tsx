@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Undo2, Lock, AlertTriangle } from "lucide-react";
+import { Lock, AlertTriangle, X } from "lucide-react";
 import { closeDailyCashById } from "../../../../utils/api";
 import { useToast } from "../../../../context/ToastContext";
 
@@ -53,26 +53,26 @@ export default function CloseCashForm({
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className="bg-white border border-gray-200 shadow-xl rounded-2xl p-6 max-w-md mx-auto relative overflow-hidden"
+      className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-xl rounded-2xl p-6 max-w-md mx-auto relative overflow-hidden"
     >
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-           <Lock className="text-gray-700" size={24} />
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+           <Lock className="text-gray-700 dark:text-gray-400" size={24} />
            Cerrar caja del día
         </h3>
 
         <button
           onClick={onBack}
-          className="p-2 border rounded-lg hover:bg-gray-100 transition"
+          className="p-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-700 dark:text-white transition"
         >
-          <Undo2 size={20} />
+          <X size={20} />
         </button>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex gap-3 text-amber-800">
+        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900/50 rounded-xl p-4 flex gap-3 text-amber-800 dark:text-amber-200">
            <AlertTriangle className="shrink-0" size={24} />
            <p className="text-sm">
              ¿Estás seguro de que deseas cerrar la caja? 
@@ -85,7 +85,7 @@ export default function CloseCashForm({
         <button
           type="submit"
           disabled={loading}
-          className="bg-gray-900 hover:bg-black text-white font-bold px-6 py-3 rounded-xl w-full transition shadow-lg flex justify-center"
+          className="bg-gray-900 hover:bg-black dark:bg-primary dark:hover:bg-primary-700 text-white font-bold px-6 py-3 rounded-xl w-full transition shadow-lg flex justify-center"
         >
           {loading ? "Cerrando..." : "Confirmar Cierre"}
         </button>
