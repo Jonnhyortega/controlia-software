@@ -9,7 +9,7 @@ const plans = [
     name: 'Emprendedor',
     price: '$0',
     period: '/mes',
-    description: 'Perfecto para empezar. Totalmente gratis durante la beta.',
+    description: 'Perfecto para empezar. 3 meses de prueba gratis.',
     features: [
       'Hasta 100 productos',
       '1 usuario',
@@ -66,7 +66,7 @@ const Pricing = () => {
             Precios simples y transparentes
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Elige el plan que mejor se adapte a tus necesidades. Puedes cambiar o cancelar en cualquier momento.
+            Elige el plan que mejor se adapte a tus necesidades. 3 meses de prueba gratis.
           </p>
         </motion.div>
 

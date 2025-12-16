@@ -54,7 +54,7 @@ const Hero = () => {
                   className="w-full sm:w-auto bg-primary hover:bg-primary-700 text-white group transition-all duration-300 relative overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                  {isLoggedIn ? 'Ir al Dashboard' : 'Prueba gratis por 14 días'}
+                  {isLoggedIn ? 'Ir al Dashboard' : 'Prueba gratis por 3 meses'}
                   <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
