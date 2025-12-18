@@ -48,7 +48,7 @@ export default function ResetPasswordPage({ params }: { params: Promise<{ token:
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0b0b0b] px-4">
-      <div className="max-w-md w-full bg-[#121212] border border-[#1f1f1f] rounded-2xl p-8 shadow-2xl">
+      <div className="max-w-md w-full bg-[#121212] border border-[#1f1f1f] rounded-md p-8 shadow-2xl">
         
         <div className="text-center mb-8">
             <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 ${
@@ -65,7 +65,7 @@ export default function ResetPasswordPage({ params }: { params: Promise<{ token:
         </div>
 
         {status === "success" ? (
-             <Link href="/login" className="w-full bg-primary hover:bg-primary-700 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all">
+             <Link href="/login" className="w-full bg-primary hover:bg-primary-700 text-white py-3 rounded-md font-semibold flex items-center justify-center gap-2 transition-all">
                 Ir al Login <ArrowRight size={18} />
              </Link>
         ) : (
@@ -79,7 +79,7 @@ export default function ResetPasswordPage({ params }: { params: Promise<{ token:
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full bg-[#1a1a1a] border border-[#2c2c2c] rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                        className="w-full bg-[#1a1a1a] border border-[#2c2c2c] rounded-md px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                         placeholder="••••••••"
                         minLength={6}
                     />
@@ -94,7 +94,7 @@ export default function ResetPasswordPage({ params }: { params: Promise<{ token:
                         required
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="w-full bg-[#1a1a1a] border border-[#2c2c2c] rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                        className="w-full bg-[#1a1a1a] border border-[#2c2c2c] rounded-md px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                         placeholder="••••••••"
                         minLength={6}
                     />
@@ -102,7 +102,7 @@ export default function ResetPasswordPage({ params }: { params: Promise<{ token:
 
                 {status === "error" && (
                     <div className="space-y-3">
-                        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 flex items-start gap-3">
+                        <div className="bg-red-500/10 border border-red-500/20 rounded-md p-3 flex items-start gap-3">
                             <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
                             <p className="text-sm text-red-400">{message}</p>
                         </div>
@@ -122,7 +122,7 @@ export default function ResetPasswordPage({ params }: { params: Promise<{ token:
                 <button
                     type="submit"
                     disabled={loading}
-                    className={`w-full py-3 rounded-xl font-semibold text-white transition-all ${
+                    className={`w-full py-3 rounded-md font-semibold text-white transition-all ${
                         loading ? "bg-primary/50 cursor-not-allowed" : "bg-primary hover:bg-primary-700 shadow-lg shadow-primary/20"
                     }`}
                 >

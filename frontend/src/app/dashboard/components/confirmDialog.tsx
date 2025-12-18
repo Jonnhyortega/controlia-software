@@ -62,7 +62,7 @@ export function ConfirmDialog({
             transition={{ duration: 0.2 }}
             className="
               relative bg-zinc-900 border border-zinc-800 
-              shadow-2xl rounded-2xl 
+              shadow-2xl rounded-md 
               max-w-sm w-full p-6 text-center overflow-hidden
             "
           >
@@ -71,7 +71,7 @@ export function ConfirmDialog({
 
             {/* Icono */}
             <div className="flex justify-center mb-5">
-              <div className="bg-red-500/10 p-4 rounded-2xl ring-1 ring-red-500/20">
+              <div className="bg-red-500/10 p-4 rounded-md ring-1 ring-red-500/20">
                 <AlertCircle className="text-red-500 w-8 h-8" />
               </div>
             </div>
@@ -91,7 +91,7 @@ export function ConfirmDialog({
               <button
                 onClick={onCancel}
                 className="
-                  px-4 py-2.5 rounded-xl
+                  px-4 py-2.5 rounded-md
                   bg-zinc-800 hover:bg-zinc-700 
                   text-gray-300 font-medium
                   transition border border-zinc-700
@@ -103,7 +103,7 @@ export function ConfirmDialog({
               <button
                 onClick={onConfirm}
                 className="
-                  px-4 py-2.5 rounded-xl
+                  px-4 py-2.5 rounded-md
                   bg-red-600 hover:bg-red-700 
                   text-white font-semibold
                   transition shadow-lg shadow-red-500/20

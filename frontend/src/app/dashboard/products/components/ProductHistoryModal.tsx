@@ -83,10 +83,10 @@ export function ProductHistoryModal({ productId, productName, onClose }: Product
 
   return (
     <Overlay>
-      <div className="bg-[#1a1a1a] rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl border border-[#333]" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-[#1a1a1a] rounded-md w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl border border-[#333]" onClick={(e) => e.stopPropagation()}>
         
         {/* Header */}
-        <div className="p-6 border-b border-[#333] flex justify-between items-center sticky top-0 bg-[#1a1a1a] rounded-t-2xl z-10">
+        <div className="p-6 border-b border-[#333] flex justify-between items-center sticky top-0 bg-[#1a1a1a] rounded-t-md z-10">
           <div>
              <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 <History className="text-primary" size={24} />
@@ -120,7 +120,7 @@ export function ProductHistoryModal({ productId, productName, onClose }: Product
                   {/* Timeline Dot */}
                   <div className={`absolute left-0 mt-1.5 ml-2.5 h-5 w-5 rounded-full border-4 border-[#1a1a1a] ${getActionColor(entry.action).replace("/10","")} z-10 md:mx-auto`}></div>
 
-                  <div className="ml-10 w-full bg-[#242424] rounded-xl border border-[#333] p-4 hover:border-primary/30 transition-colors">
+                  <div className="ml-10 w-full bg-[#242424] rounded-md border border-[#333] p-4 hover:border-primary/30 transition-colors">
                     
                     {/* Header Item */}
                     <div className="flex justify-between items-start mb-3">
@@ -145,7 +145,7 @@ export function ProductHistoryModal({ productId, productName, onClose }: Product
 
                     {/* Changes List */}
                     {Object.keys(entry.changes || {}).length > 0 && (
-                      <div className="mt-3 bg-[#111] rounded-lg p-3 text-sm space-y-2 border border-[#333]">
+                      <div className="mt-3 bg-[#111] rounded-md p-3 text-sm space-y-2 border border-[#333]">
                         {Object.entries(entry.changes).map(([field, change]) => (
                             <div key={field} className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 border-b border-[#222] last:border-0 pb-1 last:pb-0">
                                 <span className="text-gray-400 font-medium capitalize">{mapFieldName(field)}:</span>

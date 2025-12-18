@@ -25,6 +25,7 @@ import Loading from "../../../components/loading";
 import { useToast } from "../../../context/ToastContext";
 import Overlay from "../components/overlay";
 import { SupplierForm } from "./components/SupplierForm";
+import PaymentHistorySection from "../components/Transactions/PaymentHistorySection";
 
 
 export default function SuppliersPage() {
@@ -57,8 +58,7 @@ export default function SuppliersPage() {
     debt: 0,
   });
 
-  // 🔹 Cargar proveedores al montar
-  useEffect(() => {
+  // 🔹 Cargar proveedores
     const fetchData = async () => {
       try {
         const res = await getSuppliers();
@@ -70,6 +70,9 @@ export default function SuppliersPage() {
         setLoading(false);
       }
     };
+
+  // 🔹 Cargar proveedores al montar
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -164,10 +167,10 @@ export default function SuppliersPage() {
     <section className="p-6 space-y-6 max-w-7xl mx-auto">
       
       {/* 🔹 HEADER: Título y Acciones */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4 dark:bg-background bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 dark:bg-background bg-white p-4 rounded-md shadow-sm border border-gray-100">
          
          <div className="flex items-center gap-3 w-full md:w-auto ">
-            <div className="bg-primary/10 p-3 rounded-xl text-primary">
+            <div className="bg-primary/10 p-3 rounded-md text-primary">
                <Building2 className="w-6 h-6" />
             </div>
             <div>
@@ -185,7 +188,7 @@ export default function SuppliersPage() {
                   placeholder="Buscar..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-sm"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-md bg-gray-200 dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-sm"
                 />
              </div>
 
@@ -202,7 +205,7 @@ export default function SuppliersPage() {
                   });
                   setShowForm(true);
                 }}
-                className="bg-primary hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center gap-2 font-bold"
+                className="bg-primary hover:bg-primary-700 text-white px-5 py-2.5 rounded-md shadow-md transition-all flex items-center gap-2 font-bold"
               >
                 <Plus size={20} />
                 <span className="hidden md:inline">Nuevo</span>
@@ -212,13 +215,13 @@ export default function SuppliersPage() {
 
 
       {/* 📋 Lista */}
-      <div className="p-6 rounded-2xl shadow-md border border-gray-100 min-h-[50vh] dark:bg-background bg-white">
+      <div className="p-6 rounded-md shadow-md border border-gray-100 min-h-[50vh] dark:bg-background bg-white">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-400 mb-6 flex items-center gap-2">
            Listado ({filteredSuppliers.length})
         </h2>
 
         {filteredSuppliers.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-gray-400 border-2 border-dashed border-gray-100 rounded-xl dark:bg-background bg-white">
+          <div className="flex flex-col items-center justify-center py-12 text-gray-400 border-2 border-dashed border-gray-100 rounded-md dark:bg-background bg-white">
              <Building2 size={48} className="opacity-20 mb-3" />
             <p>No se encontraron proveedores</p>
           </div>
@@ -235,7 +238,7 @@ export default function SuppliersPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className={`group dark:bg-background bg-white border border-gray-100 rounded-2xl overflow-hidden transition-all duration-300 ${
+                  className={`group dark:bg-background bg-white border border-gray-100 rounded-md overflow-hidden transition-all duration-300 ${
                     isOpen ? "shadow-xl ring-1 ring-primary/10 z-10" : "shadow-sm hover:shadow-md"
                   }`}
                 >
@@ -246,7 +249,7 @@ export default function SuppliersPage() {
                   >
                     <div className="flex items-center gap-5">
                        {/* Enhanced Avatar */}
-                       <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-xl shadow-sm transition-colors ${isOpen ? "bg-primary text-white" : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 group-hover:bg-gray-200 dark:group-hover:bg-gray-700"}`}>
+                       <div className={`w-12 h-12 rounded-md flex items-center justify-center font-bold text-xl shadow-sm transition-colors ${isOpen ? "bg-primary text-white" : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 group-hover:bg-gray-200 dark:group-hover:bg-gray-700"}`}>
                           {s.name?.charAt(0).toUpperCase()}
                        </div>
                        
@@ -262,7 +265,7 @@ export default function SuppliersPage() {
 
                     <div className="flex items-center gap-6 md:gap-10">
                       <div className="text-right hidden sm:block">
-                        <span className="text-[10px] uppercase tracking-wider text-gray-400 font-bold block mb-0.5">Deuda Total</span>
+                        <span className="text-[10px] uppercase tracking-wider text-gray-400 font-bold block mb-0.5">{s.debt > 0 ?"Deuda Total" : "A favor"}</span>
                         <span
                           className={`font-mono text-base font-bold ${
                             s.debt > 0 ? "text-rose-500" : "text-emerald-600"
@@ -284,7 +287,7 @@ export default function SuppliersPage() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="bg-gray-50/50 dark:bg-muted/10 border-t border-gray-100 dark:border-gray-800"
+                        className="bg-gray-200/50 dark:bg-muted/10 border-t border-gray-100 dark:border-gray-800"
                       >
                          <div className="p-5 md:px-20 grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
                             {/* Items cleanly listed without boxes */}
@@ -348,18 +351,23 @@ export default function SuppliersPage() {
                                     </p>
                                 </div>
                             </div>
-                         </div>
-                         
+
+                             {/* Payment History */}
+                             <div className="md:col-span-2 pt-4 border-t border-gray-100 dark:border-gray-800">
+                                <PaymentHistorySection context="SUPPLIER" entityId={s._id} refreshParent={fetchData} />
+                             </div>
+                          </div>
+                          
                          <div className="px-5 pb-6 md:px-20 pt-2 flex justify-end gap-3">
                              <Button
                             onClick={() => handleEdit(s)}
-                            className="bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 flex items-center gap-2 py-2.5 px-6 rounded-xl shadow-sm font-semibold transition-all active:scale-95"
+                            className="bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 flex items-center gap-2 py-2.5 px-6 rounded-md shadow-sm font-semibold transition-all active:scale-95"
                           >
                             <Edit3 className="w-4 h-4" /> Editar
                           </Button>
                           <Button
                             onClick={() => handleDelete(s._id)}
-                            className="bg-white dark:bg-gray-800 hover:bg-rose-50 dark:hover:bg-rose-900/20 text-rose-600 border border-gray-200 dark:border-gray-700 hover:border-rose-200 flex items-center gap-2 py-2.5 px-6 rounded-xl shadow-sm font-semibold transition-all active:scale-95"
+                            className="bg-white dark:bg-gray-800 hover:bg-rose-50 dark:hover:bg-rose-900/20 text-rose-600 border border-gray-200 dark:border-gray-700 hover:border-rose-200 flex items-center gap-2 py-2.5 px-6 rounded-md shadow-sm font-semibold transition-all active:scale-95"
                           >
                             <Trash2 className="w-4 h-4" /> Eliminar
                           </Button>

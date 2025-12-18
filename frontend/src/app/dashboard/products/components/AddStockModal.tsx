@@ -17,14 +17,14 @@ export function AddStockModal({
 }: AddStockModalProps) {
   return (
     <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-      <div className="max-w-lg w-full bg-white rounded-2xl p-6 shadow-lg">
+      <div className="max-w-lg w-full bg-white rounded-md p-6 shadow-lg">
 
         <h3 className="text-lg font-semibold mb-2">Producto encontrado</h3>
         <p className="text-sm text-gray-500 mb-4">
           ¿Querés agregar stock a este producto?
         </p>
 
-        <div className="border rounded-lg p-3 mb-4 bg-gray-50 flex items-center justify-between">
+        <div className="border rounded-md p-3 mb-4 bg-gray-200 flex items-center justify-between">
           <div>
             <div className="font-medium">{product.name}</div>
             <div className="text-xs text-gray-500">
@@ -45,20 +45,20 @@ export function AddStockModal({
             value={qty}
             name="quantity"
             onChange={(e) => setQty(Number(e.target.value))}
-            className="w-24 border rounded-xl px-3 py-2"
+            className="w-24 border rounded-md px-3 py-2"
           />
         </div>
 
         <div className="flex justify-end gap-3">
           <button
             onClick={onCancel}
-            className="px-4 py-2 rounded-xl border text-gray-700"
+            className="px-4 py-2 rounded-md border text-gray-700"
           >
             Cancelar
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 rounded-xl bg-primary text-white"
+            className="px-4 py-2 rounded-md bg-primary text-white"
           >
             Agregar stock
           </button>

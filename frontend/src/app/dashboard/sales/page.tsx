@@ -82,7 +82,7 @@ export default function VentasPage() {
             </h2>
             <SalesStats sales={currentSales} />
             
-            <div className="bg-white dark:bg-[#18181b] rounded-2xl shadow-sm border border-gray-200 dark:border-[#27272a] p-4 transition-colors">
+            <div className="bg-white dark:bg-[#18181b] rounded-md shadow-sm border border-gray-200 dark:border-[#27272a] p-4 transition-colors">
                <SalesTable 
                   sales={currentSales.slice().reverse()}
                   expanded={expandedSale}
@@ -95,7 +95,7 @@ export default function VentasPage() {
       )}
 
       {currentSales.length === 0 && (
-         <div className="bg-gray-50 dark:bg-[#18181b] rounded-xl p-8 text-center border border-dashed border-gray-300 dark:border-[#27272a] mb-8 transition-colors">
+         <div className="bg-gray-200 dark:bg-[#18181b] rounded-md p-8 text-center border border-dashed border-gray-300 dark:border-[#27272a] mb-8 transition-colors">
             <p className="text-gray-500 dark:text-gray-400">No hay ventas registradas en la caja abierta de hoy.</p>
          </div>
       )}
@@ -133,7 +133,7 @@ export default function VentasPage() {
              </div>
         </div>
 
-        <div className="bg-white dark:bg-[#18181b] rounded-2xl shadow-sm border border-gray-200 dark:border-[#27272a] p-4 transition-colors">
+        <div className="bg-white dark:bg-[#18181b] rounded-md shadow-sm border border-gray-200 dark:border-[#27272a] p-4 transition-colors">
             {loadingHistory ? (
                 <div className="py-8 text-center text-gray-500">Cargando ventas...</div>
             ) : (
@@ -151,7 +151,7 @@ export default function VentasPage() {
                         <button 
                             disabled={page <= 1}
                             onClick={() => fetchHistorySales(page - 1)}
-                            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#18181b] border border-gray-300 dark:border-[#3f3f46] rounded-lg hover:bg-gray-50 dark:hover:bg-[#1f1f1f] disabled:opacity-50 disabled:cursor-not-allowed transition"
+                            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#18181b] border border-gray-300 dark:border-[#3f3f46] rounded-md hover:bg-gray-50 dark:hover:bg-[#1f1f1f] disabled:opacity-50 disabled:cursor-not-allowed transition"
                         >
                             Anterior
                         </button>
@@ -161,7 +161,7 @@ export default function VentasPage() {
                         <button 
                             disabled={page >= totalPages}
                             onClick={() => fetchHistorySales(page + 1)}
-                            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#18181b] border border-gray-300 dark:border-[#3f3f46] rounded-lg hover:bg-gray-50 dark:hover:bg-[#1f1f1f] disabled:opacity-50 disabled:cursor-not-allowed transition"
+                            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#18181b] border border-gray-300 dark:border-[#3f3f46] rounded-md hover:bg-gray-50 dark:hover:bg-[#1f1f1f] disabled:opacity-50 disabled:cursor-not-allowed transition"
                         >
                             Siguiente
                         </button>

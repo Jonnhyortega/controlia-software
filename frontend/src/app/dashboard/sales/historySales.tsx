@@ -11,7 +11,7 @@ import { useAuth } from "../../../context/authContext";
 // Helper Component for Metrics
 function InfoCard({ title, value, color = "text-gray-900 dark:text-gray-100" }: { title: string; value: string; color?: string }) {
   return (
-    <div className="flex flex-col bg-gray-50 dark:bg-white/5 px-3 py-2 rounded-lg border border-gray-100 dark:border-white/10">
+    <div className="flex flex-col bg-gray-200 dark:bg-white/5 px-3 py-2 rounded-md border border-gray-100 dark:border-white/10">
       <span className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">{title}</span>
       <span className={`font-bold text-sm md:text-base ${color}`}>{value}</span>
     </div>
@@ -93,7 +93,7 @@ export default function HistorySales() {
   return (
     <div className="space-y-4">
         {/* Search */}
-        <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 p-2 rounded-xl w-full max-w-sm mb-6">
+        <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 p-2 rounded-md w-full max-w-sm mb-6">
              <Search className="text-gray-400" size={18} />
              <input 
                 type="text" 
@@ -107,7 +107,7 @@ export default function HistorySales() {
         {monthKeys.length === 0 && <p className="text-gray-500 text-center py-4">No se encontraron resultados para la búsqueda.</p>}
 
         {monthKeys.map((month) => (
-             <div key={month} className="border border-gray-200 dark:border-gray-700/50 rounded-2xl overflow-hidden bg-white/50 dark:bg-zinc-900/30 mb-6 shadow-sm">
+             <div key={month} className="border border-gray-200 dark:border-gray-700/50 rounded-md overflow-hidden bg-white/50 dark:bg-zinc-900/30 mb-6 shadow-sm">
                  
                  {/* 🗓 Month Header Accordion Filter */}
                  <div 
@@ -115,7 +115,7 @@ export default function HistorySales() {
                    className={`p-4 flex items-center justify-between cursor-pointer transition-colors ${expandedMonth === month ? 'bg-white dark:bg-zinc-800 shadow-sm' : 'hover:bg-white dark:hover:bg-zinc-800/50'}`}
                  >
                     <div className="flex items-center gap-4">
-                       <div className="p-2.5 bg-primary/10 text-primary rounded-xl">
+                       <div className="p-2.5 bg-primary/10 text-primary rounded-md">
                           <Calendar size={20} />
                        </div>
                        <div>
@@ -142,7 +142,7 @@ export default function HistorySales() {
                        exit={{ height: 0, opacity: 0 }}
                        className="overflow-hidden"
                      >
-                        <div className="p-4 bg-gray-50/50 dark:bg-zinc-900/50 space-y-4 border-t border-gray-100 dark:border-gray-800">
+                        <div className="p-4 bg-gray-200/50 dark:bg-zinc-900/50 space-y-4 border-t border-gray-100 dark:border-gray-800">
                            {groupedHistory[month].map((d: any) => {
                                 // Original Item Render Logic
                                 const isExpanded = expandedId === d._id;
@@ -155,12 +155,12 @@ export default function HistorySales() {
                                 const difference = real - expected;
 
                                 return (
-                                    <div key={d._id} className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                                    <div key={d._id} className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                                         
                                         {/* Day Card Header */}
                                         <div 
                                             onClick={() => setExpandedId(isExpanded ? null : d._id)}
-                                            className="p-4 cursor-pointer flex flex-col md:flex-row gap-4 justify-between items-center hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors"
+                                            className="p-4 cursor-pointer flex flex-col md:flex-row gap-4 justify-between items-center hover:bg-gray-200 dark:hover:bg-zinc-800/50 transition-colors"
                                         >
                                             <div className="flex items-center gap-4 w-full md:w-auto">
                                                 <div className={`p-2 rounded-full ${isExpanded ? 'bg-primary/10 text-primary' : 'bg-gray-100 dark:bg-zinc-800 text-gray-500'}`}>
@@ -197,7 +197,7 @@ export default function HistorySales() {
                                                     exit={{ height: 0, opacity: 0 }}
                                                     className="overflow-hidden"
                                                 >
-                                                    <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-zinc-900/50">
+                                                    <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-200/50 dark:bg-zinc-900/50">
                                                         
                                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                                                             <InfoCard title="Ventas Totales" value={formatCurrency(totalSales)} color="text-primary-600 dark:text-primary-400" />
@@ -211,9 +211,9 @@ export default function HistorySales() {
                                                         </div>
 
                                                         {d.sales?.length > 0 ? (
-                                                            <div className="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden bg-white dark:bg-zinc-900">
+                                                            <div className="border border-gray-200 dark:border-gray-800 rounded-md overflow-hidden bg-white dark:bg-zinc-900">
                                                                 <table className="w-full text-sm">
-                                                                    <thead className="bg-gray-50 dark:bg-zinc-800/50 text-gray-600 dark:text-gray-400 font-medium">
+                                                                    <thead className="bg-gray-200 dark:bg-zinc-800/50 text-gray-600 dark:text-gray-400 font-medium">
                                                                         <tr>
                                                                             <th className="py-3 px-4 text-left">Hora</th>
                                                                             <th className="py-3 px-4 text-left">Productos</th>

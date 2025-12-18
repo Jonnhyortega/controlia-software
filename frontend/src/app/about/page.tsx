@@ -32,7 +32,7 @@ export default function AboutPage() {
               <li><strong>Comunidad:</strong> Crecemos junto con nuestros usuarios, escuchando sus necesidades.</li>
             </ul>
 
-            <div className="bg-primary/10 border border-primary/20 rounded-2xl p-8 mt-12 text-center">
+            <div className="bg-primary/10 border border-primary/20 rounded-md p-8 mt-12 text-center">
               <h3 className="text-xl font-bold text-white mb-2">¿Te gustaría formar parte?</h3>
               <p className="text-gray-400 mb-6">Estamos siempre buscando talento apasionado.</p>
               <a href="/careers" className="text-primary-300 font-semibold hover:underline">Ver vacantes abiertas &rarr;</a>

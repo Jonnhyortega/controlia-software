@@ -113,7 +113,7 @@ export default function ProfilePage() {
       ====================================== */}
       <form
         onSubmit={handleSave}
-        className="bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] rounded-2xl p-6 space-y-5"
+        className="bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] rounded-md p-6 space-y-5"
       >
         <h2 className="text-lg font-semibold text-primary-300 flex items-center gap-2">
           <User size={20} /> Información personal
@@ -126,7 +126,7 @@ export default function ProfilePage() {
             type="text"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+            className="bg-gray-200 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             required
           />
         </div>
@@ -138,7 +138,7 @@ export default function ProfilePage() {
             type="text"
             value={form.businessName}
             onChange={(e) => setForm({ ...form, businessName: e.target.value })}
-            className="bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+            className="bg-gray-200 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             required
           />
         </div>
@@ -150,7 +150,7 @@ export default function ProfilePage() {
             type="text"
             value={form.address}
             onChange={(e) => setForm({ ...form, address: e.target.value })}
-            className="bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+            className="bg-gray-200 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             placeholder="Ej: Av. Rivadavia 1234, CABA"
           />
         </div>
@@ -163,7 +163,7 @@ export default function ProfilePage() {
               type="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+              className="bg-gray-200 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
               required
             />
           </div>
@@ -187,7 +187,7 @@ export default function ProfilePage() {
         {/* BOTÓN GUARDAR */}
         <button
           type="submit"
-          className="bg-primary hover:bg-primary-700 px-5 py-2 rounded-xl text-white flex items-center gap-2"
+          className="bg-primary hover:bg-primary-700 px-5 py-2 rounded-md text-white flex items-center gap-2"
         >
           <Save size={18} /> Guardar cambios
         </button>
@@ -198,7 +198,7 @@ export default function ProfilePage() {
       ====================================== */}
       <form
         onSubmit={handlePasswordChange}
-        className="bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] rounded-2xl p-6 space-y-5"
+        className="bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] rounded-md p-6 space-y-5"
       >
         <h2 className="text-lg font-semibold text-primary-300 flex items-center gap-2">
           <Lock size={20} /> Cambiar contraseña
@@ -214,7 +214,7 @@ export default function ProfilePage() {
               onChange={(e) =>
                 setPasswordForm({ ...passwordForm, oldPassword: e.target.value })
               }
-              className="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 pr-10 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+              className="w-full bg-gray-200 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 pr-10 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
               required
             />
             <button
@@ -237,7 +237,7 @@ export default function ProfilePage() {
               onChange={(e) =>
                 setPasswordForm({ ...passwordForm, newPassword: e.target.value })
               }
-              className="w-full bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 pr-10 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+              className="w-full bg-gray-200 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] p-2 rounded text-gray-900 dark:text-gray-200 pr-10 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
               required
             />
             <button
@@ -253,7 +253,7 @@ export default function ProfilePage() {
         {/* BOTÓN CAMBIAR */}
         <button
           type="submit"
-          className="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-xl text-white flex items-center gap-2"
+          className="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-md text-white flex items-center gap-2"
         >
           <Lock size={18} /> Actualizar contraseña
         </button>

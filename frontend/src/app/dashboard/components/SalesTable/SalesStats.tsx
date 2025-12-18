@@ -53,9 +53,9 @@ export default function SalesStats({ sales }: SalesStatsProps) {
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-[#18181b] p-4 rounded-xl border border-indigo-100 dark:border-indigo-900/30 shadow-sm flex items-center gap-4 transition-colors"
+        className="bg-white dark:bg-[#18181b] p-4 rounded-md border border-indigo-100 dark:border-indigo-900/30 shadow-sm flex items-center gap-4 transition-colors"
       >
-        <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg">
+        <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-md">
           <ShoppingBag size={24} />
         </div>
         <div>
@@ -76,9 +76,9 @@ export default function SalesStats({ sales }: SalesStatsProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-white dark:bg-[#18181b] p-4 rounded-xl border border-orange-100 dark:border-orange-900/30 shadow-sm flex items-center gap-4 transition-colors"
+        className="bg-white dark:bg-[#18181b] p-4 rounded-md border border-orange-100 dark:border-orange-900/30 shadow-sm flex items-center gap-4 transition-colors"
       >
-        <div className="p-3 bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 rounded-lg">
+        <div className="p-3 bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 rounded-md">
           <Clock size={24} />
         </div>
         <div>
@@ -92,9 +92,9 @@ export default function SalesStats({ sales }: SalesStatsProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="bg-white dark:bg-[#18181b] p-4 rounded-xl border border-emerald-100 dark:border-emerald-900/30 shadow-sm flex items-center gap-4 transition-colors"
+        className="bg-white dark:bg-[#18181b] p-4 rounded-md border border-emerald-100 dark:border-emerald-900/30 shadow-sm flex items-center gap-4 transition-colors"
       >
-        <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg">
+        <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-md">
           <Receipt size={24} />
         </div>
         <div>

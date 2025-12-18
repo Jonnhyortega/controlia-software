@@ -47,7 +47,7 @@ export default function OverlayNotification({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ type: "spring", stiffness: 120, damping: 10 }}
-            className={`border-2 rounded-2xl px-10 py-6 text-center shadow-xl font-mono text-lg tracking-wide ${
+            className={`border-2 rounded-md px-10 py-6 text-center shadow-xl font-mono text-lg tracking-wide ${
               type === "success"
                 ? "border-green-400 text-green-200 bg-green-900/70"
                 : "border-red-400 text-red-200 bg-red-900/70"

@@ -246,14 +246,14 @@ export default function CustomizationPage() {
           <div className="flex gap-3">
              <button
               onClick={handleReset}
-              className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#252525] text-red-500 px-5 py-2.5 rounded-xl flex items-center gap-2 font-medium transition shadow-sm"
+              className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#252525] text-red-500 px-5 py-2.5 rounded-md flex items-center gap-2 font-medium transition shadow-sm"
             >
               <RefreshCcw size={18} /> Restaurar
             </button>
             <button
               onClick={saveChanges}
               disabled={!hasChanges}
-              className={`px-6 py-2.5 rounded-xl flex items-center gap-2 font-bold shadow-lg transition transform active:scale-95 ${
+              className={`px-6 py-2.5 rounded-md flex items-center gap-2 font-bold shadow-lg transition transform active:scale-95 ${
                   hasChanges 
                   ? "bg-primary hover:bg-primary-700 text-white shadow-primary/20 cursor-pointer" 
                   : "bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed shadow-none"
@@ -270,12 +270,12 @@ export default function CustomizationPage() {
             <div className="space-y-8">
                
                {/* LOGO CARD */}
-               <div className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+               <div className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 rounded-md p-6 shadow-sm hover:shadow-md transition-shadow">
                   <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
                     <ImageIcon className="text-gray-400" size={20} /> Identidad Visual
                   </h2>
                   
-                  <div className="bg-gray-50 dark:bg-[#0f0f0f] border border-dashed border-gray-300 dark:border-gray-700 rounded-2xl h-48 flex flex-col items-center justify-center relative overflow-hidden group">
+                  <div className="bg-gray-200 dark:bg-[#0f0f0f] border border-dashed border-gray-300 dark:border-gray-700 rounded-md h-48 flex flex-col items-center justify-center relative overflow-hidden group">
                      {data.logoUrl ? (
                          <>
                             <img
@@ -286,7 +286,7 @@ export default function CustomizationPage() {
                             />
                              <button
                                 onClick={handleDeleteLogo}
-                                className="absolute top-3 right-3 bg-red-500 text-white p-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="absolute top-3 right-3 bg-red-500 text-white p-2 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
                                 title="Eliminar logo"
                               >
                                 <Trash2 size={16} />
@@ -316,7 +316,7 @@ export default function CustomizationPage() {
                       />
                      <label
                         htmlFor="logoUpload"
-                        className="w-full flex items-center justify-center gap-2 bg-gray-100 dark:bg-[#252525] hover:bg-gray-200 dark:hover:bg-[#303030] text-gray-700 dark:text-gray-200 font-medium py-3 rounded-xl cursor-pointer transition border border-gray-200 dark:border-transparent"
+                        className="w-full flex items-center justify-center gap-2 bg-gray-100 dark:bg-[#252525] hover:bg-gray-200 dark:hover:bg-[#303030] text-gray-700 dark:text-gray-200 font-medium py-3 rounded-md cursor-pointer transition border border-gray-200 dark:border-transparent"
                       >
                         <Upload size={18} /> {data.logoUrl ? "Cambiar logo" : "Subir logo"}
                       </label>
@@ -332,7 +332,7 @@ export default function CustomizationPage() {
             <div className="lg:col-span-2 space-y-8">
                
                {/* COLORS CARD */}
-               <div className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+               <div className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 rounded-md p-6 shadow-sm hover:shadow-md transition-shadow">
                   <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
                     <Palette className="text-gray-400" size={20} /> Paleta de Colores
                   </h2>
@@ -341,7 +341,7 @@ export default function CustomizationPage() {
                       <div>
                          <label className="block text-sm font-medium text-gray-500 mb-2">Color Primario</label>
                          <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-xl shadow-inner border border-gray-200 dark:border-gray-700 overflow-hidden relative">
+                            <div className="w-12 h-12 rounded-md shadow-inner border border-gray-200 dark:border-gray-700 overflow-hidden relative">
                                 <input
                                   type="color"
                                   value={data.primaryColor}
@@ -354,7 +354,7 @@ export default function CustomizationPage() {
                                   type="text" 
                                   value={data.primaryColor}
                                   onChange={(e) => handleChange("primaryColor", e.target.value)}
-                                  className="w-full bg-gray-50 dark:bg-[#0f0f0f] border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm uppercase font-mono text-gray-700 dark:text-gray-300 focus:outline-none focus:border-primary"
+                                  className="w-full bg-gray-200 dark:bg-[#0f0f0f] border border-gray-200 dark:border-gray-700 rounded-md px-3 py-2 text-sm uppercase font-mono text-gray-700 dark:text-gray-300 focus:outline-none focus:border-primary"
                                />
                             </div>
                          </div>
@@ -364,7 +364,7 @@ export default function CustomizationPage() {
                       <div>
                          <label className="block text-sm font-medium text-gray-500 mb-2">Color Secundario</label>
                          <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-xl shadow-inner border border-gray-200 dark:border-gray-700 overflow-hidden relative">
+                            <div className="w-12 h-12 rounded-md shadow-inner border border-gray-200 dark:border-gray-700 overflow-hidden relative">
                                 <input
                                   type="color"
                                   value={data.secondaryColor}
@@ -377,7 +377,7 @@ export default function CustomizationPage() {
                                   type="text" 
                                   value={data.secondaryColor}
                                   onChange={(e) => handleChange("secondaryColor", e.target.value)}
-                                  className="w-full bg-gray-50 dark:bg-[#0f0f0f] border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm uppercase font-mono text-gray-700 dark:text-gray-300 focus:outline-none focus:border-primary"
+                                  className="w-full bg-gray-200 dark:bg-[#0f0f0f] border border-gray-200 dark:border-gray-700 rounded-md px-3 py-2 text-sm uppercase font-mono text-gray-700 dark:text-gray-300 focus:outline-none focus:border-primary"
                                   placeholder="#000000"
                                />
                             </div>
@@ -388,7 +388,7 @@ export default function CustomizationPage() {
                </div>
 
                {/* FORMATS CARD */}
-               <div className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+               <div className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 rounded-md p-6 shadow-sm hover:shadow-md transition-shadow">
                   <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
                     <Globe className="text-gray-400" size={20} /> Región y Formatos
                   </h2>
@@ -401,7 +401,7 @@ export default function CustomizationPage() {
                             <select
                               value={data.currency}
                               onChange={(e) => handleChange("currency", e.target.value)}
-                              className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#0f0f0f] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
+                              className="w-full p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-[#0f0f0f] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
                             >
                               <option value="ARS">Peso Argentino (ARS)</option>
                               <option value="USD">Dólar Americano (USD)</option>
@@ -411,7 +411,7 @@ export default function CustomizationPage() {
                          </div>
                          
                          <div className="flex items-center pt-6">
-                            <div className="text-sm bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 p-3 rounded-lg border border-blue-100 dark:border-blue-900/30">
+                            <div className="text-sm bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 p-3 rounded-md border border-blue-100 dark:border-blue-900/30">
                                ℹ La moneda afecta cómo se muestran los precios en el sistema y reportes.
                             </div>
                          </div>
@@ -423,7 +423,7 @@ export default function CustomizationPage() {
                               <select
                                 value={data.dateFormat}
                                 onChange={(e) => handleChange("dateFormat", e.target.value)}
-                                className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#0f0f0f] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
+                                className="w-full p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-[#0f0f0f] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
                               >
                                 <option value="DD/MM/YYYY">31/12/2024 (DD/MM/YYYY)</option>
                                 <option value="MM/DD/YYYY">12/31/2024 (MM/DD/YYYY)</option>
@@ -436,7 +436,7 @@ export default function CustomizationPage() {
                               <select
                                 value={data.timeFormat}
                                 onChange={(e) => handleChange("timeFormat", e.target.value)}
-                                className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#0f0f0f] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
+                                className="w-full p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-[#0f0f0f] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
                               >
                                 <option value="HH:mm">24 Horas (14:30)</option>
                                 <option value="hh:mm A">12 Horas (02:30 PM)</option>

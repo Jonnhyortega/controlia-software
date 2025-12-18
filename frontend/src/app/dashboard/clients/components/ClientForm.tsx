@@ -32,10 +32,10 @@ export default function ClientForm({ initialData, onSubmit, onCancel, isSubmitti
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="bg-white dark:bg-zinc-900 w-full max-w-md rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-800">
+      <div className="bg-white dark:bg-zinc-900 w-full max-w-md rounded-md shadow-xl overflow-hidden border border-gray-100 dark:border-gray-800">
         
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-zinc-900/50">
+        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-200/50 dark:bg-zinc-900/50">
           <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">
             {initialData ? "Editar Cliente" : "Nuevo Cliente"}
           </h2>
@@ -57,7 +57,7 @@ export default function ClientForm({ initialData, onSubmit, onCancel, isSubmitti
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-gray-700 rounded-xl py-3 pl-12 pr-4 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
+              className="w-full bg-gray-200 dark:bg-zinc-800/50 border border-gray-200 dark:border-gray-700 rounded-md py-3 pl-12 pr-4 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
             />
           </div>
 
@@ -70,7 +70,7 @@ export default function ClientForm({ initialData, onSubmit, onCancel, isSubmitti
               placeholder="DNI / CUIT (Opcional)"
               value={formData.dni}
               onChange={handleChange}
-              className="w-full bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-gray-700 rounded-xl py-3 pl-12 pr-4 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
+              className="w-full bg-gray-200 dark:bg-zinc-800/50 border border-gray-200 dark:border-gray-700 rounded-md py-3 pl-12 pr-4 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
             />
           </div>
 
@@ -84,7 +84,7 @@ export default function ClientForm({ initialData, onSubmit, onCancel, isSubmitti
                 placeholder="Teléfono"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-gray-700 rounded-xl py-3 pl-12 pr-4 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
+                className="w-full bg-gray-200 dark:bg-zinc-800/50 border border-gray-200 dark:border-gray-700 rounded-md py-3 pl-12 pr-4 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
                 />
             </div>
              <div className="relative">
@@ -95,7 +95,7 @@ export default function ClientForm({ initialData, onSubmit, onCancel, isSubmitti
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-gray-700 rounded-xl py-3 pl-12 pr-4 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
+                className="w-full bg-gray-200 dark:bg-zinc-800/50 border border-gray-200 dark:border-gray-700 rounded-md py-3 pl-12 pr-4 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
                 />
             </div>
           </div>
@@ -109,7 +109,7 @@ export default function ClientForm({ initialData, onSubmit, onCancel, isSubmitti
               placeholder="Dirección"
               value={formData.address}
               onChange={handleChange}
-              className="w-full bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-gray-700 rounded-xl py-3 pl-12 pr-4 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
+              className="w-full bg-gray-200 dark:bg-zinc-800/50 border border-gray-200 dark:border-gray-700 rounded-md py-3 pl-12 pr-4 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
             />
           </div>
 
@@ -122,7 +122,7 @@ export default function ClientForm({ initialData, onSubmit, onCancel, isSubmitti
               value={formData.notes}
               onChange={handleChange}
               rows={3}
-              className="w-full bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-gray-700 rounded-xl py-3 pl-12 pr-4 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition resize-none"
+              className="w-full bg-gray-200 dark:bg-zinc-800/50 border border-gray-200 dark:border-gray-700 rounded-md py-3 pl-12 pr-4 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition resize-none"
             />
           </div>
           
@@ -132,7 +132,7 @@ export default function ClientForm({ initialData, onSubmit, onCancel, isSubmitti
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`flex-1 py-3 order-2 bg-primary hover:bg-primary-600 text-white font-bold rounded-xl transition shadow-lg shadow-primary/20 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`flex-1 py-3 order-2 bg-primary hover:bg-primary-600 text-white font-bold rounded-md transition shadow-lg shadow-primary/20 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
               {isSubmitting ? "Guardando..." : (initialData ? "Actualizar" : "Crear Cliente")}
             </button>

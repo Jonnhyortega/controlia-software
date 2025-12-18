@@ -23,22 +23,40 @@ export const buildSalePayload = (newSale: any) => {
 
   const total = products.reduce((sum: number, p: any) => sum + p.price * p.quantity, 0);
 
-  return {
+  // Asegurar consistencia de amountPaid
+  let finalAmountPaid = newSale.amountPaid;
+  
+  // Si no está definido, para el payload enviamos null o undefined (backend decide).
+  // Pero para estar 100% seguros de qué estamos mandando:
+  if (finalAmountPaid !== undefined) {
+      finalAmountPaid = Number(finalAmountPaid);
+  }
+
+  const payload = {
     products,
     total,
     paymentMethod: newSale.paymentMethod,
+    clientId: newSale.clientId || null, 
+    amountPaid: finalAmountPaid, 
   };
+  
+  console.log("🛠️ [Frontend] Construyendo Payload:", payload);
+  return payload;
 };
 
 export const submitSale = async (payload: any, onCreated: () => void) => {
-  const res = await api.post("/sales", payload);
+  try {
+      const res = await api.post("/sales", payload);
 
-  if (res.status >= 200 && res.status < 300) {
-    // avisamos que la venta se creó, pero sin pasar datos
-    onCreated();
-    return res.data?.message || "✅ Venta registrada correctamente.";
-  } else {
-    throw new Error(res.data?.message || "Error al registrar la venta");
+      if (res.status >= 200 && res.status < 300) {
+        onCreated();
+        return res.data?.message || "✅ Venta registrada correctamente.";
+      } else {
+        throw new Error(res.data?.message || "Error al registrar la venta");
+      }
+  } catch (error: any) {
+      console.error("❌ Error en submitSale:", error);
+      throw error;
   }
 };
 

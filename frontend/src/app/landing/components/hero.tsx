@@ -102,11 +102,11 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="relative hidden lg:block"
           >
-            <div className="absolute inset-0 bg-primary/20 rounded-3xl blur-3xl"></div>
+            <div className="absolute inset-0 bg-primary/20 rounded-md blur-3xl"></div>
             <img 
               src="https://horizons-cdn.hostinger.com/e059da5a-bba4-4792-8c52-5124e2066510/8e0b5fe3bf6a4225c669e58fc0a53acf.png"
               alt="CONTROLIA Dashboard" 
-              className="relative rounded-2xl shadow-2xl border border-gray-800 w-full hover:scale-[1.02] transition-transform duration-500"
+              className="relative rounded-md shadow-2xl border border-gray-800 w-full hover:scale-[1.02] transition-transform duration-500"
             />
           </motion.div>
         </div>

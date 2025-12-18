@@ -6,8 +6,7 @@ import { ReceiptText } from "lucide-react";
 
 import { useSales } from "./hooks/useSales";
 import { useClock } from "./hooks/useClock";
-// import { useScanner } from "./hooks/useScanner"; // Seems unused in original file imports list in Step 54 but maybe I missed it. Step 54 shows line 9: import { useScanner } from "./hooks/useScanner";
-// import { useScanner } from "./hooks/useScanner";
+import { useScanner } from "./hooks/useScanner"; // 👈 Import new Scanner hook
 import { useAuth } from "../../context/authContext";
 
 import DashboardHeader from "../dashboard/components/dashboardHeader";
@@ -34,7 +33,7 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const { data, loading, reload } = useSales();
   // const { date, time } = useClock();
-  console.log(data)
+  
   const [pendingScannedCode, setPendingScannedCode] = useState<string | null>(null);
 
   const [expandedSale, setExpandedSale] = useState<string | null>(null);
@@ -42,11 +41,11 @@ export default function DashboardPage() {
   const [showCloseCashForm, setShowCloseCashForm] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [showStats, setShowStats] = useState(false);
-  const [showExpenses, setShowExpenses] = useState(false); // 👈 Nuevo estado
+  const [showExpenses, setShowExpenses] = useState(false);
 
   // 🎁 Welcome Modal Logic
   const searchParams = useSearchParams();
-  const router = useRouter();
+  // const router = useRouter(); // Unused
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   useEffect(() => {
@@ -73,8 +72,19 @@ export default function DashboardPage() {
     }
   };
 
+  // 🔌 Scanner Hook (Keyboard & Camera)
+  const { isCameraOpen, closeCamera } = useScanner(handleScannedCode);
+
 
   const handleRevert = async (saleId: string) => {
+    // Verificar si es una transacción (hackish: las transacciones no estarán en la API /sales/:id/revert igual)
+    // Lo ideal sería que la tabla maneje acciones distintas, pero por seguridad:
+    const item = sales.find((s: any) => s._id === saleId);
+    if (item?.isTransaction) {
+        toast.error("La anulación de cobros debe hacerse desde el perfil del cliente.");
+        return;
+    }
+
     try {
       await api.post(`/sales/${saleId}/revert`);
       toast.success("Venta anulada");
@@ -85,16 +95,55 @@ export default function DashboardPage() {
   };
 
 
-
-  // There was a duplicate useEffect in Step 54 (lines 62-95 and 97-130 are identical). I will keep only one.
-  
-
   if (loading) return <Loading fullscreen message="Cargando..." />;
 
-  const sales = data?.sales || [];
+  // 🔄 UNIFICAR VENTAS Y COBROS (Transactions)
+  const salesList = data?.sales || [];
+  const transactionsList = data?.transactions || []; // Vienen del endpoint modificado
+
+  // Adaptar transacciones para que parezcan ventas en la tabla
+  const normalizedTransactions = transactionsList.map((tx: any) => ({
+      _id: tx._id,
+      createdAt: tx.date || tx.createdAt,
+      paymentMethod: "Cobro Deuda", // Etiqueta distintiva
+      total: tx.amount,
+      amountPaid: tx.amount,
+      amountDebt: 0,
+      products: [
+          {
+              name: `Pago de ${tx.client?.name || "Cliente"}`,
+              quantity: 1,
+              price: tx.amount
+          }
+      ],
+      isTransaction: true // Flag para identificar
+  }));
+
+  // Fusionar y ordenar por fecha (más reciente primero)
+  const combinedList = [...salesList, ...normalizedTransactions].sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
+  const sales = combinedList; // Usamos la lista combinada como "sales" para la tabla
   
-  // Note: 'total' was defined in original file but seemingly unused in JSX? 
-  // const total = data?.totalSalesAmount || 0; 
+  // Calcular el total real ingresado sumando las ventas (para asegurar consitencia visual)
+  // Calcular el total real ingresado
+  // PRIORIDAD: Usar el valor 'totalSalesAmount' que viene del backend (DailyCash),
+  // ya que este incluye tanto ventas directas como PAGOS DE DEUDA de clientes.
+  // Si no existe (caso edge), calculamos sumando ventas visibles.
+  
+  const backendTotal = data?.totalSalesAmount; // useSales devuelve el objeto flatten 'data' que es el dailyCash + sales array.
+  
+  // Backup manual (solo ventas, no incuye pagos de deuda externa)
+  const manualTotalRevenue = sales.reduce((acc: number, sale: any) => {
+      const realPaid = (sale.amountPaid !== undefined && sale.amountPaid !== null) 
+                        ? Number(sale.amountPaid) 
+                        : Number(sale.total);
+      return acc + (isNaN(realPaid) ? 0 : realPaid);
+  }, 0);
+
+  // Si data.totalSalesAmount es numérico válido, lo usamos. Si no, usamos el manual.
+  const displayTotalRevenue = (typeof backendTotal === 'number') ? backendTotal : manualTotalRevenue;
 
   return (
     <>
@@ -118,7 +167,8 @@ export default function DashboardPage() {
           setShowSalesForm(false);
           setShowExpenseForm(false);
         }}
-        totalRevenue={data?.totalSalesAmount || 0}
+        // Usamos el calculado para máxima precisión visual
+        totalRevenue={displayTotalRevenue}
         onAddExpense={() => {
            if (data?.status === "cerrada") {
              toast.error("La caja está cerrada");
@@ -129,12 +179,22 @@ export default function DashboardPage() {
            setShowCloseCashForm(false);
         }}
       />
+      
+      {/* 📷 Scanner Overlay Visual (Cámara logic controlled by useScanner) */}
+      <ScannerOverlay 
+         open={isCameraOpen} 
+         onClose={closeCamera} 
+         onDetected={(code) => {
+             closeCamera();
+             handleScannedCode(code);
+         }}
+      />
 
       {/* 📉 Gastos Desplegables */}
-      <div className="mt-6 px-1">
+      {data?.extraExpenses.length > 0 && (<div className="mt-6 px-1 border-gray-100 dark:border-zinc-900 ">
          <button
             onClick={() => setShowExpenses(!showExpenses)}
-            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-rose-500 transition-colors bg-muted/40 hover:bg-muted px-4 py-2 rounded-lg border border-border mb-2"
+            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-rose-500 transition-colors bg-muted/40 hover:bg-muted px-4 py-2 rounded-md border border-border mb-2"
          >
             <TrendingDown size={16} />
             {showExpenses ? "Ocultar gastos y pagos" : "Ver gastos y pagos del día"}
@@ -155,7 +215,7 @@ export default function DashboardPage() {
               </motion.div>
             )}
          </AnimatePresence>
-      </div>
+      </div>)}
 
 
       <AnimatePresence>
@@ -214,7 +274,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-[#121212] border border-[#2c2c2c] rounded-2xl w-full max-w-lg p-0 overflow-hidden shadow-2xl relative"
+              className="bg-[#121212] border border-[#2c2c2c] rounded-md w-full max-w-lg p-0 overflow-hidden shadow-2xl relative"
             >
               {/* Decorative Background */}
               <div className="absolute top-0 w-full h-32 bg-gradient-to-b from-primary/20 to-transparent pointer-events-none" />
@@ -238,7 +298,7 @@ export default function DashboardPage() {
                   </span>
                 </div>
 
-                <div className="bg-[#1a1a1a] rounded-xl p-4 mb-6 text-left border border-gray-800">
+                <div className="bg-[#1a1a1a] rounded-md p-4 mb-6 text-left border border-gray-800">
                   <p className="text-gray-300 text-sm mb-3">
                     Has comenzado tu periodo de prueba de <strong>90 días</strong> del Plan Básico.
                   </p>
@@ -260,7 +320,7 @@ export default function DashboardPage() {
 
                 <button
                   onClick={() => setShowWelcomeModal(false)}
-                  className="w-full bg-primary hover:bg-primary-700 text-white font-medium py-3 rounded-xl transition-all"
+                  className="w-full bg-primary hover:bg-primary-700 text-white font-medium py-3 rounded-md transition-all"
                 >
                   ¡Entendido, comencemos! 🚀
                 </button>
@@ -270,16 +330,16 @@ export default function DashboardPage() {
         )}
       </AnimatePresence>
 
-      <div className="mt-8">
+      <div className="mt-8 border-gray-100 dark:border-zinc-900">
         {data?.status === "cerrada" && data && <ClosedCashSummary data={data} />}
       </div>
 
       <motion.div className="mt-6">
         {sales.length > 0 ? 
         (
-        <>
+        <div className="border-gray-100 dark:border-zinc-900">
           <SalesTable
-            sales={sales.slice().reverse()}
+            sales={sales}
             expanded={expandedSale}
             onExpand={(id: any) => setExpandedSale(expandedSale === id ? null : id)}
             onRevert={(saleId: any) => handleRevert(saleId)}
@@ -290,7 +350,7 @@ export default function DashboardPage() {
           <div className="mt-6 mb-8">
              <button
                 onClick={() => setShowStats(!showStats)}
-                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors bg-muted/40 hover:bg-muted px-4 py-2 rounded-lg border border-border"
+                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors bg-muted/40 hover:bg-muted px-4 py-2 rounded-md border border-border"
              >
                 <BarChart3 size={16} />
                 {showStats ? "Ocultar gráficos y estadísticas" : "Ver gráficos generales de hoy"}
@@ -312,10 +372,10 @@ export default function DashboardPage() {
                 )}
              </AnimatePresence>
           </div>
-        </>
+        </div>
         ) : 
         (
-          <div className="flex flex-col items-center justify-center py-14 text-gray-400">
+          <div className="flex bg-red-700 flex-col items-center justify-center py-14 text-gray-400 border-gray-100 dark:border-zinc-600">
             <ReceiptText className="w-12 h-12 mb-3 opacity-60" />
             <p className="text-center text-gray-400 text-lg">
               Todavía no registraste ventas.

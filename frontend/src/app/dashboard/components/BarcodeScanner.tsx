@@ -119,7 +119,7 @@ export default function BarcodeScanner({
   // UI
   // -----------------------------------------------------
   return (
-    <div className="bg-black p-4 rounded-xl border border-gray-800 text-white w-full">
+    <div className="bg-black p-4 rounded-md border border-gray-800 text-white w-full">
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-lg font-semibold">Escanear código</h2>
         <button

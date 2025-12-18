@@ -23,7 +23,7 @@ const FloatingInput = ({
   autoComplete
 }: any) => {
   return (
-    <div className="relative bg-[#1c1c1c] rounded-xl border border-gray-800 focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/20 transition-all duration-200">
+    <div className="relative bg-[#1c1c1c] rounded-md border border-gray-800 focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/20 transition-all duration-200">
       <input
         type={type}
         name={name}
@@ -32,7 +32,7 @@ const FloatingInput = ({
         required={required}
         placeholder=" "
         autoComplete={autoComplete}
-        className={`block w-full px-4 pt-8 pb-3 text-white bg-transparent rounded-xl outline-none peer leading-normal placeholder-transparent ${showPasswordToggle ? 'pr-10' : ''}`}
+        className={`block w-full px-4 pt-8 pb-3 text-white bg-transparent rounded-md outline-none peer leading-normal placeholder-transparent ${showPasswordToggle ? 'pr-10' : ''}`}
       />
       <label
         className={`absolute left-0 w-full px-4 transition-all duration-200 pointer-events-none 
@@ -215,7 +215,7 @@ export default function AuthPage() {
       <div className="max-w-5xl w-full flex flex-col md:flex-row items-center justify-center gap-12">
         
         {/* Panel derecho (Central) */}
-        <div className="w-full max-w-md flex flex-col gap-6 bg-[#121212] p-8 rounded-3xl border border-gray-800 relative shadow-2xl">
+        <div className="w-full max-w-md flex flex-col gap-6 bg-[#121212] p-8 rounded-md border border-gray-800 relative shadow-2xl">
           {/* Header */}
           <div className="text-center">
             <h1 className="text-xs tracking-[0.4em] font-bold text-gray-500 mb-4 uppercase">
@@ -232,9 +232,9 @@ export default function AuthPage() {
           </div>
 
           {/* Toggle */}
-          <div className="relative flex bg-[#1c1c1c] p-1 rounded-xl">
+          <div className="relative flex bg-[#1c1c1c] p-1 rounded-md">
             <motion.div
-              className="absolute top-1 left-1 bottom-1 w-[calc(50%-4px)] bg-primary rounded-lg shadow-lg"
+              className="absolute top-1 left-1 bottom-1 w-[calc(50%-4px)] bg-primary rounded-md shadow-lg"
               animate={{ x: isLogin ? "0%" : "100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             />
@@ -307,7 +307,7 @@ export default function AuthPage() {
                 </div>
 
                 {error && (
-                  <div className="space-y-2 bg-red-500/10 border border-red-500/20 p-3 rounded-lg">
+                  <div className="space-y-2 bg-red-500/10 border border-red-500/20 p-3 rounded-md">
                     <p className="text-red-400 text-sm font-medium">{error}</p>
                     {error.includes("verifica") && sessionStorage.getItem("unverifiedEmail") && (
                       <button
@@ -329,7 +329,7 @@ export default function AuthPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`w-full py-3.5 mt-2 rounded-xl font-bold text-sm tracking-wide transition-all transform active:scale-[0.98] ${
+                  className={`w-full py-3.5 mt-2 rounded-md font-bold text-sm tracking-wide transition-all transform active:scale-[0.98] ${
                     loading
                       ? "bg-primary/20 text-primary-300 cursor-not-allowed"
                       : "bg-primary hover:bg-primary-600 text-white shadow-lg hover:shadow-primary/30"
@@ -350,7 +350,7 @@ export default function AuthPage() {
                 className="flex flex-col gap-5"
               >
                  {/* 🎁 Alerta de Prueba Gratuita */}
-                <div className="bg-gradient-to-r from-primary/20 to-transparent border border-primary/20 rounded-xl p-4">
+                <div className="bg-gradient-to-r from-primary/20 to-transparent border border-primary/20 rounded-md p-4">
                     <p className="font-bold text-primary-300 text-sm mb-1">🎁 Prueba Gratis de 90 días</p>
                     <p className="text-xs text-gray-400">
                       Disfruta del Plan Básico sin costo. Luego $15.000 ARS/mes.
@@ -411,13 +411,13 @@ export default function AuthPage() {
                 </div>
 
                 {error && (
-                  <p className="text-red-400 text-sm bg-red-500/10 p-2 rounded-lg border border-red-500/20">{error}</p>
+                  <p className="text-red-400 text-sm bg-red-500/10 p-2 rounded-md border border-red-500/20">{error}</p>
                 )}
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`w-full py-3.5 mt-2 rounded-xl font-bold text-sm tracking-wide transition-all transform active:scale-[0.98] ${
+                  className={`w-full py-3.5 mt-2 rounded-md font-bold text-sm tracking-wide transition-all transform active:scale-[0.98] ${
                     loading
                       ? "bg-primary/20 text-primary-300 cursor-not-allowed"
                       : "bg-primary hover:bg-primary-600 text-white shadow-lg hover:shadow-primary/30"

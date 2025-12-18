@@ -50,7 +50,7 @@ export default function SimpleStats({ sales }: SimpleStatsProps) {
     <div className="grid md:grid-cols-2 gap-6 mb-6">
       
       {/* Ventas por Hora */}
-      <div className="bg-white dark:bg-[#121212] border border-gray-200 dark:border-[#2c2c2c] p-5 rounded-2xl shadow-lg">
+      <div className="bg-white dark:bg-[#121212] border border-gray-200 dark:border-[#2c2c2c] p-5 rounded-md shadow-lg">
         <h3 className="text-gray-800 dark:text-gray-200 font-semibold mb-4 text-sm uppercase tracking-wide">Ventas por Hora</h3>
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -81,7 +81,7 @@ export default function SimpleStats({ sales }: SimpleStatsProps) {
       </div>
 
       {/* Métodos de Pago */}
-      <div className="bg-white dark:bg-[#121212] border border-gray-200 dark:border-[#2c2c2c] p-5 rounded-2xl shadow-lg">
+      <div className="bg-white dark:bg-[#121212] border border-gray-200 dark:border-[#2c2c2c] p-5 rounded-md shadow-lg">
         <h3 className="text-gray-800 dark:text-gray-200 font-semibold mb-4 text-sm uppercase tracking-wide">Métodos de Pago</h3>
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">

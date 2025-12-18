@@ -12,7 +12,7 @@ import { PackageOpen } from "lucide-react";
 export function ProductList({ products, onEdit, onDelete, onHistory }: ProductListProps) {
   if (products.length === 0) {
     return (
-      <div className="bg-white dark:bg-[#18181b] p-10 rounded-2xl shadow-md border border-gray-100 dark:border-[#27272a] flex flex-col items-center justify-center text-center space-y-4 transition-colors">
+      <div className="bg-white dark:bg-[#18181b] p-10 rounded-md shadow-md border border-gray-100 dark:border-[#27272a] flex flex-col items-center justify-center text-center space-y-4 transition-colors">
         <div className="bg-gray-100 dark:bg-[#27272a] p-6 rounded-full transition-colors">
           <PackageOpen size={48} className="text-gray-400 dark:text-gray-500" />
         </div>
@@ -27,7 +27,7 @@ export function ProductList({ products, onEdit, onDelete, onHistory }: ProductLi
   }
 
   return (
-    <div className="bg-white dark:bg-background p-6 rounded-2xl shadow-md border border-gray-100 dark:border-border transition-colors">
+    <div className="bg-white dark:bg-background p-6 rounded-md shadow-md border border-gray-100 dark:border-border transition-colors">
       <h2 className="text-lg font-semibold text-primary dark:text-blue-400 mb-6">
         Lista de productos
       </h2>

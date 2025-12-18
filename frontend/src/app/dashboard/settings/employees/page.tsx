@@ -179,7 +179,7 @@ export default function EmployeesPage() {
           <h1 className="text-2xl font-semibold text-primary">Gestión de empleados</h1>
           <button
             onClick={openCreateModal}
-            className="bg-primary hover:bg-primary-700 px-4 py-2 rounded-xl text-white flex items-center gap-2"
+            className="bg-primary hover:bg-primary-700 px-4 py-2 rounded-md text-white flex items-center gap-2"
           >
             <UserPlus size={18} /> Nuevo empleado
           </button>
@@ -190,7 +190,7 @@ export default function EmployeesPage() {
         {employees.map((emp) => (
           <div
             key={emp.name}
-            className="bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] rounded-xl p-5 relative shadow-xl hover:shadow-2xl transition"
+            className="bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] rounded-md p-5 relative shadow-xl hover:shadow-2xl transition"
           >
             {/* Badge de estado */}
             <span
@@ -284,7 +284,7 @@ export default function EmployeesPage() {
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <form
             onSubmit={handleSubmit}
-            className="bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] rounded-2xl p-6 w-full max-w-md space-y-4"
+            className="bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] rounded-md p-6 w-full max-w-md space-y-4"
           >
             <h3 className="text-lg font-semibold text-primary-300">
               {editingId ? "Editar empleado" : "Nuevo empleado"}
@@ -295,7 +295,7 @@ export default function EmployeesPage() {
               placeholder="Nombre"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full p-2 rounded bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full p-2 rounded bg-gray-200 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50"
               required
             />
 
@@ -304,7 +304,7 @@ export default function EmployeesPage() {
               placeholder="Correo"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full p-2 rounded bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full p-2 rounded bg-gray-200 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50"
               required
             />
 
@@ -314,7 +314,7 @@ export default function EmployeesPage() {
                 placeholder="Contraseña"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="w-full p-2 rounded bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full p-2 rounded bg-gray-200 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50"
                 required
               />
             )}
@@ -322,7 +322,7 @@ export default function EmployeesPage() {
             <select
               value={form.role}
               onChange={(e) => setForm({ ...form, role: e.target.value })}
-              className="w-full p-2 rounded bg-gray-50 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full p-2 rounded bg-gray-200 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50"
             >
               <option value="empleado">Empleado</option>
               <option value="admin">Admin</option>
@@ -332,7 +332,7 @@ export default function EmployeesPage() {
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 rounded-lg text-gray-400 hover:text-gray-200"
+                className="px-4 py-2 rounded-md text-gray-400 hover:text-gray-200"
               >
                 Cancelar
               </button>
@@ -340,7 +340,7 @@ export default function EmployeesPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-primary hover:bg-primary-700 px-4 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-primary hover:bg-primary-700 px-4 py-2 rounded-md text-white disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? "Guardando..." : "Guardar"}
               </button>
@@ -351,7 +351,7 @@ export default function EmployeesPage() {
 
       {showPasswordModal && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-          <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-6 w-full max-w-md space-y-4">
+          <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-md p-6 w-full max-w-md space-y-4">
             <h3 className="text-lg font-semibold text-primary-300">
               Cambiar contraseña
             </h3>
@@ -367,14 +367,14 @@ export default function EmployeesPage() {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowPasswordModal(false)}
-                className="px-4 py-2 rounded-lg text-gray-400 hover:text-gray-200"
+                className="px-4 py-2 rounded-md text-gray-400 hover:text-gray-200"
               >
                 Cancelar
               </button>
 
               <button
                 onClick={handlePasswordReset}
-                className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-white"
+                className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md text-white"
               >
                 Guardar
               </button>

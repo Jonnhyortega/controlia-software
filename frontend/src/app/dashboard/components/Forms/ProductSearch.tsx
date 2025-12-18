@@ -67,7 +67,7 @@ export default function ProductSearch({ products, onSelect }: ProductSearchProps
             onFocus={() => setIsOpen(true)}
             className="
               w-full
-              bg-white border border-gray-300 rounded-xl px-4 py-3 pr-10
+              bg-white border border-gray-300 rounded-md px-4 py-3 pr-10
               focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent
               shadow-sm text-gray-800 placeholder-gray-400
             "
@@ -80,7 +80,7 @@ export default function ProductSearch({ products, onSelect }: ProductSearchProps
       </p>
 
       {isOpen && query.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden max-h-60 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-md shadow-xl border border-gray-100 overflow-hidden max-h-60 overflow-y-auto">
           {filteredProducts.length > 0 ? (
             <ul>
               {filteredProducts.map((product) => (
@@ -88,14 +88,14 @@ export default function ProductSearch({ products, onSelect }: ProductSearchProps
                   key={product._id}
                   onClick={() => handleSelect(product)}
                   className="
-                    px-4 py-3 hover:bg-gray-50 cursor-pointer
+                    px-4 py-3 hover:bg-gray-200 cursor-pointer
                     flex items-center justify-between
                     border-b border-gray-50 last:border-none
                     dark:bg-gray-800 dark:hover:bg-gray-700
                   "
                 >
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary-50 p-2 rounded-lg text-primary">
+                    <div className="bg-primary-50 p-2 rounded-md text-primary">
                       <Package className="w-5 h-5" />
                     </div>
                     <div>

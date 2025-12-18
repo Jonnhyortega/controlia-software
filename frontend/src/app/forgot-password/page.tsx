@@ -52,7 +52,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0b0b0b] px-4">
-      <div className="max-w-md w-full bg-[#121212] border border-[#1f1f1f] rounded-2xl p-8 shadow-2xl">
+      <div className="max-w-md w-full bg-[#121212] border border-[#1f1f1f] rounded-md p-8 shadow-2xl">
         
         <div className="mb-6">
             <Link href="/login" className="text-gray-400 hover:text-white flex items-center gap-2 text-sm transition-colors">
@@ -71,7 +71,7 @@ export default function ForgotPasswordPage() {
         </div>
 
         {status === "success" ? (
-            <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-4 text-center">
+            <div className="bg-green-500/10 border border-green-500/20 rounded-md p-4 text-center">
                 <p className="text-green-400 text-sm font-medium">{message}</p>
                 <Link href="/login" className="block mt-4 text-primary hover:text-primary-300 text-sm font-semibold">
                     Volver al inicio de sesión
@@ -89,13 +89,13 @@ export default function ForgotPasswordPage() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full bg-[#1a1a1a] border border-[#2c2c2c] rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                        className="w-full bg-[#1a1a1a] border border-[#2c2c2c] rounded-md px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                         placeholder="ejemplo@correo.com"
                     />
                 </div>
 
                 {status === "error" && (
-                    <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-sm text-red-400 text-center">
+                    <div className="bg-red-500/10 border border-red-500/20 rounded-md p-3 text-sm text-red-400 text-center">
                         {message}
                     </div>
                 )}
@@ -103,7 +103,7 @@ export default function ForgotPasswordPage() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className={`w-full py-3 rounded-xl font-semibold text-white transition-all ${
+                    className={`w-full py-3 rounded-md font-semibold text-white transition-all ${
                         loading ? "bg-primary/50 cursor-not-allowed" : "bg-primary hover:bg-primary-700 shadow-lg shadow-primary/20"
                     }`}
                 >

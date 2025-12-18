@@ -17,7 +17,7 @@ export default function DashboardHeader({
   const { formatCurrency } = useCustomization();
 
   return (
-    <header className="relative w-full bg-white dark:bg-[#09090b] border border-gray-100 dark:border-zinc-800 p-6 md:p-8 rounded-3xl shadow-sm overflow-hidden group">
+    <header className="relative w-full bg-white dark:bg-[#09090b] border border-gray-100 dark:border-zinc-900 p-6 md:p-8 rounded-md shadow-sm overflow-hidden group">
       {/* Decorative Blob */}
       <div className="absolute top-0 right-0 p-32 bg-primary/5 dark:bg-primary/10 rounded-full blur-[90px] pointer-events-none -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-colors duration-700 opacity-50 dark:opacity-100" />
 
@@ -25,7 +25,7 @@ export default function DashboardHeader({
         {/* Left Side: Title & Revenue */}
         <div className="text-center md:text-left space-y-3">
           <div className="flex items-center justify-center md:justify-start gap-3">
-            <div className="p-2.5 bg-primary/10 dark:bg-primary/20 rounded-2xl text-primary shadow-sm">
+            <div className="p-2.5 bg-primary/10 dark:bg-primary/20 rounded-md text-primary shadow-sm">
               <Wallet size={26} />
             </div>
             <div>
@@ -39,7 +39,7 @@ export default function DashboardHeader({
           </div>
 
           {/* Revenue Badge */}
-          <div className="inline-flex items-center gap-2 mt-2 px-5 py-2.5 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30 rounded-2xl font-bold text-xl shadow-sm">
+          <div className="inline-flex items-center gap-2 mt-2 px-5 py-2.5 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30 rounded-md font-bold text-xl shadow-sm">
             <span>{formatCurrency(totalRevenue)}</span>
           </div>
         </div>
@@ -50,7 +50,7 @@ export default function DashboardHeader({
           <button
             onClick={onNewSale}
             disabled={isCashClosed}
-            className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl font-semibold shadow-lg shadow-primary/20 transition-all active:scale-95 hover:-translate-y-0.5
+            className={`flex items-center gap-2 px-6 py-3.5 rounded-md font-semibold shadow-lg shadow-primary/20 transition-all active:scale-95 hover:-translate-y-0.5
                   ${
                     isCashClosed
                       ? "bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-zinc-800 dark:text-zinc-600 shadow-none hover:translate-y-0"
@@ -66,10 +66,10 @@ export default function DashboardHeader({
           <button
             onClick={onAddExpense}
             disabled={isCashClosed}
-            className={`flex items-center gap-2 px-5 py-3.5 rounded-2xl font-medium border transition-all active:scale-95 hover:-translate-y-0.5
+            className={`flex items-center gap-2 px-5 py-3.5 rounded-md font-medium border transition-all active:scale-95 hover:-translate-y-0.5
                   ${
                     isCashClosed
-                      ? "opacity-50 cursor-not-allowed bg-gray-50 border-gray-100 text-gray-400 shadow-none hover:translate-y-0"
+                      ? "opacity-50 cursor-not-allowed bg-gray-200 border-gray-100 text-gray-400 shadow-none hover:translate-y-0"
                       : "bg-rose-50 border-rose-100 text-rose-600 hover:bg-rose-100 dark:bg-rose-900/10 dark:border-rose-900/30 dark:text-rose-400 dark:hover:bg-rose-900/20"
                   }
                `}
@@ -86,7 +86,7 @@ export default function DashboardHeader({
           <button
             onClick={onCloseCash}
             disabled={isCashClosed && userRole !== "admin"}
-            className={`flex items-center gap-2 px-5 py-3.5 rounded-2xl font-medium border transition-all active:scale-95 hover:-translate-y-0.5
+            className={`flex items-center gap-2 px-5 py-3.5 rounded-md font-medium border transition-all active:scale-95 hover:-translate-y-0.5
                   ${
                     isCashClosed && userRole !== "admin"
                       ? "opacity-50 cursor-not-allowed"

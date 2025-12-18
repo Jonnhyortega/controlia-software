@@ -19,7 +19,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const base =
-      "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 shadow-sm";
+      "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 shadow-sm";
 
     const variants: Record<string, string> = {
       default:
@@ -37,8 +37,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const sizes: Record<string, string> = {
       sm: "px-3 py-1 text-sm rounded-md",
-      md: "px-4 py-2 text-sm rounded-lg",
-      lg: "px-6 py-3 text-base rounded-xl",
+      md: "px-4 py-2 text-sm rounded-md",
+      lg: "px-6 py-3 text-base rounded-md",
     };
 
     return (

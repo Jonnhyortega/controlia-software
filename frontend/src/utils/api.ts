@@ -594,3 +594,19 @@ export const resetCustomization = async () => {
   const res = await api.post("/customization/reset");
   return res.data;
 };
+
+// ===========================
+//   TRANSACCIONES
+// ===========================
+export const createTransaction = async (data: {
+  type: "CLIENT_PAYMENT" | "SUPPLIER_PAYMENT" | "CLIENT_DEBT" | "SUPPLIER_DEBT";
+  amount: number;
+  clientId?: string;
+  supplierId?: string;
+  description?: string;
+  date?: Date;
+}) => {
+  const res = await api.post("/transactions", data);
+  return res.data;
+};
+

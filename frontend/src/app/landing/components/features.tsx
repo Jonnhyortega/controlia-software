@@ -109,7 +109,7 @@ const Features = () => {
               whileHover={{ y: -5, scale: 1.02 }}
               className={`
                 ${feature.colSpan} 
-                group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 
+                group relative overflow-hidden rounded-md border border-white/10 bg-white/5 p-8 
                 hover:bg-white/[0.07] transition-all duration-300
               `}
             >
@@ -117,7 +117,7 @@ const Features = () => {
               
               <div className="relative z-10 flex flex-col h-full">
                 <div className={`
-                  w-12 h-12 rounded-2xl flex items-center justify-center mb-6 
+                  w-12 h-12 rounded-md flex items-center justify-center mb-6 
                   bg-gradient-to-br ${feature.color} shadow-lg shadow-black/20
                 `}>
                   <feature.icon className="w-6 h-6 text-white" />

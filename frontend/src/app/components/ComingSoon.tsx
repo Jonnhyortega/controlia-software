@@ -13,7 +13,7 @@ export default function ComingSoonPage() {
            animate={{ opacity: 1, scale: 1 }}
            className="max-w-xl mx-auto flex flex-col items-center"
         >
-          <div className="w-20 h-20 bg-gray-800 rounded-3xl flex items-center justify-center mb-8">
+          <div className="w-20 h-20 bg-gray-800 rounded-md flex items-center justify-center mb-8">
             <Construction className="w-10 h-10 text-primary" />
           </div>
           

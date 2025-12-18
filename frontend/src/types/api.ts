@@ -58,6 +58,7 @@ export interface Sale {
   products: SaleProduct[];
   total: number;
   paymentMethod?: string;
+  client?: string | Client; // Added based on backend report
   status?: string;
   createdAt?: string;
 }
@@ -113,4 +114,20 @@ export interface Client {
   dni?: string;
   notes?: string;
   createdAt?: string;
+  balance?: number;
+}
+
+export interface Transaction {
+  _id: string;
+  type: "CLIENT_PAYMENT" | "SUPPLIER_PAYMENT" | "CLIENT_DEBT" | "SUPPLIER_DEBT";
+  amount: number;
+  client?: string | Client;
+  supplier?: string | Supplier;
+  description?: string;
+  imageUrl?: string;
+  date: string;
+  createdBy?: string | UserAPI;
+  user?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

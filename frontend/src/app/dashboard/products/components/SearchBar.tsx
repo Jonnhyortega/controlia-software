@@ -7,13 +7,13 @@ interface SearchBarProps {
 
 export function SearchBar({ searchTerm, setSearchTerm }: SearchBarProps) {
   return (
-    <div className="flex items-center gap-3 bg-white dark:bg-background p-4 rounded-2xl shadow-md border dark:border-border">
+    <div className="flex items-center gap-3 bg-white dark:bg-background p-4 rounded-md shadow-md border dark:border-border">
       <input
         type="text"
         placeholder="Buscar por nombre, categoría o proveedor..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="w-full border rounded-xl px-4 py-2 bg-transparent dark:text-white dark:border-gray-700 placeholder:text-gray-400"
+        className="w-full border rounded-md px-4 py-2 bg-transparent dark:text-white dark:border-gray-700 placeholder:text-gray-400"
       />
       {searchTerm && (
         <button

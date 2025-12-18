@@ -13,7 +13,7 @@ export default function Loading({
     <div
       suppressHydrationWarning
       className={`flex flex-col items-center justify-center gap-4 text-gray-600 ${
-        fullscreen ? "fixed inset-0 bg-gray-50/80 z-50 backdrop-blur-sm" : "py-8"
+        fullscreen ? "fixed inset-0 bg-gray-200/80 z-50 backdrop-blur-sm" : "py-8"
       }`}
     >
       {/* 🔵 Spinner animado estilo Controlia */}

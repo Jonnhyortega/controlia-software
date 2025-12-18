@@ -133,7 +133,7 @@ export default function CloseCashForm({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
-        className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 shadow-sm rounded-2xl p-6"
+        className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 shadow-sm rounded-md p-6"
       >
         {/* HEADER */}
         <div className="flex justify-between mb-6">
@@ -143,7 +143,7 @@ export default function CloseCashForm({
 
           <button
             onClick={onBack}
-            className="text-sm px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white"
+            className="text-sm px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white"
           >
             <X size={20} />
           </button>
@@ -254,7 +254,7 @@ export default function CloseCashForm({
           <button
             type="submit"
             disabled={loading}
-            className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+            className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700"
           >
             {loading ? "Cerrando..." : "Cerrar caja"}
           </button>
@@ -265,7 +265,7 @@ export default function CloseCashForm({
         {response && (
           <div
             className={`
-              mt-6 border-t pt-4 text-sm rounded-lg p-4
+              mt-6 border-t pt-4 text-sm rounded-md p-4
               ${
                 response?.success
                   ? "bg-green-50 border-green-300 text-green-800"

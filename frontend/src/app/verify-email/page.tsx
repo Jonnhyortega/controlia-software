@@ -170,7 +170,7 @@ function VerifyEmailContent() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-md w-full bg-[#121212] p-8 rounded-2xl border border-gray-800 relative overflow-hidden"
+        className="max-w-md w-full bg-[#121212] p-8 rounded-md border border-gray-800 relative overflow-hidden"
       >
         {/* Header */}
         <div className="text-center mb-8">
@@ -204,7 +204,7 @@ function VerifyEmailContent() {
                   value={digit}
                   onChange={(e) => handleCodeChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
-                  className="w-12 h-14 text-center text-2xl font-bold bg-[#1c1c1c] border-2 border-gray-700 rounded-lg focus:border-primary focus:outline-none transition-colors"
+                  className="w-12 h-14 text-center text-2xl font-bold bg-[#1c1c1c] border-2 border-gray-700 rounded-md focus:border-primary focus:outline-none transition-colors"
                   disabled={loading}
                 />
               ))}
@@ -216,7 +216,7 @@ function VerifyEmailContent() {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm"
+              className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-md text-red-400 text-sm"
             >
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>{error}</span>
@@ -235,7 +235,7 @@ function VerifyEmailContent() {
           <button
             type="submit"
             disabled={loading || code.join("").length !== 6}
-            className={`w-full py-3 rounded-lg font-semibold transition flex items-center justify-center gap-2 ${
+            className={`w-full py-3 rounded-md font-semibold transition flex items-center justify-center gap-2 ${
               loading || code.join("").length !== 6
                 ? "bg-primary-200 cursor-not-allowed text-primary-700"
                 : "bg-primary hover:bg-primary-700 text-white"

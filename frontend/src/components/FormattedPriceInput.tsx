@@ -84,7 +84,7 @@ export function FormattedPriceInput({
               onChange={handleChange}
               placeholder={placeholder}
               disabled={disabled}
-              className={`border border-gray-200 dark:border-gray-700 rounded-lg pl-3 pr-10 py-2 w-full transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-right
+              className={`border border-gray-200 dark:border-gray-700 rounded-md pl-3 pr-10 py-2 w-full transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-right
                 ${disabled ? "bg-gray-100 dark:bg-gray-800 text-gray-500 cursor-not-allowed" : "bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white"}
               `}
               autoComplete="off"

@@ -60,7 +60,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -40, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className={`flex items-center gap-3 border px-4 py-3 rounded-xl shadow-md ${
+              className={`flex items-center gap-3 border px-4 py-3 rounded-md shadow-md ${
                 t.type === "success"
                   ? "bg-green-50 border-green-400 text-green-800"
                   : t.type === "error"

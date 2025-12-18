@@ -15,7 +15,7 @@ function InfoCard({ title, value, color = "text-red-800" }: InfoCardProps) {
         : value ?? formatCurrency(0);
 
   return (
-    <div className="bg-white p-4 rounded-xl border shadow-sm overflow-hidden">
+    <div className="bg-white p-4 rounded-md border shadow-sm overflow-hidden">
       <h4 className="text-sm text-gray-500 truncate" title={title}>{title}</h4>
       <p 
         className={`text-base md:text-lg font-semibold ${color} truncate`} 

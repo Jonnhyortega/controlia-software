@@ -41,10 +41,10 @@ export default function ReceiptModal({ sale, onClose }: ReceiptModalProps) {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-white dark:bg-background w-full max-w-sm rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] print:shadow-none print:max-w-none print:w-full print:h-auto print:rounded-none"
+        className="bg-white dark:bg-background w-full max-w-sm rounded-md shadow-2xl overflow-hidden flex flex-col max-h-[90vh] print:shadow-none print:max-w-none print:w-full print:h-auto print:rounded-none"
       >
         {/* Header Modal (No imprimir) */}
-        <div className="flex justify-between items-center p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-[#1a1a1a] print:hidden">
+        <div className="flex justify-between items-center p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-200 dark:bg-[#1a1a1a] print:hidden">
             <h3 className="font-bold text-gray-700 dark:text-gray-300">Vista Previa de Ticket</h3>
             <button onClick={onClose} className="p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition text-gray-500 dark:text-gray-400">
                 <X size={20} />
@@ -155,10 +155,10 @@ export default function ReceiptModal({ sale, onClose }: ReceiptModalProps) {
         </div>
 
         {/* Footer Modal (Botón Imprimir) */}
-        <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-[#1a1a1a] flex gap-3 print:hidden">
+        <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-200 dark:bg-[#1a1a1a] flex gap-3 print:hidden">
             <button 
                 onClick={handlePrint}
-                className="flex-1 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition"
+                className="flex-1 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black font-bold py-3 rounded-md flex items-center justify-center gap-2 transition"
             >
                 <Printer size={18} />
                 IMPRIMIR

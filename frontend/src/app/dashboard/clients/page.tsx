@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Search, MapPin, Phone, Mail, User, Trash2, Edit2, ExternalLink } from "lucide-react";
+import { Plus, Search, MapPin, Phone, Mail, User, Trash2, Edit2, ExternalLink, History as HistoryIcon, X } from "lucide-react";
 import { getClients, createClient, updateClient, deleteClient } from "../../../utils/api";
 import { Client } from "../../../types/api";
 import { AnimatePresence, motion } from "framer-motion";
 import ClientForm from "./components/ClientForm";
+import PaymentHistorySection from "../components/Transactions/PaymentHistorySection";
+import Overlay from "../components/overlay";
 import { useToast } from "../../../context/ToastContext";
 
 export default function ClientsPage() {
@@ -17,6 +19,7 @@ export default function ClientsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [historyClient, setHistoryClient] = useState<Client | null>(null);
 
   const toast = useToast();
 
@@ -89,7 +92,7 @@ export default function ClientsPage() {
         </div>
         <button
           onClick={() => { setEditingClient(undefined); setIsModalOpen(true); }}
-          className="bg-primary hover:bg-primary-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-lg shadow-primary/25 flex items-center gap-2 transition"
+          className="bg-primary hover:bg-primary-600 text-white px-5 py-2.5 rounded-md font-semibold shadow-lg shadow-primary/25 flex items-center gap-2 transition"
         >
           <Plus size={20} />
           Nuevo Cliente
@@ -97,7 +100,7 @@ export default function ClientsPage() {
       </div>
 
       {/* Search */}
-      <div className="bg-white dark:bg-zinc-900 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
+      <div className="bg-white dark:bg-zinc-900 p-4 rounded-md shadow-sm border border-gray-100 dark:border-gray-800">
         <div className="relative">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
           <input
@@ -105,7 +108,7 @@ export default function ClientsPage() {
             placeholder="Buscar por nombre, email o dirección..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-gray-50 dark:bg-zinc-800 pl-10 pr-4 py-3 rounded-xl border-none focus:ring-2 focus:ring-primary/20 outline-none transition dark:text-white"
+            className="w-full bg-gray-200 dark:bg-zinc-800 pl-10 pr-4 py-3 rounded-md border-none focus:ring-2 focus:ring-primary/20 outline-none transition dark:text-white"
           />
         </div>
       </div>
@@ -114,7 +117,7 @@ export default function ClientsPage() {
       {loading ? (
         <div className="text-center py-12 text-gray-500">Cargando clientes...</div>
       ) : filteredClients.length === 0 ? (
-        <div className="text-center py-12 text-gray-500 bg-white dark:bg-zinc-900 rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
+        <div className="text-center py-12 text-gray-500 bg-white dark:bg-zinc-900 rounded-md border border-dashed border-gray-200 dark:border-gray-800">
             <User size={48} className="mx-auto mb-3 opacity-20" />
             <p>No se encontraron clientes.</p>
         </div>
@@ -128,28 +131,42 @@ export default function ClientsPage() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="group bg-white dark:bg-zinc-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5 shadow-sm hover:shadow-md transition-all"
+                className="group bg-white dark:bg-zinc-900 rounded-md border border-gray-100 dark:border-gray-800 p-5 shadow-sm hover:shadow-md transition-all"
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-zinc-800 text-gray-400 font-bold flex items-center justify-center text-xl group-hover:bg-primary group-hover:text-white transition-colors">
+                    <div className="w-12 h-12 rounded-md bg-gray-100 dark:bg-zinc-800 text-gray-400 font-bold flex items-center justify-center text-xl group-hover:bg-primary group-hover:text-white transition-colors">
                       {client.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
                       <h3 className="font-bold text-gray-800 dark:text-gray-100 line-clamp-1">{client.name}</h3>
-                      {client.dni && <span className="text-xs text-gray-400 font-mono">ID: {client.dni}</span>}
+                      {client.dni && <span className="text-xs text-gray-400 font-mono block">ID: {client.dni}</span>}
+                      {/* Visualización de Deuda */}
+                      <div className={`mt-1 text-sm font-medium ${client.balance && client.balance > 0 ? "text-red-500" : "text-green-600"}`}>
+                        {client.balance && client.balance > 0 
+                          ? `Deuda: $${client.balance.toLocaleString('es-AR')}` 
+                          : "Alejandria" // O "Sin deuda"
+                        }
+                      </div>
                     </div>
                   </div>
                   <div className="flex gap-1">
                     <button 
+                         onClick={() => setHistoryClient(client)}
+                         className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-500/10 rounded-md transition"
+                         title="Ver Pagos"
+                    >
+                        <HistoryIcon size={16} />
+                    </button>
+                    <button 
                         onClick={() => { setEditingClient(client); setIsModalOpen(true); }}
-                        className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition"
+                        className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-md transition"
                     >
                         <Edit2 size={16} />
                     </button>
                     <button 
                         onClick={() => handleDelete(client._id)}
-                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition"
+                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-md transition"
                     >
                         <Trash2 size={16} />
                     </button>
@@ -227,6 +244,27 @@ export default function ClientsPage() {
           />
         )}
       </AnimatePresence>
+
+      {/* HISTORY MODAL */}
+      {historyClient && (
+        <Overlay fullScreen>
+            <div className="bg-white dark:bg-[#1a1a1a] p-6 rounded-md w-full max-w-4xl relative shadow-2xl my-10 mx-auto">
+                <button
+                  onClick={() => setHistoryClient(null)}
+                  className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                >
+                  <X size={24} />
+                </button>
+                
+                <h2 className="text-xl font-bold mb-1 text-gray-900 dark:text-white">
+                    Historial de Pagos - {historyClient.name}
+                </h2>
+                <p className="text-sm text-gray-500 mb-6">Registro de cobros y cuentas corrientes</p>
+
+                <PaymentHistorySection context="CLIENT" entityId={historyClient._id} refreshParent={loadClients} />
+            </div>
+        </Overlay>
+      )}
 
     </div>
   );

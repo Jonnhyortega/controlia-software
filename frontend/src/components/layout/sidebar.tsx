@@ -32,7 +32,7 @@ export default function Sidebar() {
     <aside
       className={`
         hidden md:flex
-        bg-white dark:bg-[#0E0E0E] text-gray-600 dark:text-gray-300 h-screen border-r border-gray-200 dark:border-[#1a1a1a]
+        bg-gray-200/80 dark:bg-[#0E0E0E] text-gray-600 dark:text-gray-300 h-screen border-r border-gray-200 dark:border-[#1a1a1a]
         flex-col justify-between transition-all duration-300
         ${collapsed ? "w-20" : "w-64"}
       `}
@@ -49,7 +49,7 @@ export default function Sidebar() {
 
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#1f1f1f] transition text-gray-500 dark:text-gray-400"
+            className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#1f1f1f] transition text-gray-500 dark:text-gray-400"
           >
             <Menu size={22} />
           </button>
@@ -74,7 +74,7 @@ export default function Sidebar() {
                 <button
                   onClick={() => router.push(item.path)}
                   className={`
-                    w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+                    w-full flex items-center gap-3 px-4 py-3 rounded-md transition-all duration-200
                     ${
                       active
                         ? "bg-primary text-white shadow-lg shadow-primary/20 font-medium"
@@ -95,7 +95,7 @@ export default function Sidebar() {
                   <span
                     className="
                       absolute left-16 top-1/2 -translate-y-1/2 
-                      bg-gray-900 dark:bg-black text-white text-xs px-3 py-1.5 rounded-lg opacity-0 
+                      bg-gray-900 dark:bg-black text-white text-xs px-3 py-1.5 rounded-md opacity-0 
                       group-hover:opacity-100 transition-all shadow-xl z-50
                       border border-gray-800 pointer-events-none whitespace-nowrap
                     "
@@ -125,7 +125,7 @@ export default function Sidebar() {
                 <button
                   onClick={() => router.push(item.path)}
                   className={`
-                    w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+                    w-full flex items-center gap-3 px-4 py-3 rounded-md transition-all duration-200
                     ${
                       active
                         ? "bg-primary text-white shadow-lg shadow-primary/20 font-medium"
@@ -145,7 +145,7 @@ export default function Sidebar() {
                   <span
                     className="
                       absolute left-16 top-1/2 -translate-y-1/2 
-                      bg-gray-900 dark:bg-black text-white text-xs px-3 py-1.5 rounded-lg opacity-0 
+                      bg-gray-900 dark:bg-black text-white text-xs px-3 py-1.5 rounded-md opacity-0 
                       group-hover:opacity-100 transition-all shadow-xl z-50
                       border border-gray-800 pointer-events-none whitespace-nowrap
                     "

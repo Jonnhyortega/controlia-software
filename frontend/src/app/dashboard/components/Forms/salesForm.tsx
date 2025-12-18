@@ -26,6 +26,7 @@ import { useToast } from "../../../../context/ToastContext";
 import { useAuth } from "../../../../context/authContext";
 import { useCustomization } from "../../../../context/CustomizationContext";
 import ProductSearch from "./ProductSearch";
+import ClientSearch from "./ClientSearch"; // Import NEW
 import { FormattedPriceInput } from "../../../../components/FormattedPriceInput";
 
 export default function SalesForm({
@@ -45,9 +46,17 @@ export default function SalesForm({
   const { formatCurrency } = useCustomization();
 
   const [productsDB, setProductsDB] = useState<any[]>([]);
-  const [newSale, setNewSale] = useState({
+  const [clientsDB, setClientsDB] = useState<any[]>([]); // NEW State
+  const [newSale, setNewSale] = useState<{
+    paymentMethod: string;
+    clientId: string;
+    products: any[];
+    amountPaid?: number;
+  }>({
     paymentMethod: "efectivo",
+    clientId: "", 
     products: [{ productId: "", name: "", quantity: 1, price: 0 }],
+    amountPaid: undefined
   });
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -61,22 +70,26 @@ export default function SalesForm({
     onCancel: () => {},
   });
 
-  // Cargar productos del stock
+  // Cargar productos y clientes
   useEffect(() => {
     if (!user) return;
 
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        const res = await api.get("/products");
-        setProductsDB(res.data || []);
+        const [prodRes, clientRes] = await Promise.all([
+             api.get("/products"),
+             api.get("/clients")
+        ]);
+        setProductsDB(prodRes.data || []);
+        setClientsDB(clientRes.data || []);
       } catch (error) {
-        console.error("Error al obtener productos:", error);
-        toast.error("Error al cargar productos.");
+        console.error("Error al obtener datos:", error);
+        toast.error("Error al cargar datos necesarios.");
       } finally {
         setInitialLoading(false);
       }
     };
-    fetchProducts();
+    fetchData();
   }, [user]);
 
 
@@ -216,6 +229,13 @@ export default function SalesForm({
       return "Seleccioná un método de pago.";
     }
 
+    // Validar deuda sin cliente
+    const total = newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0);
+    const paid = newSale.amountPaid !== undefined ? newSale.amountPaid : total;
+    if (paid < total && !newSale.clientId) {
+      return "Para generar deuda (pago parcial) debés seleccionar un cliente.";
+    }
+
     if (!newSale.products.length) {
       return "La venta debe incluir al menos un producto.";
     }
@@ -336,7 +356,7 @@ export default function SalesForm({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: -20 }}
         transition={{ duration: 0.35 }}
-        className="relative w-full max-w-5xl bg-gray-100 dark:bg-[#09090b] rounded-3xl shadow-2xl my-4 md:my-8 p-6 md:p-8 border border-white/20 dark:border-zinc-800"
+        className="relative w-full max-w-5xl bg-gray-100 dark:bg-[#09090b] rounded-md shadow-2xl my-4 md:my-8 p-6 md:p-8 border border-white/20 dark:border-zinc-800"
       >
         <div className="relative flex justify-between items-center mb-6 pb-3 border-b border-gray-200 dark:border-gray-800">
           <div className="flex items-center gap-3">
@@ -349,7 +369,7 @@ export default function SalesForm({
           <div className="flex items-center gap-2">
             <button
               onClick={onBack}
-              className="group p-2 rounded-xl border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800/50 text-gray-600 dark:text-gray-300 hover:bg-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:text-white transition-all shadow-sm"
+              className="group p-2 rounded-md border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800/50 text-gray-600 dark:text-gray-300 hover:bg-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:text-white transition-all shadow-sm"
             >
               <X className="w-6 h-6" />
             </button>
@@ -359,9 +379,9 @@ export default function SalesForm({
         <ProductSearch products={productsDB} onSelect={addProductToSale} />
 
         <div className="space-y-8">
-        <div className="bg-white dark:bg-zinc-900/50 rounded-xl border border-gray-200 dark:border-zinc-800 overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-zinc-900/50 rounded-md border border-gray-200 dark:border-zinc-800 overflow-hidden shadow-sm">
           {/* Table Header (Desktop) */}
-          <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-2 bg-gray-50 dark:bg-zinc-800/80 border-b border-gray-200 dark:border-zinc-800 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+          <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-2 bg-gray-200 dark:bg-zinc-800/80 border-b border-gray-200 dark:border-zinc-800 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
             <div className="col-span-5">Producto</div>
             <div className="col-span-2 text-center">Cant.</div>
             <div className="col-span-3 text-right pr-4">Precio Unit.</div>
@@ -374,7 +394,7 @@ export default function SalesForm({
               const selectedProduct = productsDB.find((item) => item._id === p.productId);
 
               return (
-                <div key={i} className="p-3 md:px-4 md:py-2 grid grid-cols-1 md:grid-cols-12 gap-3 items-start md:items-center hover:bg-gray-50 dark:hover:bg-zinc-800/30 transition-colors group">
+                <div key={i} className="p-3 md:px-4 md:py-2 grid grid-cols-1 md:grid-cols-12 gap-3 items-start md:items-center hover:bg-gray-200 dark:hover:bg-zinc-800/30 transition-colors group">
                   
                   {/* Product Select */}
                   <div className="md:col-span-5 flex flex-col gap-2">
@@ -382,7 +402,7 @@ export default function SalesForm({
                      <select
                         value={p.productId}
                         onChange={(e) => handleProductChange(i, "productId", e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-400/50"
+                        className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-400/50"
                       >
                         <option value="">Seleccionar producto</option>
                         {productsDB.map((prod) => (
@@ -399,7 +419,7 @@ export default function SalesForm({
                           placeholder="Nombre del producto..."
                           value={p.name}
                           onChange={(e) => handleProductChange(i, "name", e.target.value)}
-                          className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent dark:text-white px-3 py-1.5 text-sm focus:ring-2 focus:ring-primary-400/50"
+                          className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-transparent dark:text-white px-3 py-1.5 text-sm focus:ring-2 focus:ring-primary-400/50"
                         />
                       )}
                   </div>
@@ -412,7 +432,7 @@ export default function SalesForm({
                         min={1}
                         value={p.quantity}
                         onChange={(e) => handleProductChange(i, "quantity", e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white px-2 py-1.5 text-sm text-center focus:ring-2 focus:ring-primary-400/50"
+                        className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white px-2 py-1.5 text-sm text-center focus:ring-2 focus:ring-primary-400/50"
                       />
                   </div>
 
@@ -431,7 +451,7 @@ export default function SalesForm({
                   <div className="md:col-span-2 flex justify-end md:justify-center items-center">
                     <button
                       onClick={() => removeProductField(i)}
-                      className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
+                      className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-all"
                       title="Quitar producto"
                     >
                       <Trash2 size={18} />
@@ -443,17 +463,17 @@ export default function SalesForm({
             })}
           </div>
 
-          <div className="p-2 border-t border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/30">
+          <div className="p-2 border-t border-gray-200 dark:border-zinc-800 bg-gray-200 dark:bg-zinc-800/30">
              <button
                 onClick={addProductField}
-                className="w-full py-2 flex items-center justify-center gap-2 text-primary font-medium text-sm hover:bg-white dark:hover:bg-zinc-800 rounded-lg transition-all border border-transparent hover:border-gray-200 dark:hover:border-zinc-700 hover:shadow-sm"
+                className="w-full py-2 flex items-center justify-center gap-2 text-primary font-medium text-sm hover:bg-white dark:hover:bg-zinc-800 rounded-md transition-all border border-transparent hover:border-gray-200 dark:hover:border-zinc-700 hover:shadow-sm"
              >
                 <PlusCircle size={16} /> Agregar otra línea
              </button>
           </div>
         </div>
 
-          <div className="bg-gray-50 dark:bg-muted/10 p-5 rounded-xl space-y-4 border border-gray-200 dark:border-border shadow-sm">
+          <div className="bg-gray-200 dark:bg-muted/10 p-5 rounded-md space-y-4 border border-gray-200 dark:border-border shadow-sm">
             <label className="text-gray-700 dark:text-gray-300 flex items-center gap-2 font-medium">
               <CreditCard className="w-5 h-5 text-gray-500" />
               Método de pago
@@ -464,28 +484,100 @@ export default function SalesForm({
               onChange={(e) =>
                 setNewSale({ ...newSale, paymentMethod: e.target.value })
               }
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-2 bg-white dark:bg-[#1a1a1a] dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-200"
+                className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 bg-white dark:bg-[#1a1a1a] dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-200"
             >
               <option value="efectivo">Efectivo</option>
               <option value="tarjeta">Tarjeta</option>
               <option value="transferencia">Transferencia</option>
               <option value="mercado pago">Mercado Pago</option>
+              <option value="cuenta corriente">Cuenta Corriente</option>
               <option value="otro">Otro</option>
             </select>
           </div>
 
-          <div className="flex justify-end items-center gap-4 mt-6 p-4 bg-gray-50 dark:bg-muted/10 rounded-xl border border-gray-200 dark:border-border">
-            <span className="text-lg font-medium text-gray-600 dark:text-gray-300">Total a pagar:</span>
-            <span className="text-3xl font-bold text-primary dark:text-primary-400">
-              {formatCurrency(newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0))}
+
+          <div className="bg-gray-200 dark:bg-muted/10 p-5 rounded-md border border-gray-200 dark:border-border shadow-sm">
+             <ClientSearch 
+                clients={clientsDB}
+                selectedClientId={newSale.clientId}
+                onSelect={(client) => setNewSale({ 
+                  ...newSale, 
+                  clientId: client ? client._id : "",
+                  // Si deseleccionan cliente, reseteamos el pago al total (undefined = total)
+                  amountPaid: client ? newSale.amountPaid : undefined 
+                })}
+             />
+
+              {/* 💵 PAGO PARCIAL / CUENTA CORRIENTE */}
+              {newSale.clientId && (
+                <div className="mt-4 pt-4 border-t border-gray-300 dark:border-gray-700">
+                    <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                        <div className="flex-1 w-full">
+                           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                             Monto que abona hoy:
+                           </label>
+                           <div className="relative">
+                              <DollarSign className="absolute right-3 top-1/2 -translate-y-1/2 text-green-400 w-4 h-4" />
+                              <input 
+                                type="number" 
+                                min={0}
+                                max={newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0)}
+                                value={newSale.amountPaid !== undefined ? newSale.amountPaid : newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0)}
+                                onChange={(e) => {
+                                   const val = Number(e.target.value);
+                                   const total = newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0);
+                                   // Prevent paying more than total
+                                   if (val > total) return;
+                                   setNewSale({ ...newSale, amountPaid: val });
+                                }}
+                                className="w-full pl-9 pr-4 py-2 rounded-md bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 outline-none transition font-mono font-medium"
+                              />
+                           </div>
+                        </div>
+
+                        <div className="flex-1 w-full p-3 bg-red-50 dark:bg-red-900/10 rounded-md border border-red-100 dark:border-red-900/20">
+                             <span className="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest block mb-0.5">
+                               Se genera deuda
+                             </span>
+                             <span className="text-xl font-bold text-red-700 dark:text-red-300">
+                                {formatCurrency(
+                                  Math.max(0, newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0) - (newSale.amountPaid !== undefined ? newSale.amountPaid : newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0)))
+                                )}
+                             </span>
+                        </div>
+                    </div>
+                </div>
+              )}
+          </div>
+
+          <div className="flex flex-col md:flex-row justify-end items-end md:items-center gap-4 mt-6 p-4 bg-gray-200 dark:bg-muted/10 rounded-md border border-gray-200 dark:border-border">
+            <span className="text-lg font-medium text-gray-600 dark:text-gray-300 block">
+                {newSale.amountPaid !== undefined && newSale.amountPaid < newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0) 
+                    ? "Abonando hoy:" 
+                    : "Total a pagar:"}
             </span>
+            <div className="flex flex-col items-center justify-between">
+              <span className=" text-3xl font-bold text-gray-900 dark:text-green-700">
+                {formatCurrency(
+                  newSale.amountPaid !== undefined 
+                  ? newSale.amountPaid 
+                  : newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0)
+                )}
+              </span>
+              
+              {newSale.amountPaid !== undefined && newSale.amountPaid < newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0) && (
+                <span className="text-sm text-red-800 font-[300]">
+                    Total venta: {formatCurrency(newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0))}
+                </span>
+              )}
+            </div>           
           </div>
 
           <motion.button
             whileTap={{ scale: 0.97 }}
             disabled={loading}
             onClick={handleSubmit}
-            className="w-full mt-6 py-3 bg-primary hover:bg-primary-700 text-white font-semibold rounded-xl shadow-md flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full mt-6 py-3 bg-primary hover:bg-primary-700 text-white font-semibold rounded-md shadow-md flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ShoppingCart className="w-5 h-5" />
             {loading ? "Guardando..." : "Registrar venta"}
@@ -503,7 +595,7 @@ export default function SalesForm({
         />
         {scannerOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-            <div className="max-w-3xl w-full rounded-2xl p-4">
+            <div className="max-w-3xl w-full rounded-md p-4">
               <BarcodeScanner onDetected={handleSaleBarcodeDetected} onClose={() => setScannerOpen(false)} />
             </div>
           </div>

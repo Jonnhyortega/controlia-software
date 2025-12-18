@@ -32,7 +32,7 @@ export default function SalesRow({
       <tr
         key={sale._id}
         onClick={() => onExpand(sale._id)}
-        className="hover:bg-gray-50 dark:hover:bg-[#1f1f1f] transition-colors cursor-pointer text-sm border-b border-transparent dark:border-[#27272a]"
+        className="hover:bg-gray-200 dark:hover:bg-[#1f1f1f] transition-colors cursor-pointer text-sm border-b border-transparent dark:border-[#27272a]"
       >
         <td className="hidden md:table-cell py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">
           #{index + 1}
@@ -49,7 +49,13 @@ export default function SalesRow({
         </td>
 
         <td className="hidden md:table-cell py-3 px-4 capitalize text-primary dark:text-primary-300 font-medium">
-          {sale.paymentMethod || "—"}
+          {sale.paymentMethod === 'cuenta corriente' ? (
+              <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-1 rounded dark:bg-yellow-900 dark:text-yellow-300">
+                  Cta. Cte.
+              </span>
+          ) : (
+              sale.paymentMethod || "—"
+          )}
         </td>
 
         <td className="hidden md:table-cell py-3 px-4 text-gray-700 dark:text-gray-300">
@@ -63,7 +69,22 @@ export default function SalesRow({
         </td>
 
         <td className="py-3 px-4 text-right font-semibold text-gray-900 dark:text-white">
-          {formatCurrency(sale.total)}
+          <div className="flex flex-col items-end">
+            <span>{formatCurrency(sale.total)}</span>
+            
+            {/* Si hubo pago parcial o fiado, mostrar detalle */}
+            {sale.amountDebt > 0 && (
+              <span className="text-xs text-red-500 font-medium bg-red-50 dark:bg-red-900/10 px-1.5 py-0.5 rounded">
+                Debe: {formatCurrency(sale.amountDebt)}
+              </span>
+            )}
+             {/* Si pagó menos del total pero mayor a 0 */}
+             {sale.amountPaid < sale.total && sale.amountPaid > 0 && (
+              <span className="text-xs text-green-600 dark:text-green-400">
+                Pagó: {formatCurrency(sale.amountPaid)}
+              </span>
+            )}
+          </div>
         </td>
 
         <td className="py-3 px-4 text-center">
@@ -124,7 +145,7 @@ export default function SalesRow({
 
       {/* FILA EXPANDIDA */}
       {expanded === sale._id && (
-        <tr className="bg-gray-50 dark:bg-[#0f0f0f] border-t border-gray-100 dark:border-[#27272a]">
+        <tr className="bg-gray-200 dark:bg-[#0f0f0f] border-t border-gray-100 dark:border-[#27272a]">
           <td colSpan={6} className="py-3 px-4">
 
             <motion.div
@@ -132,7 +153,7 @@ export default function SalesRow({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.25 }}
-              className="rounded-xl border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#18181b] shadow-sm p-4"
+              className="rounded-md border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#18181b] shadow-sm p-4"
             >
               <h4 className="font-semibold text-gray-800 dark:text-white mb-3">
                 Detalles de la operación
@@ -142,7 +163,7 @@ export default function SalesRow({
                 {sale.products?.map((p: any, j: number) => (
                   <li
                     key={j}
-                    className="flex justify-between border-b border-gray-100 dark:border-[#27272a] py-1 px-2 rounded-md hover:bg-gray-50 dark:hover:bg-[#1f1f1f]"
+                    className="flex justify-between border-b border-gray-100 dark:border-[#27272a] py-1 px-2 rounded-md hover:bg-gray-200 dark:hover:bg-[#1f1f1f]"
                   >
                     <small>#{j + 1}</small>
 

@@ -162,7 +162,7 @@ export default function DocsPage() {
                   setMobileMenuOpen(false);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   activeSection === section.id
                     ? "bg-primary/10 text-primary-300"
                     : "text-gray-400 hover:text-white hover:bg-white/5"
@@ -187,7 +187,7 @@ export default function DocsPage() {
                   transition={{ duration: 0.3 }}
                 >
                   <div className="flex items-center gap-4 mb-8 border-b border-gray-800 pb-8">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-primary/10 rounded-md flex items-center justify-center">
                       <section.icon className="w-6 h-6 text-primary-300" />
                     </div>
                     <h1 className="text-3xl font-bold text-white">{section.title}</h1>

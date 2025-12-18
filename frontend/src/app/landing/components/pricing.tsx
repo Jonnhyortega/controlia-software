@@ -78,7 +78,7 @@ const Pricing = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className={`relative bg-gray-900/50 backdrop-blur-sm border rounded-2xl p-8 hover:border-primary/50 transition-all duration-300 ${
+              className={`relative bg-gray-900/50 backdrop-blur-sm border rounded-md p-8 hover:border-primary/50 transition-all duration-300 ${
                 plan.popular 
                   ? 'border-primary/50 ring-1 ring-primary/20 scale-105 shadow-xl' 
                   : 'border-gray-800'

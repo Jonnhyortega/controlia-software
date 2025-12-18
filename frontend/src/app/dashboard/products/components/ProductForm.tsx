@@ -188,7 +188,7 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
         e.preventDefault();
         if (!isSubmitting) onSubmit();
       }}
-      className="bg-white dark:bg-[#18181b] p-6 rounded-2xl border border-gray-100 dark:border-[#27272a] space-y-4 flex flex-col transition-colors"
+      className="bg-white dark:bg-[#18181b] p-6 rounded-md border border-gray-100 dark:border-[#27272a] space-y-4 flex flex-col transition-colors"
     >
       <h2 className="text-2xl font-semibold text-primary dark:text-primary-300 w-full text-center">
         {form._id ? "Editar producto" : "Agregar producto"}

@@ -50,7 +50,7 @@ const Footer = () => {
               className="mb-4"
             >
               <div className="flex items-center gap-2">
-                <img src="/icon.png" alt="Controlia" className="w-8 h-8 rounded-lg" />
+                <img src="/icon.png" alt="Controlia" className="w-8 h-8 rounded-md" />
                 <span className="text-2xl font-bold text-white">CONTROLIA</span>
               </div>
             </motion.div>

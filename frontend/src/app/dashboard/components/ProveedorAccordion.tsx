@@ -18,11 +18,11 @@ export function ProveedorAccordion({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="mb-4 border border-gray-200 dark:border-border bg-white dark:bg-background rounded-2xl overflow-hidden shadow-sm transition-colors">
+    <div className="mb-4 border border-gray-200 dark:border-border bg-white dark:bg-background rounded-md overflow-hidden shadow-sm transition-colors">
       {/* Encabezado proveedor */}
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full flex items-center justify-between px-5 py-3 bg-gray-50 hover:bg-gray-100 dark:bg-background dark:hover:bg-muted/10 transition font-semibold text-gray-800 dark:text-gray-200"
+        className="w-full flex items-center justify-between px-5 py-3 bg-gray-200 hover:bg-gray-100 dark:bg-background dark:hover:bg-muted/10 transition font-semibold text-gray-800 dark:text-gray-200"
       >
         <div className="flex items-center gap-2">
           <Package className="w-5 h-5 text-primary" />
@@ -67,7 +67,7 @@ export function ProveedorAccordion({
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.2 }}
-                    className={`border-b border-gray-100 dark:border-border hover:bg-gray-50 dark:hover:bg-muted/10 transition ${p.stock === 0 ? "bg-red-50 dark:bg-red-900/20" : ""}`}
+                    className={`border-b border-gray-100 dark:border-border hover:bg-gray-200 dark:hover:bg-muted/10 transition ${p.stock === 0 ? "bg-red-50 dark:bg-red-900/20" : ""}`}
                   >
                     <td className="p-3">{p.name}</td>
                     <td className="hidden md:table-cell p-3">{p.category}</td>

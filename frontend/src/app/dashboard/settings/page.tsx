@@ -59,7 +59,7 @@ export default function SettingsPage() {
           <button
             key={i}
             onClick={card.action}
-            className="group bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] p-6 rounded-2xl 
+            className="group bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] p-6 rounded-md 
                       shadow-md hover:shadow-[0_10px_30px_rgba(37,99,235,0.08)] hover:border-primary/40 
                        transition-all text-left"
           >

@@ -49,7 +49,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="bg-white dark:bg-[#121212] border-b border-gray-200 dark:border-[#1f1f1f] shadow-sm px-4 md:px-6 py-4 flex justify-between md:justify-end items-center relative z-40 transition-colors duration-300">
+      <header className="bg-gray-200/80 dark:bg-[#121212] border-b border-gray-200 dark:border-[#1f1f1f] shadow-sm px-4 md:px-6 py-4 flex justify-between md:justify-end items-center relative z-40 transition-colors duration-300">
         
         {/* Mobile Menu Button */}
         <button 
@@ -90,17 +90,18 @@ export default function Navbar() {
                 opacity-0 pointer-events-none
                 group-hover:opacity-100 group-hover:pointer-events-auto
                 absolute right-5 top-5 mt-2 w-64 
-                bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#2c2c2c]
-                rounded-xl shadow-2xl z-50 transition-all duration-150
+                bg-gray-200/80 dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#2c2c2c]
+                rounded-md shadow-2xl z-50 transition-all duration-150
               "
             >
               <ul className="py-2 text-sm text-gray-700 dark:text-gray-300">
                 
                   {/* Nombre del Usuario */}
-                  <li className="px-4 py-3 border-b border-gray-100 dark:border-[#2c2c2c] mb-2 bg-gray-50 dark:bg-transparent rounded-t-xl">
+                  <li className="px-4 py-3 border-b border-gray-100 dark:border-[#2c2c2c] mb-2 bg-gray-200 dark:bg-transparent rounded-t-md">
                     <div className="text-xs text-gray-500 dark:text-gray-400">Usuario</div>
-                    <div className="text-sm text-gray-900 dark:text-white font-semibold">
-                      {capitalize(nameProfile)}
+                    <div className="flex flex-col items-start text-sm text-gray-900 dark:text-white font-semibold">
+                      <span className="text-sm text-gray-900 dark:text-gray-400">{capitalize(nameProfile)}</span>
+                      <span className="text-xs font-light text-blue-500">{" " + user?.role || "Cargando..."}</span>
                     </div>
                   </li>
 
@@ -111,28 +112,30 @@ export default function Navbar() {
                     </div>
                   </li>
 
-                  <li className="px-4 py-2 border-b border-gray-100 dark:border-[#2c2c2c] mb-2">
+                  {/* <li className="px-4 py-2 border-b border-gray-100 dark:border-[#2c2c2c] mb-2">
                     <div className="text-xs text-gray-500 dark:text-gray-400">Rol</div>
                     <div className="text-sm text-blue-600 dark:text-blue-400 font-medium capitalize">
                       {user?.role || "Cargando..."}
                     </div>
-                  </li>
+                  </li> */}
 
                   {/* Theme Toggle */}
-                  <li className="px-4 py-2 border-b border-gray-100 dark:border-[#2c2c2c] mb-2">
+                  <li className="p-1 border-b border-gray-100 dark:border-[#2c2c2c] mb-2">
                     <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Apariencia</div>
                     <button
                         onClick={(e) => {
                             e.preventDefault();
                             toggleTheme();
                         }}
-                        className="flex items-center justify-between w-full p-2 bg-gray-100 dark:bg-[#252525] rounded-lg hover:bg-gray-200 dark:hover:bg-[#303030] transition-colors cursor-pointer"
+                        className="flex items-center  w-full p-1 bg-gray-100 dark:bg-[#252525] rounded-sm hover:bg-gray-200 dark:hover:bg-[#303030] transition-colors cursor-pointer"
                     >
-                        <div className="flex items-center gap-2">
-                            {isDark 
+                        <div className="flex items-center justify-between gap-2">
+                            <span>
+                              {isDark 
                                 ? <Moon size={16} className="text-blue-400"/> 
                                 : <Sun size={16} className="text-amber-500"/>
                             }
+                            </span>
                             <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
                                 {isDark ? "Modo Oscuro" : "Modo Claro"}
                             </span>
@@ -215,7 +218,7 @@ export default function Navbar() {
                     href={item.path}
                     onClick={() => setMobileMenuOpen(false)}
                     className={`
-                      flex items-center gap-3 px-4 py-3 rounded-xl transition-all
+                      flex items-center gap-3 px-4 py-3 rounded-md transition-all
                       ${isActive 
                         ? "bg-primary text-white font-medium shadow-md shadow-primary/20" 
                         : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#1f1f1f] hover:text-gray-900 dark:hover:text-white"
@@ -232,7 +235,7 @@ export default function Navbar() {
             <div className="mt-auto border-t border-gray-200 dark:border-[#1f1f1f] pt-4 space-y-2">
               <button
                 onClick={toggleTheme}
-                className="flex items-center gap-3 px-4 py-3 w-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#1f1f1f] rounded-xl transition-all"
+                className="flex items-center gap-3 px-4 py-3 w-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#1f1f1f] rounded-md transition-all"
               >
                 {isDark ? <Moon size={20} className="text-blue-500"/> : <Sun size={20} className="text-amber-500"/>}
                 {isDark ? "Modo Oscuro" : "Modo Claro"}
@@ -243,7 +246,7 @@ export default function Navbar() {
                   auth?.logout();
                   setMobileMenuOpen(false);
                 }}
-                className="flex items-center gap-3 px-4 py-3 w-full text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all"
+                className="flex items-center gap-3 px-4 py-3 w-full text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-all"
               >
                 <LogOut size={20} />
                 Cerrar sesión

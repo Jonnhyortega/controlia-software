@@ -23,7 +23,7 @@ export function HeaderActions({ showForm, setShowForm, resetForm, setShowCategor
         <Button
           onClick={() => setShowCategories(true)}
           variant="secondary"
-          className="md:hidden rounded-xl px-3 py-1.5 flex items-center gap-2 text-sm"
+          className="md:hidden rounded-md px-3 py-1.5 flex items-center gap-2 text-sm"
         >
           <Settings className="w-4 h-4" />
           Categorías
@@ -35,7 +35,7 @@ export function HeaderActions({ showForm, setShowForm, resetForm, setShowCategor
         <Button
           onClick={() => setShowCategories(true)}
           variant="secondary"
-          className="hidden md:flex rounded-xl px-4 py-2 items-center gap-2"
+          className="hidden md:flex rounded-md px-4 py-2 items-center gap-2"
         >
           <Settings className="w-4 h-4" />
           Categorías
@@ -47,7 +47,7 @@ export function HeaderActions({ showForm, setShowForm, resetForm, setShowCategor
             setShowForm((prev) => !prev);
           }}
           variant={showForm ? "secondary" : "default"}
-          className="rounded-xl px-4 py-2 flex items-center justify-center gap-2 z-index-10000 w-full md:w-auto"
+          className="rounded-md px-4 py-2 flex items-center justify-center gap-2 z-index-10000 w-full md:w-auto"
         >          
             <>
               <Plus className="w-4 h-4" /> Nuevo producto

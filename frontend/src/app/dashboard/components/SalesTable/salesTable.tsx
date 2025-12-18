@@ -85,7 +85,7 @@ export default function SalesTable({
       
       {/* 🛠️ Barra de Herramientas (Solo si NO es simpleMode) */}
       {!simpleMode && (
-        <div className="flex flex-col md:flex-row gap-3 justify-between items-center bg-gray-50 dark:bg-[#18181b] p-3 rounded-xl border border-gray-200 dark:border-[#27272a] transition-colors">
+        <div className="flex flex-col md:flex-row gap-3 justify-between items-center bg-gray-200 dark:bg-[#18181b] p-3 rounded-md border border-gray-200 dark:border-[#27272a] transition-colors">
           
           {/* Buscador */}
           <div className="relative w-full md:w-auto flex-1 max-w-sm">
@@ -95,7 +95,7 @@ export default function SalesTable({
                 placeholder="Buscar producto o ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
               />
           </div>
 
@@ -106,7 +106,7 @@ export default function SalesTable({
                   <select 
                     value={filterMethod}
                     onChange={(e) => setFilterMethod(e.target.value)}
-                    className="pl-9 pr-8 py-2 rounded-lg border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm appearance-none cursor-pointer"
+                    className="pl-9 pr-8 py-2 rounded-md border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm appearance-none cursor-pointer"
                   >
                       <option value="all">Todos los métodos</option>
                       <option value="efectivo">Efectivo</option>
@@ -120,7 +120,7 @@ export default function SalesTable({
               {/* Exportar */}
               <button 
                   onClick={handleExport}
-                  className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#18181b] border border-gray-300 dark:border-[#3f3f46] rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-[#1f1f1f] transition"
+                  className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#18181b] border border-gray-300 dark:border-[#3f3f46] rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-[#1f1f1f] transition"
               >
                   <Download size={16} />
                   <span className="hidden sm:inline">Exportar</span>
@@ -130,9 +130,9 @@ export default function SalesTable({
       )}
 
       {/* 📋 Tabla */}
-      <div className="border border-gray-200 dark:border-[#27272a] rounded-2xl overflow-hidden transition-colors">
+      <div className="border border-gray-200 dark:border-[#27272a] rounded-md overflow-hidden transition-colors">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 dark:bg-[#09090b] text-gray-700 dark:text-gray-200 border-b dark:border-[#27272a]">
+          <thead className="bg-gray-200 dark:bg-[#09090b] text-gray-700 dark:text-gray-200 border-b dark:border-[#27272a]">
             <tr>
               <th className="hidden md:table-cell py-3 px-4 text-left font-semibold">#</th>
               <th className="py-3 px-4 text-left font-semibold">Fecha y hora</th>

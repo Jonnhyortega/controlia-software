@@ -14,7 +14,7 @@ const CTA = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-3xl p-12 md:p-24 text-center relative overflow-hidden"
+            className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-md p-12 md:p-24 text-center relative overflow-hidden"
         >
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
             
