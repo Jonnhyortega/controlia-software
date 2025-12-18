@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Receipt } from "lucide-react";
+import { Plus, Receipt, ChartBar, History as HistoryIcon, List } from "lucide-react";
+import { CollapsibleSection } from "../../../components/ui/CollapsibleSection";
 import HistorySales from "./historySales";
 import { useSales } from "../hooks/useSales";
 import SalesStats from "../components/SalesTable/SalesStats";
@@ -61,28 +62,18 @@ export default function VentasPage() {
   const currentSales = data?.sales || [];
 
   return (
-    <section className="p-4 sm:p-6 max-w-7xl mx-auto">
+    <section className="p-4 sm:p-6 max-w-7xl mx-auto space-y-4">
       
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Gestión de Ventas</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-             Ventas del día actual y registros históricos.
-          </p>
-        </div>
-      </div>
-
       {/* 📊 Estadísticas del Día */}
       {currentSales.length > 0 && (
-         <div className="mb-8">
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
-               <Receipt size={20} className="text-primary" />
-               Ventas de Hoy ({new Date().toLocaleDateString("es-AR")})
-            </h2>
+         <CollapsibleSection
+            title={`Ventas de Hoy (${new Date().toLocaleDateString("es-AR")})`}
+            icon={Receipt}
+            defaultOpen={false}
+         >
             <SalesStats sales={currentSales} />
             
-            <div className="bg-white dark:bg-[#18181b] rounded-md shadow-sm border border-gray-200 dark:border-[#27272a] p-4 transition-colors">
+            <div className="mt-4 bg-white dark:bg-[#18181b] rounded-md shadow-sm border border-gray-200 dark:border-[#27272a] p-4 transition-colors">
                <SalesTable 
                   sales={currentSales.slice().reverse()}
                   expanded={expandedSale}
@@ -91,7 +82,7 @@ export default function VentasPage() {
                   simpleMode={false} // Activate Full Mode (Search, Filter, Export)
                />
             </div>
-         </div>
+         </CollapsibleSection>
       )}
 
       {currentSales.length === 0 && (
@@ -100,77 +91,57 @@ export default function VentasPage() {
          </div>
       )}
 
-      <hr className="my-8 border-gray-200 dark:border-[#27272a]" />
-
       {/* 📜 Historial de Ventas Pasadas */}
-      <div>
-         <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-1">Métricas Históricas</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Resumen de rendimiento general</p>
-         </div>
-         
-         <HistoricalStats />
+      <CollapsibleSection title="Métricas Históricas" icon={ChartBar} defaultOpen={false}>
+          <div className="mb-4">
+             <p className="text-sm text-gray-500 dark:text-gray-400">Resumen de rendimiento general</p>
+          </div>
+          <HistoricalStats />
+      </CollapsibleSection>
 
-         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 mt-8">Registro de Cajas Diarias</h3>
-         <HistorySales />
-      </div>
-
-      <hr className="my-8 border-gray-200 dark:border-[#27272a]" />
+      <CollapsibleSection title="Registro de Cajas Diarias" icon={HistoryIcon} defaultOpen={false}>
+          <HistorySales />
+      </CollapsibleSection>
 
       {/* 📒 Lista Completa de Ventas (Paginada) */}
-      <div className="mb-12">
-        
-        <div className="flex justify-between items-end mb-4">
-             <div>
-                <h2 className="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2">
-                   <Receipt size={20} className="text-indigo-600 dark:text-indigo-400" />
-                   Todas las Ventas
-                </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Listado completo de transacciones.</p>
-             </div>
-             <div className="text-xs text-gray-400 dark:text-gray-500">
-                Página {page} de {totalPages}
-             </div>
-        </div>
-
-        <div className="bg-white dark:bg-[#18181b] rounded-md shadow-sm border border-gray-200 dark:border-[#27272a] p-4 transition-colors">
-            {loadingHistory ? (
-                <div className="py-8 text-center text-gray-500">Cargando ventas...</div>
-            ) : (
-                <>
-                    <SalesTable 
-                        sales={historySalesData} 
-                        expanded={expandedSale}
-                        onExpand={(id) => setExpandedSale(expandedSale === id ? null : id)}
-                        onRevert={handleRevert}
-                        simpleMode={true} // Simple mode to avoid confusion with client-side local search
-                    />
-                    
-                    {/* Controles de Paginación */}
-                    <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100 dark:border-[#27272a]">
-                        <button 
-                            disabled={page <= 1}
-                            onClick={() => fetchHistorySales(page - 1)}
-                            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#18181b] border border-gray-300 dark:border-[#3f3f46] rounded-md hover:bg-gray-50 dark:hover:bg-[#1f1f1f] disabled:opacity-50 disabled:cursor-not-allowed transition"
-                        >
-                            Anterior
-                        </button>
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
-                            Página <span className="font-bold">{page}</span>
-                        </span>
-                        <button 
-                            disabled={page >= totalPages}
-                            onClick={() => fetchHistorySales(page + 1)}
-                            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#18181b] border border-gray-300 dark:border-[#3f3f46] rounded-md hover:bg-gray-50 dark:hover:bg-[#1f1f1f] disabled:opacity-50 disabled:cursor-not-allowed transition"
-                        >
-                            Siguiente
-                        </button>
-                    </div>
-                </>
-            )}
-        </div>
-      </div>
-
+      <CollapsibleSection title="Todas las Ventas" icon={List} defaultOpen={false}>
+         <div className="bg-white dark:bg-[#18181b] rounded-md shadow-sm border border-gray-200 dark:border-[#27272a] p-4 transition-colors">
+             {loadingHistory ? (
+                 <div className="py-8 text-center text-gray-500">Cargando ventas...</div>
+             ) : (
+                 <>
+                     <SalesTable 
+                         sales={historySalesData} 
+                         expanded={expandedSale}
+                         onExpand={(id) => setExpandedSale(expandedSale === id ? null : id)}
+                         onRevert={handleRevert}
+                         simpleMode={true} // Simple mode to avoid confusion with client-side local search
+                     />
+                     
+                     {/* Controles de Paginación */}
+                     <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100 dark:border-[#27272a]">
+                         <button 
+                             disabled={page <= 1}
+                             onClick={() => fetchHistorySales(page - 1)}
+                             className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#18181b] border border-gray-300 dark:border-[#3f3f46] rounded-md hover:bg-gray-50 dark:hover:bg-[#1f1f1f] disabled:opacity-50 disabled:cursor-not-allowed transition"
+                         >
+                             Anterior
+                         </button>
+                         <span className="text-sm text-gray-600 dark:text-gray-400">
+                             Página <span className="font-bold">{page}</span>
+                         </span>
+                         <button 
+                             disabled={page >= totalPages}
+                             onClick={() => fetchHistorySales(page + 1)}
+                             className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#18181b] border border-gray-300 dark:border-[#3f3f46] rounded-md hover:bg-gray-50 dark:hover:bg-[#1f1f1f] disabled:opacity-50 disabled:cursor-not-allowed transition"
+                         >
+                             Siguiente
+                         </button>
+                     </div>
+                 </>
+             )}
+         </div>
+      </CollapsibleSection>
     </section>
   );
 }
