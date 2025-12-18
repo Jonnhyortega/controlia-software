@@ -58,8 +58,32 @@ export default function VentasPage() {
 
   if (loading) return <Loading />;
 
-  // Obtener ventas del día actual
-  const currentSales = data?.sales || [];
+  // Unificar lógica con Dashboard Principal: Incluir Transacciones (Cobros de deuda)
+  const salesList = data?.sales || [];
+  const transactionsList = data?.transactions || []; 
+
+  const normalizedTransactions = transactionsList.map((tx: any) => ({
+      _id: tx._id,
+      createdAt: tx.date || tx.createdAt,
+      paymentMethod: "Cobro Deuda",
+      total: tx.amount,
+      amountPaid: tx.amount,
+      amountDebt: 0,
+      products: [
+          {
+              name: `Pago de ${tx.client?.name || "Cliente"}`,
+              quantity: 1,
+              price: tx.amount
+          }
+      ],
+      isTransaction: true
+  }));
+
+  // Combinar y ordenar
+  const currentSales = [...salesList, ...normalizedTransactions].sort((a, b) => 
+      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  ); // Orden ascendente para listado, luego revertimos en la tabla si es necesario
+
 
   return (
     <section className="p-4 sm:p-6 max-w-7xl mx-auto space-y-4">
