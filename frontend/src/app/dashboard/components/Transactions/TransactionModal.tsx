@@ -26,10 +26,18 @@ export default function TransactionModal({
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   
+  // Helper para obtener YYYY-MM-DD local
+  const getLocalToday = () => {
+      const now = new Date();
+      const offset = now.getTimezoneOffset() * 60000;
+      const local = new Date(now.getTime() - offset);
+      return local.toISOString().split("T")[0];
+  };
+
   const [formData, setFormData] = useState({
     amount: "",
     description: "",
-    date: new Date().toISOString().split("T")[0],
+    date: getLocalToday(),
   });
 
   const [initialPayment, setInitialPayment] = useState("");
@@ -45,14 +53,14 @@ export default function TransactionModal({
       setFormData({
         amount: initialData.amount.toString(),
         description: initialData.description || "",
-        date: initialData.date ? new Date(initialData.date).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+        date: initialData.date ? new Date(initialData.date).toISOString().split("T")[0] : getLocalToday(),
       });
       setPreviewUrl(initialData.imageUrl || null);
     } else {
       setFormData({
         amount: "",
         description: "",
-        date: new Date().toISOString().split("T")[0],
+        date: getLocalToday(),
       });
       setFile(null);
       setPreviewUrl(null);
@@ -83,7 +91,16 @@ export default function TransactionModal({
       data.append("type", type);
       data.append("amount", formData.amount);
       if (formData.description) data.append("description", formData.description);
-      data.append("date", formData.date);
+      
+      // LOGIC: Si la fecha seleccionada es HOY, mandamos el timestamp completo
+      // Si es otro día, mandamos mediodía para evitar que UTC 00:00 caiga en el día anterior (Argentina UTC-3)
+      const todayLocal = getLocalToday();
+      if (formData.date === todayLocal) {
+          data.append("date", new Date().toISOString());
+      } else {
+          // Fix: Agregar T12:00:00 para asegurar que caiga en el día correcto en UTC
+          data.append("date", `${formData.date}T12:00:00`);
+      }
 
       if (type.includes("CLIENT")) {
         data.append("clientId", entityId);
@@ -109,7 +126,14 @@ export default function TransactionModal({
              paymentData.append("type", paymentType);
              paymentData.append("amount", initialPayment);
              paymentData.append("description", `Entrega inicial: ${formData.description || "Sin descripción"}`);
-             paymentData.append("date", formData.date);
+             
+             // Misma lógica de fecha para el pago inicial
+             if (formData.date === todayLocal) {
+                paymentData.append("date", new Date().toISOString());
+            } else {
+                paymentData.append("date", `${formData.date}T12:00:00`);
+            }
+
              
              if (type.includes("CLIENT")) {
                 paymentData.append("clientId", entityId);

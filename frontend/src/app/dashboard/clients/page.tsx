@@ -93,8 +93,8 @@ export default function ClientsPage() {
       
       {/* 🔹 HEADER: Título Cool */}
       <div className="flex items-center gap-4 mb-2">
-        <div className="p-3 bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-2xl shadow-lg shadow-blue-500/20 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
-           <User className="w-8 h-8 text-white" strokeWidth={1.5} />
+        <div className="p-3 bg-gradient-to-br from-primary to-primary/80 dark:from-primary dark:to-primary/60 rounded-2xl shadow-lg shadow-primary/25 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+           <User className="w-8 h-8 text-primary-foreground" strokeWidth={1.5} />
         </div>
         <div className="flex flex-col">
           <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
@@ -140,7 +140,7 @@ export default function ClientsPage() {
       {loading ? (
         <div className="text-center py-12 text-gray-500">Cargando clientes...</div>
       ) : filteredClients.length === 0 ? (
-        <div className="text-center py-12 text-gray-500 bg-white dark:bg-zinc-900 rounded-md border border-dashed border-gray-200 dark:border-gray-800">
+        <div className="text-center py-12 text-gray-500 bg-white dark:bg-background rounded-md border border-dashed border-gray-200 dark:border-gray-800">
             <User size={48} className="mx-auto mb-3 opacity-20" />
             <p>No se encontraron clientes.</p>
         </div>
@@ -168,7 +168,9 @@ export default function ClientsPage() {
                       <div className={`mt-1 text-sm font-medium ${client.balance && client.balance > 0 ? "text-red-500" : "text-green-600"}`}>
                         {client.balance && client.balance > 0 
                           ? `Deuda: $${client.balance.toLocaleString('es-AR')}` 
-                          : "Alejandria" // O "Sin deuda"
+                          : client.balance && client.balance < 0 
+                            ? `Saldo a favor: $${Math.abs(client.balance).toLocaleString('es-AR')}`
+                            : "Sin deuda"
                         }
                       </div>
                     </div>
@@ -176,7 +178,7 @@ export default function ClientsPage() {
                   <div className="flex gap-1">
                     <button 
                          onClick={() => setHistoryClient(client)}
-                         className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-500/10 rounded-md transition"
+                         className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-md transition"
                          title="Ver Pagos"
                     >
                         <HistoryIcon size={16} />
@@ -230,12 +232,13 @@ export default function ClientsPage() {
                     )}
                     
                      {client.email ? (
-                        <div className="flex items-center gap-3">
-                            <div className="min-w-[24px] h-6 flex items-center justify-center rounded-full bg-gray-100 dark:bg-zinc-800">
+                        <a href={`mailto:${client.email}`} className="flex items-center gap-3 group/link hover:text-primary transition-colors cursor-pointer">
+                            <div className="min-w-[24px] h-6 flex items-center justify-center rounded-full bg-gray-100 dark:bg-zinc-800 group-hover/link:bg-primary/10 dark:group-hover/link:bg-primary/20 transition-colors group-hover/link:text-primary">
                                 <Mail size={13} />
                             </div>
                             <span className="truncate">{client.email}</span>
-                        </div>
+                            <ExternalLink size={10} className="opacity-0 group-hover/link:opacity-50" />
+                        </a>
                     ) : (
                         <div className="flex items-center gap-3 opacity-50">
                              <div className="min-w-[24px] h-6 flex items-center justify-center rounded-full bg-gray-100 dark:bg-zinc-800"><Mail size={13} /></div>

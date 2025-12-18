@@ -13,15 +13,15 @@ export default function ExpensesTable({ expenses }: ExpensesTableProps) {
   if (!expenses || expenses.length === 0) return null;
   
   return (
-    <div className="mt-8 mb-8">
-      <div className="flex items-center gap-2 mb-4 px-1">
+    <div className="mt-8 mb-8 ">
+      {/* <div className="flex items-center gap-2 mb-4 px-1">
         <div className="p-1.5 rounded-md">
            <ArrowDownRight className="w-5 h-5 text-red-600" />
         </div>
         <h3 className="text-lg font-bold text-gray-900 dark:text-white">Gastos y Salidas</h3>
       </div>
-      
-      <div className="border border-gray-100 dark:border-zinc-800 rounded-md overflow-hidden">
+       */}
+      <div className="border border-gray-200 dark:border-[#27272a] rounded-md overflow-hidden">
         <table className="w-full text-sm">
           <thead className="dark:bg-background bg-white text-gray-700 border-b border-gray-100 dark:border-zinc-800">
             <tr>
@@ -31,7 +31,7 @@ export default function ExpensesTable({ expenses }: ExpensesTableProps) {
           </thead>
           <tbody className="divide-y divide-gray-100 dark:bg-background bg-white">
             {expenses.map((expense, i) => (
-              <tr key={i} className="hover:bg-gray-200/50 transition-colors">
+              <tr key={i} className="hover:bg-gray-200 dark:hover:bg-[#1f1f1f] transition-colors">
                 <td className="py-3 px-6 text-gray-700 font-medium">
                   {expense.description}
                 </td>

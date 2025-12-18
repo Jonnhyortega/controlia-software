@@ -79,6 +79,8 @@ export interface DailyCash {
   status?: string;
   createdAt?: string;
   closedAt?: string;
+  transactions?: Transaction[];
+
 }
 
 export interface ApiResult<T = any> {

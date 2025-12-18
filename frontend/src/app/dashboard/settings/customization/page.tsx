@@ -1,469 +1,304 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { uploadLogo, resetCustomization } from "../../../../utils/api";
-import { useToast } from "../../../../context/ToastContext";
+import { useState, useEffect, useRef } from "react";
+import { useCustomization } from "../../../../context/CustomizationContext";
 import { useAuth } from "../../../../context/authContext";
-import { useCustomization, CustomizationData } from "../../../../context/CustomizationContext";
-import { ConfirmDialog } from "../../../dashboard/components/confirmDialog";
-import { Upload, Save, RefreshCcw, Trash2, Palette, Globe, Layout, Image as ImageIcon, Moon, Sun } from "lucide-react";
-import RoleGuard from "@/components/auth/RoleGuard";
+import { Save, Palette, type LucideIcon, LayoutTemplate, Clock, DollarSign, Upload, Image as ImageIcon, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useToast } from "../../../../context/ToastContext";
+import { uploadLogo } from "../../../../utils/api";
+
+import Loading from "../../../../components/loading";
+
+// Componentes de UI simples
+const SectionCard = ({ title, icon: Icon, children }: { title: string; icon: LucideIcon; children: React.ReactNode }) => (
+  <motion.div 
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="bg-white dark:bg-[#18181b] rounded-lg shadow-sm border border-gray-200 dark:border-[#27272a] overflow-hidden"
+  >
+    <div className="px-6 py-4 border-b border-gray-100 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#1f1f1f]/30 flex items-center gap-3">
+        <div className="p-2 bg-primary/10 rounded-md text-primary">
+            <Icon size={20} />
+        </div>
+        <h3 className="font-semibold text-gray-800 dark:text-gray-200">{title}</h3>
+    </div>
+    <div className="p-6 space-y-6">
+        {children}
+    </div>
+  </motion.div>
+);
 
 export default function CustomizationPage() {
+  const { settings, updateSettings, loading } = useCustomization();
+  const { user } = useAuth();
   const toast = useToast();
-  const { setUser } = useAuth();
-  const { settings, updateSettings } = useCustomization();
 
-  // Estado para los datos del formulario
-  const [data, setData] = useState<Partial<CustomizationData>>({
-    primaryColor: "#2563eb",
-    secondaryColor: "",
-    logoUrl: "",
-    currency: "ARS",
-    theme: "dark",
-    dateFormat: "DD/MM/YYYY",
-    timeFormat: "HH:mm",
-  });
-
-  // Estado para comparar cambios
-  const [initialData, setInitialData] = useState<Partial<CustomizationData> | null>(null);
-  const [hasChanges, setHasChanges] = useState(false);
-
-  const [uploading, setUploading] = useState(false);
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const [pendingAction, setPendingAction] = useState<null | (() => void)>(null);
+  const [formData, setFormData] = useState(settings);
+  const [isSaving, setIsSaving] = useState(false);
   
-  const [dialogConfig, setDialogConfig] = useState({
-    title: "Confirmar acción",
-    message: "¿Estás seguro de realizar esta acción?",
-    confirmText: "Confirmar"
-  });
+  // Logo Upload State
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [previewLogo, setPreviewLogo] = useState<string | null>(null);
 
-  // 1️⃣ Cargar datos iniciales desde el contexto
+  // Sincronizar estado local cuando carguen los settings
   useEffect(() => {
-    if (settings && !initialData) {
-      const initInfo = {
-        primaryColor: settings.primaryColor || "#2563eb",
-        secondaryColor: settings.secondaryColor || "",
-        logoUrl: settings.logoUrl || "",
-        currency: settings.currency || "ARS",
-        theme: settings.theme || "dark",
-        dateFormat: settings.dateFormat || "DD/MM/YYYY",
-        timeFormat: settings.timeFormat || "HH:mm",
-      };
-      
-      setData(initInfo);
-      setInitialData(initInfo);
+    if (!loading && settings) {
+      setFormData(settings);
+      if (settings.logoUrl) setPreviewLogo(settings.logoUrl);
     }
-  }, [settings, initialData]);
+  }, [settings, loading]);
 
-  // 2️⃣ Actualizar initialData si se guardan los cambios exitosamente 
-  useEffect(() => {
-    if (settings && initialData) {
-        const currentSettings = {
-            primaryColor: settings.primaryColor || "#2563eb",
-            secondaryColor: settings.secondaryColor || "",
-            logoUrl: settings.logoUrl || "",
-            currency: settings.currency || "ARS",
-            theme: settings.theme || "dark",
-            dateFormat: settings.dateFormat || "DD/MM/YYYY",
-            timeFormat: settings.timeFormat || "HH:mm",
-        };
-        // Si el contexto cambió (por un guardado exitoso), actualizamos la referencia inicial
-        if (JSON.stringify(currentSettings) !== JSON.stringify(initialData)) {
-            setInitialData(currentSettings);
-        }
-    }
-  }, [settings]);
-
-  // 3️⃣ Detectar Cambios y PREVIEW Inmediato del Tema/Color
-  useEffect(() => {
-    if (!initialData) return;
-
-    // A) Detectar dirty state
-    const isDirty = JSON.stringify(data) !== JSON.stringify(initialData);
-    setHasChanges(isDirty);
-
-    // B) Preview Inmediato (Manipulación directa del DOM)
-    // Esto permite "ver" el cambio sin persistirlo en BD
-    const root = document.documentElement;
-    
-    // Tema Claro/Oscuro
-    if (data.theme === "dark") root.classList.add("dark");
-    else root.classList.remove("dark");
-
-    // Colores CSS Vars
-    if (data.primaryColor) root.style.setProperty("--primary-color", data.primaryColor);
-    if (data.secondaryColor) root.style.setProperty("--secondary-color", data.secondaryColor);
-
-  }, [data, initialData]);
-
-
-  // 4️⃣ Cleanup: Revertir cambios visuales si salimos sin guardar
-  // Usamos una referencia a settings para no depender de él en el efecto de cleanup
-  // y evitar re-ejecuciones innecesarias, pero asegurarnos de tener el valor real al desmontar.
-  useEffect(() => {
-    return () => {
-      // Al desmontar, forzamos que el DOM coincida con lo que hay en 'settings' (Contexto)
-      // Nota: settings podría ser closure-stale, pero en un componente Page al navegar, 
-      // esto debería bastar si leemos de una ref o si aceptamos re-render.
-      // Para simplificar, confiamos en que al navegar, el ContextProvider volverá a aplicar su efecto
-      // o nosotros lo forzamos aqui.
-      
-      // Accedemos a la instancia de settings GLOBAL en el momento del desmontaje?
-      // React refs son mejores para esto.
-    };
-  }, []);
-
-  // Efecto separado para manejar el Revert real dependiendo de settings
-  useEffect(() => {
-      return () => {
-          if (settings) {
-              const root = document.documentElement;
-              if (settings.theme === "dark") root.classList.add("dark");
-              else root.classList.remove("dark");
-              
-              root.style.setProperty("--primary-color", settings.primaryColor || "#2563eb");
-              if (settings.secondaryColor) root.style.setProperty("--secondary-color", settings.secondaryColor);
-          }
-      }
-  }, [settings]); 
-
-
-  const handleChange = (field: string, value: any) => {
-    setData((prev: any) => ({ ...prev, [field]: value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const saveChanges = async () => {
-    if (!hasChanges) return;
+  const handleSave = async () => {
+    setIsSaving(true);
     try {
-      await updateSettings(data);
-      
-      // Actualizamos el usuario globalmente para que se refleje el nuevo logo en el Navbar
-      if (data.logoUrl) {
-        setUser((prev) => {
-           if(!prev) return null;
-           return { ...prev, logoUrl: data.logoUrl };
-        });
-      }
-
-      toast.success("Configuración guardada correctamente ✨");
-    } catch {
-      toast.error("Error al guardar la configuración ❌");
-    }
-  };
-
-  const handleLogo = async (e: any) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    setUploading(true);
-    try {
-      const res = await uploadLogo(file);
-      const newUrl = res.url;
-      
-      setData((prev: any) => ({ ...prev, logoUrl: newUrl }));
-      
-      // NOTA: No actualizamos setUser aquí para evitar que el Contexto recarge los settings
-      // y deshabilite el botón de guardar. El usuario verá el logo en el Navbar al guardar.
-      
-      toast.success("Logo subido. Guarda los cambios para aplicar.");
-    } catch {
-      toast.error("No se pudo subir la imagen ❌");
+      await updateSettings(formData);
+      toast.success("Configuración actualizada correctamente");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al guardar la configuración");
     } finally {
-      setUploading(false);
+      setIsSaving(false);
     }
   };
 
-  const handleDeleteLogo = () => {
-    setPendingAction(() => async () => {
-        // Solo lo quitamos del estado local
-        setData((prev: any) => ({ ...prev, logoUrl: "" }));
-        toast.info("Logo removido de la vista previa. Guarda para confirmar.");
-    });
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
 
-    setDialogConfig({
-      title: "Eliminar logo",
-      message: "¿Quitar el logo actual de la configuración?",
-      confirmText: "Quitar"
-    });
-    setConfirmOpen(true);
+      // Preview inmediato
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewLogo(objectUrl);
+
+      setIsUploading(true);
+      try {
+          // Subir archivo real
+          const res = await uploadLogo(file);
+          // Actualizar URL en el form
+          setFormData(prev => ({ ...prev, logoUrl: res.url }));
+          // También actualizar globalmente si se desea (aunque handleSave lo hará oficial)
+          // updateSettings({ logoUrl: res.url }); 
+          toast.success("Logo subido correctamente");
+      } catch (error) {
+          console.error(error);
+          toast.error("Error al subir el logo");
+          // Revertir preview si falla
+          setPreviewLogo(settings.logoUrl || null);
+      } finally {
+          setIsUploading(false);
+      }
   };
 
-  const handleReset = () => {
-    setPendingAction(() => async () => {
-        try {
-            // Reset en backend
-            const res = await resetCustomization();
-            
-            // Actualizar local
-            const resetData = {
-                primaryColor: res.primaryColor,
-                secondaryColor: res.secondaryColor,
-                logoUrl: res.logoUrl,
-                currency: res.currency,
-                theme: res.theme,
-                dateFormat: res.dateFormat,
-                timeFormat: res.timeFormat
-            };
-            setData(resetData);
-            
-            // Actualizar User
-            setUser((prev) => prev ? ({ ...prev, logoUrl: undefined }) : null);
-
-            toast.success("Valores restablecidos a defecto");
-        } catch {
-            toast.error("Error al restablecer");
-        }
-    });
-
-    setDialogConfig({
-      title: "Restablecer configuración",
-      message: "Esto devolverá la configuración a sus valores originales. ¿Continuar?",
-      confirmText: "Sí, restaurar"
-    });
-    setConfirmOpen(true);
+  const handleRemoveLogo = () => {
+      setPreviewLogo(null);
+      setFormData(prev => ({ ...prev, logoUrl: "" }));
+      if (fileInputRef.current) fileInputRef.current.value = "";
   };
+
+  // Pre-defined fancy colors
+  const colorPalettes = [
+    { name: "Azul Controlia", hex: "#2563eb" },
+    { name: "Violeta Profundo", hex: "#7c3aed" },
+    { name: "Esmeralda", hex: "#059669" },
+    { name: "Rosa Vibrante", hex: "#db2777" },
+    { name: "Naranja", hex: "#ea580c" },
+    { name: "Negro", hex: "#000000" },
+  ];
+
+  if (loading) return <div className="p-10 text-center">Cargando preferencias...</div>;
 
   return (
-    <RoleGuard role="admin">
-      <motion.section 
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="p-6 max-w-7xl mx-auto space-y-8"
-      >
-        
-        {/* HEADER */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <Palette className="text-primary" size={32} /> Personalización
-            </h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1">Ajusta la apariencia y configuración regional del sistema.</p>
-          </div>
+    <div className="max-w-4xl mx-auto space-y-6 pb-20 relative">
+      {(isSaving || isUploading) && (
+          <Loading fullscreen message={isUploading ? "Subiendo logo..." : "Guardando cambios..."} />
+      )}
+
+      {/* HEADER */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
+         <div className="flex items-center gap-4">
+            <div className="p-3 bg-gradient-to-br from-primary to-primary/80 dark:from-primary dark:to-primary/60 rounded-2xl shadow-lg shadow-primary/25 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+                <Palette className="w-8 h-8 text-primary-foreground" strokeWidth={1.5} />
+            </div>
+            <div>
+                <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Personalización</h1>
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Ajusta la apariencia del sistema a tu marca</p>
+            </div>
+         </div>
+         
+         <button
+            onClick={handleSave}
+            disabled={isSaving || isUploading}
+            className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2.5 rounded-lg font-bold shadow-md shadow-primary/20 transition-all active:scale-95 disabled:opacity-50"
+         >
+            <Save size={18} />
+            Guardar Cambios
+         </button>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6">
           
-          <div className="flex gap-3">
-             <button
-              onClick={handleReset}
-              className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#252525] text-red-500 px-5 py-2.5 rounded-md flex items-center gap-2 font-medium transition shadow-sm"
-            >
-              <RefreshCcw size={18} /> Restaurar
-            </button>
-            <button
-              onClick={saveChanges}
-              disabled={!hasChanges}
-              className={`px-6 py-2.5 rounded-md flex items-center gap-2 font-bold shadow-lg transition transform active:scale-95 ${
-                  hasChanges 
-                  ? "bg-primary hover:bg-primary-700 text-white shadow-primary/20 cursor-pointer" 
-                  : "bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed shadow-none"
-              }`}
-            >
-              <Save size={18} /> Guardar cambios
-            </button>
-          </div>
-        </div>
+          {/* 1. Logo del Negocio */}
+          <SectionCard title="Logo del Negocio" icon={ImageIcon}>
+              <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
+                 {/* Preview Box */}
+                 <div className="relative group">
+                    <div className={`w-32 h-32 rounded-2xl border-2 border-dashed flex items-center justify-center overflow-hidden bg-gray-50 dark:bg-zinc-900 transition-colors ${previewLogo ? 'border-primary/50' : 'border-gray-300 dark:border-zinc-700'}`}>
+                        {previewLogo ? (
+                            <img src={previewLogo} alt="Logo Preview" className="w-full h-full object-contain p-2" />
+                        ) : (
+                            <ImageIcon className="text-gray-400" size={32} />
+                        )}
+                    </div>
+                    {/* Botón flotante para borrar */}
+                    {previewLogo && (
+                        <button 
+                           onClick={handleRemoveLogo}
+                           className="absolute -top-2 -right-2 p-1.5 bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                           title="Eliminar logo"
+                        >
+                            <Trash2 size={14} />
+                        </button>
+                    )}
+                 </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {/* COLUMNA 1: LOGO Y TEMA */}
-            <div className="space-y-8">
-               
-               {/* LOGO CARD */}
-               <div className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 rounded-md p-6 shadow-sm hover:shadow-md transition-shadow">
-                  <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
-                    <ImageIcon className="text-gray-400" size={20} /> Identidad Visual
-                  </h2>
-                  
-                  <div className="bg-gray-200 dark:bg-[#0f0f0f] border border-dashed border-gray-300 dark:border-gray-700 rounded-md h-48 flex flex-col items-center justify-center relative overflow-hidden group">
-                     {data.logoUrl ? (
-                         <>
-                            <img
-                              key={data.logoUrl} // Force re-render on url change
-                              src={data.logoUrl}
-                              alt="Logo"
-                              className="w-full h-full object-contain p-4 transition-transform group-hover:scale-105"
+                 <div className="flex-1 space-y-4">
+                     <div>
+                        <h4 className="font-semibold text-gray-900 dark:text-white mb-1">Sube tu logo</h4>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Se mostrará en los recibos, en la barra lateral y en la pantalla de carga.
+                            Recomendamos formato PNG con fondo transparente.
+                        </p>
+                     </div>
+                     
+                     <div className="flex items-center gap-3">
+                        <input 
+                            type="file" 
+                            accept="image/*" 
+                            className="hidden" 
+                            ref={fileInputRef}
+                            onChange={handleLogoUpload}
+                        />
+                        <button
+                           onClick={() => fileInputRef.current?.click()}
+                           disabled={isUploading}
+                           className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
+                        >
+                            {isUploading ? (
+                                <span className="animate-pulse">Subiendo...</span>
+                            ) : (
+                                <>
+                                    <Upload size={16} />
+                                    Seleccionar Imagen
+                                </>
+                            )}
+                        </button>
+                        <p className="text-xs text-gray-400">Máx. 2MB</p>
+                     </div>
+                 </div>
+              </div>
+          </SectionCard>
+
+          {/* 2. Apariencia y Color */}
+          <SectionCard title="Apariencia" icon={Palette}>
+              <div className="space-y-6">
+                 <div>
+                    <label className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3 block">Color Principal</label>
+                    <div className="flex flex-wrap gap-3 mb-4">
+                        {colorPalettes.map((color) => (
+                            <button
+                                key={color.hex}
+                                onClick={() => setFormData(prev => ({ ...prev, primaryColor: color.hex }))}
+                                className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-transform hover:scale-110 ${formData.primaryColor === color.hex ? "border-gray-900 dark:border-white ring-2 ring-offset-2 ring-gray-400 dark:ring-offset-zinc-900" : "border-transparent"}`}
+                                style={{ backgroundColor: color.hex }}
+                                title={color.name}
                             />
-                             <button
-                                onClick={handleDeleteLogo}
-                                className="absolute top-3 right-3 bg-red-500 text-white p-2 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                                title="Eliminar logo"
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                         </>
-                     ) : (
-                       <div className="text-center text-gray-400">
-                          <ImageIcon size={48} className="mx-auto mb-2 opacity-20" />
-                          <p className="text-sm font-medium">Sin logo configurado</p>
-                       </div>
-                     )}
-
-                     {uploading && (
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-medium backdrop-blur-sm">
-                           Subiendo...
+                        ))}
+                         <div className="relative group">
+                            <input 
+                                type="color" 
+                                name="primaryColor"
+                                value={formData.primaryColor}
+                                onChange={handleChange}
+                                className="w-10 h-10 rounded-full cursor-pointer border-0 p-0 overflow-hidden"
+                            />
                         </div>
-                     )}
-                  </div>
+                    </div>
+                 </div>
 
-                  <div className="mt-4">
-                     <input
-                        type="file"
-                        className="hidden"
-                        id="logoUpload"
-                        onChange={handleLogo}
-                        accept="image/*"
-                      />
-                     <label
-                        htmlFor="logoUpload"
-                        className="w-full flex items-center justify-center gap-2 bg-gray-100 dark:bg-[#252525] hover:bg-gray-200 dark:hover:bg-[#303030] text-gray-700 dark:text-gray-200 font-medium py-3 rounded-md cursor-pointer transition border border-gray-200 dark:border-transparent"
-                      >
-                        <Upload size={18} /> {data.logoUrl ? "Cambiar logo" : "Subir logo"}
-                      </label>
-                      <p className="text-xs text-center text-gray-400 mt-2">Recomendado: 500x500px, formato PNG</p>
-                  </div>
-               </div>
-
-{/* THEME CARD REMOVED (Moved to Sidebar) */}
-
-            </div>
-
-            {/* COLUMNA 2 Y 3 (Resto de opciones) */}
-            <div className="lg:col-span-2 space-y-8">
-               
-               {/* COLORS CARD */}
-               <div className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 rounded-md p-6 shadow-sm hover:shadow-md transition-shadow">
-                  <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
-                    <Palette className="text-gray-400" size={20} /> Paleta de Colores
-                  </h2>
-
-                  <div className="grid md:grid-cols-2 gap-8">
-                      <div>
-                         <label className="block text-sm font-medium text-gray-500 mb-2">Color Primario</label>
-                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-md shadow-inner border border-gray-200 dark:border-gray-700 overflow-hidden relative">
-                                <input
-                                  type="color"
-                                  value={data.primaryColor}
-                                  onChange={(e) => handleChange("primaryColor", e.target.value)}
-                                  className="absolute -top-2 -left-2 w-16 h-16 cursor-pointer p-0 border-0"
-                                />
-                            </div>
-                            <div className="flex-1">
-                               <input 
-                                  type="text" 
-                                  value={data.primaryColor}
-                                  onChange={(e) => handleChange("primaryColor", e.target.value)}
-                                  className="w-full bg-gray-200 dark:bg-[#0f0f0f] border border-gray-200 dark:border-gray-700 rounded-md px-3 py-2 text-sm uppercase font-mono text-gray-700 dark:text-gray-300 focus:outline-none focus:border-primary"
-                               />
-                            </div>
-                         </div>
-                         <p className="text-xs text-gray-400 mt-2">Color principal para botones y destaques.</p>
-                      </div>
-
-                      <div>
-                         <label className="block text-sm font-medium text-gray-500 mb-2">Color Secundario</label>
-                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-md shadow-inner border border-gray-200 dark:border-gray-700 overflow-hidden relative">
-                                <input
-                                  type="color"
-                                  value={data.secondaryColor}
-                                  onChange={(e) => handleChange("secondaryColor", e.target.value)}
-                                  className="absolute -top-2 -left-2 w-16 h-16 cursor-pointer p-0 border-0"
-                                />
-                            </div>
-                            <div className="flex-1">
-                               <input 
-                                  type="text" 
-                                  value={data.secondaryColor}
-                                  onChange={(e) => handleChange("secondaryColor", e.target.value)}
-                                  className="w-full bg-gray-200 dark:bg-[#0f0f0f] border border-gray-200 dark:border-gray-700 rounded-md px-3 py-2 text-sm uppercase font-mono text-gray-700 dark:text-gray-300 focus:outline-none focus:border-primary"
-                                  placeholder="#000000"
-                               />
-                            </div>
-                         </div>
-                         <p className="text-xs text-gray-400 mt-2">Opcional. Usado en bordes y acentos.</p>
-                      </div>
-                  </div>
-               </div>
-
-               {/* FORMATS CARD */}
-               <div className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 rounded-md p-6 shadow-sm hover:shadow-md transition-shadow">
-                  <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
-                    <Globe className="text-gray-400" size={20} /> Región y Formatos
-                  </h2>
-                  
-                  <div className="space-y-6">
-                      
-                      <div className="grid md:grid-cols-2 gap-6">
-                         <div>
-                            <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Moneda por defecto</label>
-                            <select
-                              value={data.currency}
-                              onChange={(e) => handleChange("currency", e.target.value)}
-                              className="w-full p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-[#0f0f0f] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Tema del Sistema</label>
+                        <select 
+                            name="theme"
+                            value={formData.theme}
+                            onChange={handleChange}
+                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none"
+                        >
+                            <option value="light">Claro (Light Mode)</option>
+                            <option value="dark">Oscuro (Dark Mode)</option>
+                        </select>
+                    </div>
+                     <div className="space-y-2">
+                        <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Moneda</label>
+                         <div className="relative">
+                            <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                            <select 
+                                name="currency"
+                                value={formData.currency}
+                                onChange={handleChange}
+                                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none"
                             >
-                              <option value="ARS" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Peso Argentino (ARS)</option>
-                              <option value="USD" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Dólar Americano (USD)</option>
-                              <option value="BRL" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Real Brasileño (BRL)</option>
-                              <option value="EUR" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Euro (EUR)</option>
+                                <option value="ARS">Peso Argentino (ARS)</option>
+                                <option value="USD">Dólar Estadounidense (USD)</option>
+                                <option value="EUR">Euro (EUR)</option>
+                                <option value="BRL">Real Brasileño (BRL)</option>
+                                <option value="CLP">Peso Chileno (CLP)</option>
+                                <option value="UYU">Peso Uruguayo (UYU)</option>
                             </select>
-                         </div>
-                         
-                         <div className="flex items-center pt-6">
-                            <div className="text-sm bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 p-3 rounded-md border border-blue-100 dark:border-blue-900/30">
-                               ℹ La moneda afecta cómo se muestran los precios en el sistema y reportes.
-                            </div>
-                         </div>
-                      </div>
+                        </div>
+                    </div>
+                 </div>
+              </div>
+          </SectionCard>
 
-                      <div className="grid md:grid-cols-2 gap-6 pt-4 border-t border-gray-100 dark:border-gray-800">
-                           <div>
-                              <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Formato de Fecha</label>
-                              <select
-                                value={data.dateFormat}
-                                onChange={(e) => handleChange("dateFormat", e.target.value)}
-                                className="w-full p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-[#0f0f0f] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
-                              >
-                                <option value="DD/MM/YYYY" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">31/12/2024 (DD/MM/YYYY)</option>
-                                <option value="MM/DD/YYYY" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">12/31/2024 (MM/DD/YYYY)</option>
-                                <option value="YYYY-MM-DD" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">2024-12-31 (YYYY-MM-DD)</option>
-                              </select>
-                           </div>
-
-                           <div>
-                              <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Formato de Hora</label>
-                              <select
-                                value={data.timeFormat}
-                                onChange={(e) => handleChange("timeFormat", e.target.value)}
-                                className="w-full p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-[#0f0f0f] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
-                              >
-                                <option value="HH:mm" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">24 Horas (14:30)</option>
-                                <option value="hh:mm A" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">12 Horas (02:30 PM)</option>
-                              </select>
-                           </div>
-                      </div>
-
-                  </div>
+           {/* 3. Formatos Regionales */}
+           <SectionCard title="Configuración Regional" icon={Clock}>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Formato de Fecha</label>
+                        <select 
+                            name="dateFormat"
+                            value={formData.dateFormat}
+                            onChange={handleChange}
+                             className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none"
+                        >
+                            <option value="DD/MM/YYYY">DD/MM/YYYY (31/12/2023)</option>
+                            <option value="MM/DD/YYYY">MM/DD/YYYY (12/31/2023)</option>
+                            <option value="YYYY-MM-DD">YYYY-MM-DD (2023-12-31)</option>
+                        </select>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Formato de Hora</label>
+                         <select 
+                            name="timeFormat"
+                            value={formData.timeFormat}
+                            onChange={handleChange}
+                             className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none"
+                        >
+                            <option value="HH:mm">24 Horas (14:30)</option>
+                            <option value="hh:mm a">12 Horas (02:30 PM)</option>
+                        </select>
+                    </div>
                </div>
+           </SectionCard>
 
-            </div>
-        </div>
-
-        {/* CONFIRM DIALOG */}
-        <ConfirmDialog
-            open={confirmOpen}
-            title={dialogConfig.title}
-            message={dialogConfig.message}
-            confirmText={dialogConfig.confirmText}
-            cancelText="Cancelar"
-            onConfirm={() => {
-            setConfirmOpen(false);
-            pendingAction && pendingAction();
-            }}
-            onCancel={() => setConfirmOpen(false)}
-        />
-      </motion.section>
-    </RoleGuard>
+      </div>
+    </div>
   );
 }

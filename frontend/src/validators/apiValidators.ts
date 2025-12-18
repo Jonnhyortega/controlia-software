@@ -57,6 +57,7 @@ export const DailyCashSchema = z.object({
   status: z.string().optional(),
   closedAt: z.string().optional(),
   createdAt: z.string().optional(),
+  transactions: z.array(z.any()).optional(),
 });
 
 export default {

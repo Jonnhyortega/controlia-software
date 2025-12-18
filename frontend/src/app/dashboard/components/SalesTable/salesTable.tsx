@@ -129,6 +129,8 @@ export default function SalesTable({
         </div>
       )}
 
+
+
       {/* 📋 Tabla */}
       <div className="border border-gray-200 dark:border-[#27272a] rounded-md overflow-hidden transition-colors">
         <table className="w-full text-sm">
