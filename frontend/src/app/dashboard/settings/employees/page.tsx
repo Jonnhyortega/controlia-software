@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { 
-import { 
   getEmployees, 
   createEmployee, 
   deleteEmployee, 
@@ -101,7 +100,7 @@ export default function EmployeesPage() {
           name: emp.name, 
           email: emp.email, 
           password: "", // Password usually blank on edit
-          role: emp.role 
+          role: emp.role as "admin" | "empleado"
       });
       setShowModal(true);
   };
