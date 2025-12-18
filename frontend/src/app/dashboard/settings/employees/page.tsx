@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { 
+import { 
   getEmployees, 
   createEmployee, 
   deleteEmployee, 
   updateEmployee 
 } from "../../../../utils/api";
+import { Employee } from "../../../../types/api";
 import { Plus, Trash2, Edit2, Shield, User, Mail, Ban, CheckCircle } from "lucide-react";
 import { useAuth } from "../../../../context/authContext";
 import { useToast } from "../../../../context/ToastContext";
@@ -14,14 +16,6 @@ import Loading from "../../../../components/loading";
 import Overlay from "../../components/overlay";
 import { motion, AnimatePresence } from "framer-motion";
 import { CollapsibleSection } from "../../../../components/ui/CollapsibleSection";
-
-interface Employee {
-  _id: string;
-  name: string;
-  email: string;
-  role: "admin" | "empleado";
-  blocked?: boolean;
-}
 
 export default function EmployeesPage() {
   const { user } = useAuth();
@@ -46,7 +40,7 @@ export default function EmployeesPage() {
     try {
       setLoading(true);
       const data = await getEmployees();
-      setEmployees(data);
+      setEmployees(data || []);
     } catch (error) {
       console.error(error);
       toast.error("Error al cargar empleados");
