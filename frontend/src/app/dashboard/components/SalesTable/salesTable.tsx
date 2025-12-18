@@ -108,12 +108,12 @@ export default function SalesTable({
                     onChange={(e) => setFilterMethod(e.target.value)}
                     className="pl-9 pr-8 py-2 rounded-md border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm appearance-none cursor-pointer"
                   >
-                      <option value="all">Todos los métodos</option>
-                      <option value="efectivo">Efectivo</option>
-                      <option value="tarjeta">Tarjeta</option>
-                      <option value="transferencia">Transferencia</option>
-                      <option value="mercado pago">Mercado Pago</option>
-                      <option value="otro">Otro</option>
+                      <option value="all" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Todos los métodos</option>
+                      <option value="efectivo" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Efectivo</option>
+                      <option value="tarjeta" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Tarjeta</option>
+                      <option value="transferencia" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Transferencia</option>
+                      <option value="mercado pago" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Mercado Pago</option>
+                      <option value="otro" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Otro</option>
                   </select>
               </div>
 

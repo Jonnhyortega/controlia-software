@@ -403,10 +403,10 @@ export default function CustomizationPage() {
                               onChange={(e) => handleChange("currency", e.target.value)}
                               className="w-full p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-[#0f0f0f] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
                             >
-                              <option value="ARS">Peso Argentino (ARS)</option>
-                              <option value="USD">Dólar Americano (USD)</option>
-                              <option value="BRL">Real Brasileño (BRL)</option>
-                              <option value="EUR">Euro (EUR)</option>
+                              <option value="ARS" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Peso Argentino (ARS)</option>
+                              <option value="USD" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Dólar Americano (USD)</option>
+                              <option value="BRL" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Real Brasileño (BRL)</option>
+                              <option value="EUR" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Euro (EUR)</option>
                             </select>
                          </div>
                          
@@ -425,9 +425,9 @@ export default function CustomizationPage() {
                                 onChange={(e) => handleChange("dateFormat", e.target.value)}
                                 className="w-full p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-[#0f0f0f] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
                               >
-                                <option value="DD/MM/YYYY">31/12/2024 (DD/MM/YYYY)</option>
-                                <option value="MM/DD/YYYY">12/31/2024 (MM/DD/YYYY)</option>
-                                <option value="YYYY-MM-DD">2024-12-31 (YYYY-MM-DD)</option>
+                                <option value="DD/MM/YYYY" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">31/12/2024 (DD/MM/YYYY)</option>
+                                <option value="MM/DD/YYYY" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">12/31/2024 (MM/DD/YYYY)</option>
+                                <option value="YYYY-MM-DD" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">2024-12-31 (YYYY-MM-DD)</option>
                               </select>
                            </div>
 
@@ -438,8 +438,8 @@ export default function CustomizationPage() {
                                 onChange={(e) => handleChange("timeFormat", e.target.value)}
                                 className="w-full p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-[#0f0f0f] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
                               >
-                                <option value="HH:mm">24 Horas (14:30)</option>
-                                <option value="hh:mm A">12 Horas (02:30 PM)</option>
+                                <option value="HH:mm" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">24 Horas (14:30)</option>
+                                <option value="hh:mm A" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">12 Horas (02:30 PM)</option>
                               </select>
                            </div>
                       </div>

@@ -12,12 +12,8 @@ interface HeaderActionsProps {
 
 export function HeaderActions({ showForm, setShowForm, resetForm, setShowCategories }: HeaderActionsProps) {
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="flex flex-col md:flex-row md:items-center justify-start gap-4">
       <div className="flex items-center justify-between w-full md:w-auto">
-        <h1 className="text-2xl font-bold flex items-center gap-2 text-gray-800">
-          <Package className="text-primary w-7 h-7" />
-          Productos
-        </h1>
         
         {/* Mobile only: Categories button next to title */}
         <Button

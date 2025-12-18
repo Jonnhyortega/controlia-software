@@ -16,8 +16,9 @@ import ConfigCategories from "./components/ConfigCategories";
 import { ProductHistoryModal } from "./components/ProductHistoryModal";
 
 import Loading from "../../../components/loading";
-import { X } from "lucide-react";
+import { X, Package, Settings2, List } from "lucide-react";
 import Overlay from "../components/overlay";
+import { CollapsibleSection } from "../../../components/ui/CollapsibleSection";
 
 export default function ProductsPage() {
   const p = useProducts();
@@ -28,40 +29,50 @@ export default function ProductsPage() {
   if (p.loading) return <Loading />;
 
   return (
-    <section className="overflow-y-auto h-screen flex flex-col gap-5" data-scrollable>
+    <section className="overflow-y-auto h-screen flex flex-col gap-5 p-4 sm:p-6" data-scrollable>
       {/* HEADER */}
-      <HeaderActions
-        showForm={p.showForm}
-        setShowForm={p.setShowForm}
-        resetForm={() =>
-          p.setForm({
-            name: "",
-            category: "",
-            price: 0,
-            cost: 0,
-            stock: 0,
-            barcode: "",
-            description: "",
-            supplier: "",
-          })
-        }
-        setShowCategories={setShowCategories} // ← NUEVO
-      />
+      <div className="flex items-center gap-4 mb-2">
+        <div className="p-3 bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-2xl shadow-lg shadow-blue-500/20 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+           <Package className="w-8 h-8 text-white" strokeWidth={1.5} />
+        </div>
+        <div className="flex flex-col">
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+            Productos
+          </h1>
+          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+            Gestión de inventario y stock
+          </span>
+        </div>
+      </div>
 
-      {/* BUSCADOR */}
-      <SearchBar searchTerm={p.searchTerm} setSearchTerm={p.setSearchTerm} />
+      <div className="flex flex-col gap-4">
+          <HeaderActions
+            showForm={p.showForm}
+            setShowForm={p.setShowForm}
+            resetForm={() =>
+              p.setForm({
+                name: "",
+                category: "",
+                price: 0,
+                cost: 0,
+                stock: 0,
+                barcode: "",
+                description: "",
+                supplier: "",
+              })
+            }
+            setShowCategories={setShowCategories} // ← NUEVO
+          />
+
+          {/* BUSCADOR */}
+          <SearchBar searchTerm={p.searchTerm} setSearchTerm={p.setSearchTerm} />
+      </div>
 
       {/* MODAL → FORMULARIO DE PRODUCTO */}
       {p.showForm && (
         <Overlay fullScreen={true}>
           <div className="relative w-full max-w-4xl mx-auto my-10">
-            {/*Boton para cerrar overlay  */}          
-            <button
-              onClick={() => p.setShowForm(false)}
-              className="absolute -top-4 -right-4 md:-right-10 text-gray-500 hover:text-red-500 transition p-2 bg-gray-100 rounded-full hover:bg-gray-200"
-            >
-              <X size={24} />
-            </button>
+            
 
             <ProductForm
               form={p.form}
@@ -72,6 +83,7 @@ export default function ProductsPage() {
               onSubmit={p.handleSubmit}
               setScannerOpen={p.setScannerOpen}
               isSubmitting={p.isSubmitting}
+              onClickClose={() => p.setShowForm(false)}
             />
           </div>
         </Overlay>

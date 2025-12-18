@@ -107,31 +107,33 @@ export default function HistorySales() {
         {monthKeys.length === 0 && <p className="text-gray-500 text-center py-4">No se encontraron resultados para la búsqueda.</p>}
 
         {monthKeys.map((month) => (
-             <div key={month} className="border border-gray-200 dark:border-gray-700/50 rounded-md overflow-hidden bg-white/50 dark:bg-zinc-900/30 mb-6 shadow-sm">
+             <div key={month} className="bg-white dark:bg-background border border-gray-200 dark:border-border rounded-md overflow-hidden shadow-sm transition-all mb-4">
                  
                  {/* 🗓 Month Header Accordion Filter */}
-                 <div 
+                 <button 
                    onClick={() => setExpandedMonth(expandedMonth === month ? null : month)}
-                   className={`p-4 flex items-center justify-between cursor-pointer transition-colors ${expandedMonth === month ? 'bg-white dark:bg-zinc-800 shadow-sm' : 'hover:bg-white dark:hover:bg-zinc-800/50'}`}
+                   className="w-full flex items-center justify-between px-5 py-3 bg-gray-200 hover:bg-gray-100 dark:bg-background dark:hover:bg-muted/10 transition-colors cursor-pointer"
                  >
-                    <div className="flex items-center gap-4">
-                       <div className="p-2.5 bg-primary/10 text-primary rounded-md">
+                    <div className="flex items-center gap-3">
+                       <div className="text-primary">
                           <Calendar size={20} />
                        </div>
-                       <div>
-                           <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
+                       <div className="text-left">
+                           <h3 className="text-base font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
                                 {month}
-                                <span className="text-xs font-medium text-gray-500 bg-gray-100 dark:bg-zinc-700 px-2 py-0.5 rounded-full">
-                                    {groupedHistory[month].length} cierres
+                                <span className="text-xs font-normal text-gray-500 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-gray-700 px-2 py-0.5 rounded-full">
+                                    {groupedHistory[month].length}
                                 </span>
                            </h3>
-                           <p className="text-xs text-gray-400 font-medium uppercase tracking-wider mt-0.5">Historial Mensual</p>
                        </div>
                     </div>
                     <div className="text-gray-400">
-                        {expandedMonth === month ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                        <ChevronDown 
+                            size={20} 
+                            className={`transition-transform duration-300 ${expandedMonth === month ? 'rotate-180' : ''}`}
+                        />
                     </div>
-                 </div>
+                 </button>
 
                  {/* Month Content - List of Days */}
                  <AnimatePresence>
@@ -142,7 +144,7 @@ export default function HistorySales() {
                        exit={{ height: 0, opacity: 0 }}
                        className="overflow-hidden"
                      >
-                        <div className="p-4 bg-gray-200/50 dark:bg-zinc-900/50 space-y-4 border-t border-gray-100 dark:border-gray-800">
+                        <div className="p-4 space-y-4 border-t border-gray-200 dark:border-border">
                            {groupedHistory[month].map((d: any) => {
                                 // Original Item Render Logic
                                 const isExpanded = expandedId === d._id;
@@ -155,36 +157,31 @@ export default function HistorySales() {
                                 const difference = real - expected;
 
                                 return (
-                                    <div key={d._id} className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                                    <div key={d._id} className="bg-white dark:bg-background border border-gray-200 dark:border-border rounded-md overflow-hidden shadow-sm transition-all">
                                         
                                         {/* Day Card Header */}
                                         <div 
                                             onClick={() => setExpandedId(isExpanded ? null : d._id)}
-                                            className="p-4 cursor-pointer flex flex-col md:flex-row gap-4 justify-between items-center hover:bg-gray-200 dark:hover:bg-zinc-800/50 transition-colors"
+                                            className="px-5 py-3 cursor-pointer flex flex-col md:flex-row gap-4 justify-between items-center bg-gray-50 hover:bg-gray-100 dark:bg-zinc-900/40 dark:hover:bg-zinc-900/60 transition-colors border-b border-transparent hover:border-gray-200 dark:hover:border-zinc-800"
                                         >
-                                            <div className="flex items-center gap-4 w-full md:w-auto">
-                                                <div className={`p-2 rounded-full ${isExpanded ? 'bg-primary/10 text-primary' : 'bg-gray-100 dark:bg-zinc-800 text-gray-500'}`}>
-                                                    {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                                            <div className="flex items-center gap-3 w-full md:w-auto">
+                                                <div className={`text-gray-700 ${isExpanded ? 'rotate-180' : ''} transition-transform`}>
+                                                    <ChevronDown size={20} />
                                                 </div>
                                                 <div>
-                                                    <h3 className="font-semibold text-gray-800 dark:text-gray-200 capitalize">{dateLabel}</h3>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                        {(d.totalOperations || d.sales?.length) ? 
-                                                        `${d.totalOperations || d.sales?.length} ventas registradas` 
-                                                        : <span className="text-transparent">.</span>}
-                                                    </p>
+                                                    <h3 className="font-medium text-black dark:text-gray-200 capitalize text-sm md:text-base">{dateLabel}</h3>
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-center gap-4 md:gap-8 w-full md:w-auto justify-between md:justify-end">
+                                            <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
                                                 <div className="text-right">
-                                                    <p className="text-[10px] uppercase text-gray-500 font-semibold">Total Ventas</p>
-                                                    <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(totalSales)}</p>
+                                                    <p className="text-[10px] uppercase text-green-500 font-semibold tracking-wider">Ventas</p>
+                                                    <p className="font-bold text-blue-600 dark:text-white text-sm">{formatCurrency(totalSales)}</p>
                                                 </div>
-                                                <div className="text-right hidden sm:block">
-                                                    <p className="text-[10px] uppercase text-gray-500 font-semibold">Real en Caja</p>
-                                                    <p className="font-bold text-primary">{formatCurrency(real)}</p>
-                                                </div>
+                                                {/* <div className="text-right hidden sm:block">
+                                                    <p className="text-[10px] uppercase text-gray-500 font-semibold tracking-wider">Caja Real</p>
+                                                    <p className="font-bold text-primary text-sm">{formatCurrency(real)}</p>
+                                                </div> */}
                                             </div>
                                         </div>
 
@@ -197,34 +194,34 @@ export default function HistorySales() {
                                                     exit={{ height: 0, opacity: 0 }}
                                                     className="overflow-hidden"
                                                 >
-                                                    <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-200/50 dark:bg-zinc-900/50">
+                                                    <div className="p-4 border-t border-gray-100 dark:border-zinc-800 bg-white dark:bg-background">
                                                         
                                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                                                            <InfoCard title="Ventas Totales" value={formatCurrency(totalSales)} color="text-primary-600 dark:text-primary-400" />
+                                                            <InfoCard title="Ingresos totales" value={formatCurrency(totalSales)} color="text-primary" />
                                                             <InfoCard title="Gastos / Salidas" value={formatCurrency(totalOut)} color="text-red-500" />
-                                                            <InfoCard title="Esperado en Caja" value={formatCurrency(expected)} />
-                                                            <InfoCard 
+                                                            <InfoCard title="Ingresos netos" value={formatCurrency(expected)} />
+                                                            {/* <InfoCard 
                                                                 title="Diferencia" 
                                                                 value={formatCurrency(difference)} 
                                                                 color={difference === 0 ? "text-green-500" : (difference > 0 ? "text-green-500" : "text-red-500")} 
-                                                            />
+                                                            /> */}
                                                         </div>
 
                                                         {d.sales?.length > 0 ? (
-                                                            <div className="border border-gray-200 dark:border-gray-800 rounded-md overflow-hidden bg-white dark:bg-zinc-900">
+                                                            <div className="border border-gray-200 dark:border-border rounded-md overflow-hidden bg-white dark:bg-background">
                                                                 <table className="w-full text-sm">
-                                                                    <thead className="bg-gray-200 dark:bg-zinc-800/50 text-gray-600 dark:text-gray-400 font-medium">
+                                                                    <thead className="bg-gray-100 dark:bg-zinc-900 text-gray-500 dark:text-gray-400 font-medium uppercase text-xs">
                                                                         <tr>
-                                                                            <th className="py-3 px-4 text-left">Hora</th>
-                                                                            <th className="py-3 px-4 text-left">Productos</th>
-                                                                            <th className="py-3 px-4 text-left hidden sm:table-cell">Método</th>
-                                                                            <th className="py-3 px-4 text-right">Total</th>
-                                                                            <th className="py-3 px-4 text-center">Acciones</th>
+                                                                            <th className="py-2 px-4 text-left font-semibold">Hora</th>
+                                                                            <th className="py-2 px-4 text-left font-semibold">Productos</th>
+                                                                            <th className="py-2 px-4 text-left hidden sm:table-cell font-semibold">Método</th>
+                                                                            <th className="py-2 px-4 text-right font-semibold">Total</th>
+                                                                            <th className="py-2 px-4 text-center font-semibold">Acciones</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody className="divide-y divide-gray-100 dark:divide-gray-800 text-gray-700 dark:text-gray-300">
                                                                         {d.sales.map((sale: any) => (
-                                                                            <tr key={sale._id} className="hover:bg-gray-50 dark:hover:bg-zinc-800/30 transition">
+                                                                            <tr key={sale._id} className="hover:bg-gray-50 dark:hover:bg-zinc-900/20 transition">
                                                                                 <td className="py-3 px-4 whitespace-nowrap">{formatLocalTime(sale.createdAt)}</td>
                                                                                 <td className="py-3 px-4 max-w-[150px] truncate" title={sale.products?.map((p:any) => p.product?.name || p.name).join(", ")}>
                                                                                     {sale.products?.length} items
@@ -234,7 +231,7 @@ export default function HistorySales() {
                                                                                 <td className="py-3 px-4 text-center">
                                                                                     <button 
                                                                                         onClick={(e) => { e.stopPropagation(); setSelectedReceiptSale(sale); }}
-                                                                                        className="p-1.5 text-indigo-600 hover:text-white hover:bg-indigo-500 rounded-md transition"
+                                                                                        className="p-1.5 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition"
                                                                                         title="Ver Ticket"
                                                                                     >
                                                                                         <Printer size={16} />
@@ -246,7 +243,7 @@ export default function HistorySales() {
                                                                 </table>
                                                             </div>
                                                         ) : (
-                                                            <p className="text-center text-gray-500 py-4">No hay detalles de ventas disponibles para esta fecha.</p>
+                                                            <p className="text-center text-gray-500 py-4 text-sm">No hay detalles de ventas disponibles para esta fecha.</p>
                                                         )}
                                                     </div>
                                                 </motion.div>

@@ -1,4 +1,4 @@
-import { ScanBarcode, Loader2 } from "lucide-react";
+import { ScanBarcode, Loader2, Package, X } from "lucide-react";
 import { Button } from "../../components/button";
 import { useCustomization } from "../../../../context/CustomizationContext";
 import { useState, useEffect } from "react";
@@ -12,6 +12,7 @@ interface ProductFormProps {
   setShowCategories: React.Dispatch<React.SetStateAction<boolean>>;
   setScannerOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isSubmitting: boolean;
+  onClickClose: () => void;
 }
 
 // 💵 Componente interno para manejar inputs de moneda
@@ -174,13 +175,11 @@ function FormattedPriceInput({
 }
 
 
-export function ProductForm({ form, setForm, suppliers, categories, setShowCategories, onSubmit, setScannerOpen, isSubmitting }: ProductFormProps) {
+export function ProductForm({ form, setForm, suppliers, categories, setShowCategories, onSubmit, setScannerOpen, isSubmitting, onClickClose }: ProductFormProps) {
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setForm((prev: any) => ({ ...prev, [name]: value }));
   };
-
-
 
   return (
     <form
@@ -188,187 +187,224 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
         e.preventDefault();
         if (!isSubmitting) onSubmit();
       }}
-      className="bg-white dark:bg-[#18181b] p-6 rounded-md border border-gray-100 dark:border-[#27272a] space-y-4 flex flex-col transition-colors"
+      className="bg-white dark:bg-[#18181b] p-6 sm:p-8 rounded-md border border-gray-200 dark:border-zinc-800 shadow-2xl flex flex-col transition-all overflow-scroll relative top-0 left-0 w-full h-[90vh]"
     >
-      <h2 className="text-2xl font-semibold text-primary dark:text-primary-300 w-full text-center">
-        {form._id ? "Editar producto" : "Agregar producto"}
-      </h2>
-
-      {/* 1️⃣ Nombre */}
-      <div className="space-y-1">
-        <label htmlFor="name" className="text-sm font-medium text-gray-700 dark:text-gray-200">
-          Nombre
-        </label>
-        <input
-          id="name"
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          placeholder="Ej: Alfajor Jorgito"
-          required
-          className="border border-gray-200 dark:border-[#27272a] rounded-md px-3 py-2 w-full bg-white dark:bg-[#09090b] text-gray-900 dark:text-white"
-        />
-      </div>
-
-      {/* 2️⃣ Categoría */}
-      <div className="space-y-1">
-        <label htmlFor="category" className="text-sm font-medium text-gray-700 dark:text-gray-200">
-          Categoría (opcional)
-        </label>
-
-        {categories.length > 0 ? (
-          <select
-            id="category"
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-            className="border border-gray-200 dark:border-[#27272a] rounded-md px-3 py-2 w-full bg-white dark:bg-[#09090b] text-gray-900 dark:text-white"
-          >
-            <option value="">Seleccionar categoría</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setShowCategories(true)}
-            className="border border-primary text-primary px-3 py-2 rounded-md w-full hover:bg-primary/10 transition"
-          >
-            Configurar categorías
-          </button>
-        )}
-
-      </div>
-
-      {/* 3️⃣ Proveedor */}
-      <div className="space-y-1">
-        <label htmlFor="supplier" className="text-sm font-medium text-gray-700 dark:text-gray-200">
-          Proveedor
-        </label>
-        <select
-          id="supplier"
-          name="supplier"
-          value={form.supplier}
-          onChange={handleChange}
-          className="border border-gray-200 dark:border-[#27272a] rounded-md px-3 py-2 w-full bg-white dark:bg-[#09090b] text-gray-900 dark:text-white"
-        >
-          <option value="">Sin proveedor</option>
-          {suppliers.map((s) => (
-            <option key={s._id} value={s._id}>
-              {s.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* 4️⃣ Fila de precios con nueva validación visual */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-        {/* Stock */}
-        <div className="space-y-1">
-          <label htmlFor="stock" className="text-sm font-medium text-gray-700 dark:text-gray-200">
-            Stock inicial
-          </label>
-          <input
-            type="number"
-            id="stock"
-            name="stock"
-            value={form.stock}
-            onChange={handleChange}
-            placeholder="Ej: 20"
-            className="border border-gray-200 dark:border-[#27272a] rounded-md px-3 py-2 w-full bg-white dark:bg-[#09090b] text-gray-900 dark:text-white"
-          />
-        </div>
-
-        {/* Costo */}
-        <div className="space-y-1">
-          <label htmlFor="cost" className="text-sm font-medium text-gray-700 dark:text-gray-200">
-            Costo
-          </label>
-          <FormattedPriceInput
-            id="cost"
-            name="cost"
-            value={form.cost}
-            onChange={handleChange}
-            placeholder="0"
-          />
-        </div>
-
-        {/* Precio de venta */}
-        <div className="space-y-1">
-          <label htmlFor="price" className="text-sm font-medium text-gray-700 dark:text-gray-200">
-            Precio venta
-          </label>
-          <FormattedPriceInput
-            id="price"
-            name="price"
-            value={form.price}
-            onChange={handleChange}
-            placeholder="0"
-          />
-        </div>
-
-      </div>
-
-      {/* 5️⃣ Código de barras */}
-      <div className="space-y-1">
-        <label htmlFor="barcode" className="text-sm font-medium text-gray-700 dark:text-gray-200">
-          Código de barras
-        </label>
-
-        <div className="flex gap-2">
-          <input
-            id="barcode"
-            name="barcode"
-            value={form.barcode || ""}
-            onChange={handleChange}
-            placeholder="Escanear o escribir código..."
-            className="border border-gray-200 dark:border-[#27272a] rounded-md px-3 py-2 w-full bg-white dark:bg-[#09090b] text-gray-900 dark:text-white"
-          />
-
-          <button
-            type="button"
-            onClick={() => setScannerOpen(true)}  // 👈 LLAMA AL SCANNER
-            className="bg-primary text-white px-3 rounded-md hover:bg-primary-700 transition"
-          >
-            <ScanBarcode />
-          </button>
-        </div>
-      </div>
-
-
-      {/* 6️⃣ Descripción */}
-      <div className="space-y-1">
-        <label htmlFor="description" className="text-sm font-medium text-gray-700 dark:text-gray-200">
-          Descripción (opcional)
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          value={form.description}
-          onChange={handleChange}
-          placeholder="Notas adicionales del producto..."
-          className="border border-gray-200 dark:border-[#27272a] rounded-md px-3 py-2 w-full bg-white dark:bg-[#09090b] text-gray-900 dark:text-white"
-        />
-      </div>
-
-      {/* 7️⃣ Botón submit */}
-      <Button
-        type="submit"
-        disabled={isSubmitting} // 🔒 Deshabilitar
-        className={`w-full text-white mt-4 py-3 rounded-md transition flex items-center justify-center gap-2 ${
-            isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-primary hover:bg-primary-700"
-        }`}
+      {/*Boton para cerrar overlay  */}          
+      <button
+        onClick={onClickClose}
+        className="absolute top-2 right-2  text-gray-500 hover:text-red-500 transition"
       >
-        {isSubmitting && <Loader2 className="animate-spin" size={20} />}
-        {isSubmitting 
-            ? "Guardando..." 
-            : (form._id ? "Guardar cambios" : "Agregar producto")
-        }
-      </Button>
+        <X size={34} />
+      </button>
+      
+      {/* Header */}
+      <div className="flex items-center gap-5 mb-8 border-b border-gray-100 dark:border-zinc-800 pb-6">
+        <div className="p-3.5 bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-md shadow-lg shadow-blue-500/20 transform hover:scale-105 transition-transform duration-300">
+          <Package className="w-7 h-7 text-white" strokeWidth={1.5} />
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+            {form._id ? "Editar Producto" : "Nuevo Producto"}
+          </h2>
+          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">
+            {form._id ? "Modifica los detalles del inventario existente" : "Ingresa la información para el nuevo ítem"}
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-6">
+        {/* 1️⃣ Nombre + Categoría */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1.5">
+                <label htmlFor="name" className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">
+                Nombre del Producto <span className="text-red-500">*</span>
+                </label>
+                <input
+                id="name"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="Ej: Alfajor Jorgito"
+                required
+                className="w-full bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-md px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-medium"
+                />
+            </div>
+
+            <div className="space-y-1.5">
+                <label htmlFor="category" className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">
+                Categoría
+                </label>
+                {categories.length > 0 ? (
+                <div className="relative">
+                    <select
+                        id="category"
+                        name="category"
+                        value={form.category}
+                        onChange={handleChange}
+                        className="w-full appearance-none bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-md px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-medium cursor-pointer"
+                    >
+                        <option value="" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Seleccionar categoría...</option>
+                        {categories.map((cat) => (
+                        <option key={cat} value={cat} className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">
+                            {cat}
+                        </option>
+                        ))}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                </div>
+                ) : (
+                <button
+                    type="button"
+                    onClick={() => setShowCategories(true)}
+                    className="w-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-md px-4 py-3 transition-all font-semibold text-sm flex items-center justify-center gap-2"
+                >
+                    + Crear Categorías
+                </button>
+                )}
+            </div>
+        </div>
+
+        {/* 2️⃣ Proveedor */}
+        <div className="space-y-1.5">
+            <label htmlFor="supplier" className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">
+            Proveedor
+            </label>
+            <div className="relative">
+                <select
+                id="supplier"
+                name="supplier"
+                value={form.supplier}
+                onChange={handleChange}
+                className="w-full appearance-none bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-md px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-medium cursor-pointer"
+                >
+                <option value="" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">
+                  Sin proveedor asignado
+                </option>
+                {suppliers.map((s) => (
+                    <option key={s._id} value={s._id} className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">
+                    {s.name}
+                    </option>
+                ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+            </div>
+        </div>
+
+        {/* 3️⃣ Precios y Stock (Grid de 3) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            {/* Stock */}
+            <div className="space-y-1.5">
+            <label htmlFor="stock" className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">
+                Stock Actual
+            </label>
+            <input
+                type="number"
+                id="stock"
+                name="stock"
+                value={form.stock}
+                onChange={handleChange}
+                placeholder="0"
+                className="w-full bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-md px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-mono font-medium"
+            />
+            </div>
+
+            {/* Costo */}
+            <div className="space-y-1.5">
+            <label htmlFor="cost" className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">
+                Costo Unitario
+            </label>
+            <FormattedPriceInput
+                id="cost"
+                name="cost"
+                value={form.cost}
+                onChange={handleChange}
+                placeholder="0"
+            />
+            </div>
+
+            {/* Precio Venta */}
+            <div className="space-y-1.5">
+            <label htmlFor="price" className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">
+                Precio de Venta
+            </label>
+            <FormattedPriceInput
+                id="price"
+                name="price"
+                value={form.price}
+                onChange={handleChange}
+                placeholder="0"
+            />
+            </div>
+        </div>
+
+        {/* 4️⃣ Código de barras */}
+        <div className="space-y-1.5">
+            <label htmlFor="barcode" className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">
+            Código de Barras
+            </label>
+            <div className="flex gap-2">
+            <div className="relative flex-1">
+                <ScanBarcode className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+                <input
+                    id="barcode"
+                    name="barcode"
+                    value={form.barcode || ""}
+                    onChange={handleChange}
+                    placeholder="Escanear o escribir manualmente..."
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-md text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-mono font-medium"
+                />
+            </div>
+            <button
+                type="button"
+                onClick={() => setScannerOpen(true)}
+                className="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 px-4 rounded-md transition-colors flex items-center justify-center"
+                title="Abrir Escáner"
+            >
+                <ScanBarcode size={22} />
+            </button>
+            </div>
+        </div>
+
+        {/* 5️⃣ Descripción */}
+        <div className="space-y-1.5">
+            <label htmlFor="description" className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">
+            Notas Adicionales
+            </label>
+            <textarea
+            id="description"
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            placeholder="Descripción detallada del producto..."
+            rows={3}
+            className="w-full bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-md px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-medium resize-none"
+            />
+        </div>
+      </div>
+
+      {/* Footer / Botón */}
+      <div className="mt-8 pt-4 border-t border-gray-100 dark:border-zinc-800/50">
+        <Button
+            type="submit"
+            disabled={isSubmitting}
+            className={`w-full py-3.5 rounded-md text-base font-bold shadow-lg shadow-primary/25 transition-all active:scale-[0.98] flex items-center justify-center gap-2 ${
+                isSubmitting 
+                ? "bg-gray-300 dark:bg-zinc-700 cursor-not-allowed text-gray-500 dark:text-gray-400" 
+                : "bg-primary hover:bg-primary-700 text-white"
+            }`}
+        >
+            {isSubmitting && <Loader2 className="animate-spin" size={20} />}
+            {isSubmitting 
+                ? "Procesando..." 
+                : (form._id ? "Guardar Cambios" : "Crear Producto")
+            }
+        </Button>
+      </div>
     </form>
   );
 }

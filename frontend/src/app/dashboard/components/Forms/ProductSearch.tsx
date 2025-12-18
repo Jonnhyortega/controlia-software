@@ -67,9 +67,9 @@ export default function ProductSearch({ products, onSelect }: ProductSearchProps
             onFocus={() => setIsOpen(true)}
             className="
               w-full
-              bg-white border border-gray-300 rounded-md px-4 py-3 pr-10
-              focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent
-              shadow-sm text-gray-800 placeholder-gray-400
+              bg-white dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-700/50 rounded-xl px-4 py-3.5 pr-10
+              focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
+              shadow-sm text-gray-900 dark:text-white placeholder-gray-400 font-medium transition-all
             "
           />
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -80,7 +80,7 @@ export default function ProductSearch({ products, onSelect }: ProductSearchProps
       </p>
 
       {isOpen && query.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-md shadow-xl border border-gray-100 overflow-hidden max-h-60 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#18181b] rounded-xl shadow-2xl border border-gray-100 dark:border-zinc-800 overflow-hidden max-h-60 overflow-y-auto z-[150]">
           {filteredProducts.length > 0 ? (
             <ul>
               {filteredProducts.map((product) => (

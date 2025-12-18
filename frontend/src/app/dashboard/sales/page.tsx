@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Receipt, ChartBar, History as HistoryIcon, List } from "lucide-react";
+import { Plus, Receipt, ChartBar, History as HistoryIcon, List, ShoppingCart } from "lucide-react";
 import { CollapsibleSection } from "../../../components/ui/CollapsibleSection";
 import HistorySales from "./historySales";
 import { useSales } from "../hooks/useSales";
@@ -63,7 +63,19 @@ export default function VentasPage() {
 
   return (
     <section className="p-4 sm:p-6 max-w-7xl mx-auto space-y-4">
-      
+      <div className="flex items-center gap-4 mb-8">
+        <div className="p-3 bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-2xl shadow-lg shadow-blue-500/20 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+           <ShoppingCart className="w-8 h-8 text-white" strokeWidth={1.5} />
+        </div>
+        <div className="flex flex-col">
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+            Ventas
+          </h1>
+          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+            Control general y métricas
+          </span>
+        </div>
+      </div>
       {/* 📊 Estadísticas del Día */}
       {currentSales.length > 0 && (
          <CollapsibleSection

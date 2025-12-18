@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "../../context/ToastContext";
-import { ReceiptText } from "lucide-react";
+
 
 import { useSales } from "./hooks/useSales";
 import { useClock } from "./hooks/useClock";
@@ -25,7 +25,8 @@ import Loading from "../../components/loading";
 import { api } from "../../utils/api";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { X, Gift, Sparkles, ChevronDown, ChevronUp, BarChart3, TrendingDown } from "lucide-react";
+import { X, Gift, Sparkles, TrendingDown, BarChart3, ReceiptText } from "lucide-react";
+import { CollapsibleSection } from "../../components/ui/CollapsibleSection";
 
 
 export default function DashboardPage() {
@@ -40,8 +41,6 @@ export default function DashboardPage() {
   const [showSalesForm, setShowSalesForm] = useState(false);
   const [showCloseCashForm, setShowCloseCashForm] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
-  const [showStats, setShowStats] = useState(false);
-  const [showExpenses, setShowExpenses] = useState(false);
 
   // 🎁 Welcome Modal Logic
   const searchParams = useSearchParams();
@@ -190,32 +189,47 @@ export default function DashboardPage() {
          }}
       />
 
-      {/* 📉 Gastos Desplegables */}
-      {data?.extraExpenses.length > 0 && (<div className="mt-6 px-1 border-gray-100 dark:border-zinc-900 ">
-         <button
-            onClick={() => setShowExpenses(!showExpenses)}
-            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-rose-500 transition-colors bg-muted/40 hover:bg-muted px-4 py-2 rounded-md border border-border mb-2"
-         >
-            <TrendingDown size={16} />
-            {showExpenses ? "Ocultar gastos y pagos" : "Ver gastos y pagos del día"}
-            {showExpenses ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-         </button>
+      <motion.div className="mt-6">
+        {sales.length > 0 ? 
+        (
+        <div className="border-gray-100 dark:border-zinc-900">
+          {/* Tabla de Ventas */}
+            <CollapsibleSection title="Transacciones Recientes" icon={ReceiptText} defaultOpen={true}>
+              <SalesTable
+                sales={sales}
+                expanded={expandedSale}
+                onExpand={(id: any) => setExpandedSale(expandedSale === id ? null : id)}
+                onRevert={(saleId: any) => handleRevert(saleId)}
+                simpleMode={true}
+              />
+            </CollapsibleSection>
+          {/* 📊 Estadísticas Desplegables */}
+            <CollapsibleSection title="Estadísticas Rápidas" icon={BarChart3} defaultOpen={false}>
+                <SimpleStats sales={sales} />
+            </CollapsibleSection>           
+        </div>
+        ) : 
+        (
+          <div className="flex bg-white dark:bg-zinc-900 flex-col items-center justify-center py-14 text-gray-400 border border-gray-200 dark:border-zinc-800 rounded-md">
+            <ReceiptText className="w-12 h-12 mb-3 opacity-60" />
+            <p className="text-center text-gray-500 dark:text-gray-400 text-lg">
+              Todavía no registraste ventas.
+              <br />
+              <span className="text-gray-400 dark:text-gray-500 font-semibold text-sm">
+                Cuando cargues la primera, aparecerá aquí.
+              </span>
+            </p>
+          </div>
+        )}
+      </motion.div>
 
-         <AnimatePresence>
-            {showExpenses && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="pt-2">
-                  <ExpensesTable expenses={data?.extraExpenses || []} />
-                </div>
-              </motion.div>
-            )}
-         </AnimatePresence>
-      </div>)}
+
+      {/* 📉 Gastos Desplegables */}
+      {data?.extraExpenses.length > 0 && (
+         <CollapsibleSection title="Gastos y Pagos del Día" icon={TrendingDown} defaultOpen={false}>
+             <ExpensesTable expenses={data?.extraExpenses || []} />
+         </CollapsibleSection>
+      )}
 
 
       <AnimatePresence>
@@ -333,60 +347,6 @@ export default function DashboardPage() {
       <div className="mt-8 border-gray-100 dark:border-zinc-900">
         {data?.status === "cerrada" && data && <ClosedCashSummary data={data} />}
       </div>
-
-      <motion.div className="mt-6">
-        {sales.length > 0 ? 
-        (
-        <div className="border-gray-100 dark:border-zinc-900">
-          <SalesTable
-            sales={sales}
-            expanded={expandedSale}
-            onExpand={(id: any) => setExpandedSale(expandedSale === id ? null : id)}
-            onRevert={(saleId: any) => handleRevert(saleId)}
-            simpleMode={true}
-          />
-
-          {/* 📊 Estadísticas Desplegables */}
-          <div className="mt-6 mb-8">
-             <button
-                onClick={() => setShowStats(!showStats)}
-                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors bg-muted/40 hover:bg-muted px-4 py-2 rounded-md border border-border"
-             >
-                <BarChart3 size={16} />
-                {showStats ? "Ocultar gráficos y estadísticas" : "Ver gráficos generales de hoy"}
-                {showStats ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-             </button>
-
-             <AnimatePresence>
-                {showStats && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="pt-4">
-                      <SimpleStats sales={sales} />
-                    </div>
-                  </motion.div>
-                )}
-             </AnimatePresence>
-          </div>
-        </div>
-        ) : 
-        (
-          <div className="flex bg-red-700 flex-col items-center justify-center py-14 text-gray-400 border-gray-100 dark:border-zinc-600">
-            <ReceiptText className="w-12 h-12 mb-3 opacity-60" />
-            <p className="text-center text-gray-400 text-lg">
-              Todavía no registraste ventas.
-              <br />
-              <span className="text-gray-300 font-semibold">
-                Cuando cargues la primera, aparecerá aquí.
-              </span>
-            </p>
-          </div>
-        )}
-      </motion.div>
 
     </>
 

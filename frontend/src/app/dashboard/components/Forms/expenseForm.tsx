@@ -104,19 +104,22 @@ export default function ExpenseForm({
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className="w-full max-w-lg rounded-md shadow-xl overflow-hidden border border-gray-100 dark:border-border"
+      className="w-full max-w-lg rounded-xl shadow-2xl overflow-hidden border border-gray-200 dark:border-zinc-800 bg-white dark:bg-[#18181b] transition-all"
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-slate-50 to-white dark:from-background dark:to-background px-6 py-4 border-b border-gray-100 dark:border-border flex justify-between items-center">
+      <div className="flex items-center gap-5 p-6 border-b border-gray-100 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 relative">
+        <div className="p-3.5 bg-gradient-to-br from-rose-500 to-red-600 dark:from-rose-600 dark:to-red-700 rounded-2xl shadow-lg shadow-rose-500/20 transform hover:scale-105 transition-transform duration-300">
+           <DollarSign className="w-7 h-7 text-white" strokeWidth={1.5} />
+        </div>
         <div>
-           <h3 className="text-xl font-bold text-gray-800 dark:text-white">Registrar Movimiento</h3>
-           <p className="text-sm text-gray-500 dark:text-gray-400">Gasto diario o pago a proveedor</p>
+           <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Registrar Salida</h3>
+           <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Gasto o pago a proveedor</p>
         </div>
         <button
           onClick={onBack}
-          className="p-2 bg-white dark:bg-muted/10 hover:bg-gray-100 dark:hover:bg-muted/20 rounded-md transition shadow-sm border border-gray-200 dark:border-border"
+          className="absolute top-5 right-5 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
         >
-          <X size={20} className="text-gray-600 dark:text-gray-300" />
+          <X size={20} />
         </button>
       </div>
 
@@ -124,7 +127,7 @@ export default function ExpenseForm({
         
         {/* Type Selector */}
         <div className="flex gap-4">
-          <label className={`flex-1 cursor-pointer border-2 rounded-md p-3 flex flex-col items-center gap-2 transition-all ${type === "general" ? "border-rose-500 bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-400" : "border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 text-gray-500 dark:text-gray-400"}`}>
+          <label className={`flex-1 cursor-pointer border rounded-lg p-4 flex flex-col items-center gap-3 transition-all ${type === "general" ? "border-rose-500 bg-rose-50 dark:bg-rose-900/10 text-rose-700 dark:text-rose-400 shadow-sm" : "border-gray-200 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400"}`}>
             <input 
               type="radio" 
               name="type" 
@@ -133,11 +136,11 @@ export default function ExpenseForm({
               onChange={() => setType("general")} 
               className="hidden" 
             />
-            <FileText size={24} />
-            <span className="font-medium text-sm">Gasto General</span>
+            <FileText size={20} />
+            <span className="font-semibold text-sm">Gasto General</span>
           </label>
 
-          <label className={`flex-1 cursor-pointer border-2 rounded-md p-3 flex flex-col items-center gap-2 transition-all ${type === "supplier" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400" : "border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 text-gray-500 dark:text-gray-400"}`}>
+          <label className={`flex-1 cursor-pointer border rounded-lg p-4 flex flex-col items-center gap-3 transition-all ${type === "supplier" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/10 text-blue-700 dark:text-blue-400 shadow-sm" : "border-gray-200 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400"}`}>
             <input 
               type="radio" 
               name="type" 
@@ -146,8 +149,8 @@ export default function ExpenseForm({
               onChange={() => setType("supplier")} 
               className="hidden" 
             />
-            <User size={24} />
-            <span className="font-medium text-sm">Pago Proveedor</span>
+            <User size={20} />
+            <span className="font-semibold text-sm">Pago a Proveedor</span>
           </label>
         </div>
 
@@ -164,34 +167,40 @@ export default function ExpenseForm({
 
         {/* Dynamic Fields */}
         {type === "supplier" ? (
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-1">
                 Proveedor
               </label>
-              <select
-                value={selectedSupplier}
-                onChange={(e) => setSelectedSupplier(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-200 dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-700 rounded-md focus:ring-2 focus:ring-primary-500 outline-none transition text-gray-900 dark:text-white"
-              >
-                <option value="">Seleccionar proveedor...</option>
-                {suppliers.map((s) => (
-                  <option key={s._id} value={s._id}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                    value={selectedSupplier}
+                    onChange={(e) => setSelectedSupplier(e.target.value)}
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-gray-900 dark:text-white font-medium appearance-none"
+                    style={{ backgroundImage: "none" }}
+                >
+                    <option value="" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Seleccionar proveedor...</option>
+                    {suppliers.map((s) => (
+                    <option key={s._id} value={s._id} className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">
+                        {s.name}
+                    </option>
+                    ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+              </div>
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-1">
-                Detalle / Nota (Opcional)
+                Detalle / Nota
               </label>
               <input
                 type="text"
                 placeholder="Ej. Pago parcial, Factura A..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-200 dark:bg-muted/10 border border-gray-200 dark:border-gray-700 rounded-md focus:ring-2 focus:ring-primary-500 outline-none transition text-gray-900 dark:text-white"
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-gray-900 dark:text-white placeholder:text-gray-400 font-medium"
               />
             </div>
           </div>
@@ -205,7 +214,7 @@ export default function ExpenseForm({
               placeholder="Ej. Limpieza, Alquiler, Retiro..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-200 dark:bg-muted/10 border border-gray-200 dark:border-gray-700 rounded-md focus:ring-2 focus:ring-primary-500 outline-none transition text-gray-900 dark:text-white"
+              className="w-full px-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-gray-900 dark:text-white placeholder:text-gray-400 font-medium"
             />
           </div>
         )}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Search, MapPin, Phone, Mail, User, Trash2, Edit2, ExternalLink, History as HistoryIcon, X } from "lucide-react";
+import { Plus, Search, MapPin, Phone, Mail, User, Trash2, Edit2, ExternalLink, History as HistoryIcon, X, Settings2, Users } from "lucide-react";
 import { getClients, createClient, updateClient, deleteClient } from "../../../utils/api";
 import { Client } from "../../../types/api";
 import { AnimatePresence, motion } from "framer-motion";
@@ -9,11 +9,20 @@ import ClientForm from "./components/ClientForm";
 import PaymentHistorySection from "../components/Transactions/PaymentHistorySection";
 import Overlay from "../components/overlay";
 import { useToast } from "../../../context/ToastContext";
+import { CollapsibleSection } from "../../../components/ui/CollapsibleSection";
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isListOpen, setIsListOpen] = useState(false);
+  
+  // 🔹 Auto-abrir lista al buscar
+  useEffect(() => {
+    if (searchTerm.trim().length > 0) {
+      setIsListOpen(true);
+    }
+  }, [searchTerm]);
   
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -80,40 +89,54 @@ export default function ClientsPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto p-4 sm:p-6">
       
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold dark:text-white flex items-center gap-2">
-            <User className="text-primary" /> Clientes
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Administra tu base de datos de clientes</p>
+      {/* 🔹 HEADER: Título Cool */}
+      <div className="flex items-center gap-4 mb-2">
+        <div className="p-3 bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-2xl shadow-lg shadow-blue-500/20 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+           <User className="w-8 h-8 text-white" strokeWidth={1.5} />
         </div>
-        <button
-          onClick={() => { setEditingClient(undefined); setIsModalOpen(true); }}
-          className="bg-primary hover:bg-primary-600 text-white px-5 py-2.5 rounded-md font-semibold shadow-lg shadow-primary/25 flex items-center gap-2 transition"
-        >
-          <Plus size={20} />
-          Nuevo Cliente
-        </button>
+        <div className="flex flex-col">
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+            Clientes con cuenta corriente
+          </h1>
+          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+            Administra tu base de datos de clientes
+          </span>
+        </div>
       </div>
 
-      {/* Search */}
-      <div className="bg-white dark:bg-zinc-900 p-4 rounded-md shadow-sm border border-gray-100 dark:border-gray-800">
-        <div className="relative">
-          <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-          <input
-            type="text"
-            placeholder="Buscar por nombre, email o dirección..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-gray-200 dark:bg-zinc-800 pl-10 pr-4 py-3 rounded-md border-none focus:ring-2 focus:ring-primary/20 outline-none transition dark:text-white"
-          />
-        </div>
-      </div>
+       {/* Acciones y Búsqueda (Siempre Visible) */}
+          <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center bg-white dark:bg-background p-4 rounded-md shadow-sm border border-gray-100 dark:border-gray-800 mb-6">
+              {/* Search */}
+              <div className="relative flex-1">
+                <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                <input
+                  type="text"
+                  placeholder="Buscar por nombre, email o dirección..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-gray-100 dark:bg-background pl-10 pr-4 py-2.5 rounded-md border-transparent dark:border-zinc-700 dark:text-white focus:outline-none focus:bg-white dark:focus:bg-zinc-900 focus:ring-2 focus:ring-primary/20 transition-all font-medium text-sm border border-gray-200"
+                />
+              </div>
+
+               {/* Botón Nuevo */}
+              <button
+                onClick={() => { setEditingClient(undefined); setIsModalOpen(true); }}
+                className="bg-primary hover:bg-primary-700 text-white px-5 py-2.5 rounded-md font-bold shadow-md shadow-primary/25 flex items-center justify-center gap-2 transition"
+              >
+                <Plus size={20} />
+                <span>Nuevo Cliente</span>
+              </button>
+          </div>
 
       {/* Grid */}
+      <CollapsibleSection 
+        title="Listado de Clientes" 
+        icon={Users} 
+        open={isListOpen}
+        onToggle={setIsListOpen}
+      >
       {loading ? (
         <div className="text-center py-12 text-gray-500">Cargando clientes...</div>
       ) : filteredClients.length === 0 ? (
@@ -131,7 +154,7 @@ export default function ClientsPage() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="group bg-white dark:bg-zinc-900 rounded-md border border-gray-100 dark:border-gray-800 p-5 shadow-sm hover:shadow-md transition-all"
+                className="group bg-white dark:bg-zinc-900 rounded-md border border-gray-100 dark:border-zinc-700/50 p-5 shadow-sm hover:shadow-md transition-all"
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center gap-3">
@@ -232,6 +255,7 @@ export default function ClientsPage() {
           </AnimatePresence>
         </div>
       )}
+      </CollapsibleSection>
 
       {/* MODAL */}
       <AnimatePresence>

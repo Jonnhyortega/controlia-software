@@ -324,8 +324,8 @@ export default function EmployeesPage() {
               onChange={(e) => setForm({ ...form, role: e.target.value })}
               className="w-full p-2 rounded bg-gray-200 dark:bg-[#121212] border border-gray-200 dark:border-[#1f1f1f] text-gray-900 dark:text-gray-200 outline-none focus:ring-2 focus:ring-primary/50"
             >
-              <option value="empleado">Empleado</option>
-              <option value="admin">Admin</option>
+              <option value="empleado" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Empleado</option>
+              <option value="admin" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Admin</option>
             </select>
 
             <div className="flex justify-end gap-3">

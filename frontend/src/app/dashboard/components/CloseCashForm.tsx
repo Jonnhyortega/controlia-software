@@ -220,10 +220,10 @@ export default function CloseCashForm({
                   }
                   className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] dark:text-white p-2 rounded w-1/3"
                 >
-                  <option value="efectivo">Efectivo</option>
-                  <option value="transferencia">Transferencia</option>
-                  <option value="mercado pago">Mercado Pago</option>
-                  <option value="otro">Otro</option>
+                  <option value="efectivo" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Efectivo</option>
+                  <option value="transferencia" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Transferencia</option>
+                  <option value="mercado pago" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Mercado Pago</option>
+                  <option value="otro" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Otro</option>
                 </select>
 
                 <div className="w-1/3">

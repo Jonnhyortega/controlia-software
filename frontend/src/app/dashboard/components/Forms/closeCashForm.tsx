@@ -53,22 +53,27 @@ export default function CloseCashForm({
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-xl rounded-md p-6 max-w-md mx-auto relative overflow-hidden"
+      className="bg-white dark:bg-[#18181b] border border-gray-200 dark:border-zinc-800 shadow-2xl rounded-xl p-0 max-w-md mx-auto relative overflow-hidden transition-all"
     >
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-           <Lock className="text-gray-700 dark:text-gray-400" size={24} />
-           Cerrar caja del día
-        </h3>
+      <div className="flex items-center gap-5 p-6 border-b border-gray-100 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50">
+        <div className="p-3.5 bg-gradient-to-br from-amber-500 to-orange-600 dark:from-amber-600 dark:to-orange-700 rounded-2xl shadow-lg shadow-amber-500/20 transform hover:scale-105 transition-transform duration-300">
+           <Lock className="w-7 h-7 text-white" strokeWidth={1.5} />
+        </div>
+        <div>
+           <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Cerrar Caja</h3>
+           <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Finalizar jornada laboral</p>
+        </div>
 
         <button
           onClick={onBack}
-          className="p-2 border rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-700 dark:text-white transition"
+          className="absolute top-5 right-5 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
         >
           <X size={20} />
         </button>
       </div>
+
+      <div className="p-6">
 
       <form onSubmit={handleSubmit} className="space-y-6">
         
@@ -90,6 +95,7 @@ export default function CloseCashForm({
           {loading ? "Cerrando..." : "Confirmar Cierre"}
         </button>
       </form>
+      </div>
     </motion.div>
   );
 }

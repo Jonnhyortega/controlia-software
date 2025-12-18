@@ -119,11 +119,11 @@ export default function BarcodeScanner({
   // UI
   // -----------------------------------------------------
   return (
-    <div className="bg-black p-4 rounded-md border border-gray-800 text-white w-full">
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="text-lg font-semibold">Escanear código</h2>
+    <div className="bg-[#18181b] p-6 rounded-xl border border-zinc-800 text-white w-full shadow-2xl">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-bold tracking-tight">Escanear código</h2>
         <button
-          className="px-2 py-1 bg-gray-700 rounded"
+          className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors font-medium"
           onClick={() => {
             stopScanner();
             onClose();
@@ -134,15 +134,15 @@ export default function BarcodeScanner({
       </div>
 
       {/* Select camera */}
-      <div className="mb-3">
+      <div className="mb-4">
         <select
-          className="bg-gray-800 border border-gray-600 rounded px-2 py-1 w-full"
+          className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2.5 w-full focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-sm transition-all appearance-none cursor-pointer"
           disabled={!devices.length}
           value={selectedDeviceId || ""}
           onChange={(e) => setSelectedDeviceId(e.target.value)}
         >
           {devices.map((d, i) => (
-            <option key={d.deviceId} value={d.deviceId}>
+            <option key={d.deviceId} value={d.deviceId} className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">
               {d.label || `Cámara ${i + 1}`}
             </option>
           ))}
@@ -150,37 +150,40 @@ export default function BarcodeScanner({
       </div>
 
       {/* Video */}
-      <div className="border border-gray-700 rounded overflow-hidden mb-3">
+      <div className="border border-zinc-800 bg-black rounded-lg overflow-hidden mb-6 relative shadow-inner">
         <video
           ref={videoRef}
-          className="w-full h-56 object-cover bg-black"
+          className="w-full h-64 object-cover"
           muted
           autoPlay
           playsInline
         />
+        {scanning && (
+            <div className="absolute inset-0 border-2 border-primary/50 pointer-events-none animate-pulse"></div>
+        )}
       </div>
 
       {/* Buttons */}
-      <div className="flex gap-2 justify-between">
+      <div className="flex gap-4 justify-between">
         <button
           onClick={startScanner}
-          className="flex-1 py-2 bg-primary rounded text-white"
+          className="flex-1 py-3 bg-primary hover:bg-primary-600 rounded-lg text-white font-bold transition-all shadow-lg shadow-primary/20 active:scale-95"
         >
-          Iniciar
+          Iniciar Cámara
         </button>
 
         <button
           onClick={stopScanner}
-          className="flex-1 py-2 bg-gray-700 rounded"
+          className="flex-1 py-3 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg font-bold transition-all active:scale-95"
         >
           Detener
         </button>
       </div>
 
-      {error && <p className="text-red-400 text-sm mt-3">{error}</p>}
+      {error && <div className="p-3 mt-4 bg-red-900/20 border border-red-900/50 rounded-lg text-red-400 text-sm">{error}</div>}
 
-      <p className="text-xs text-gray-400 mt-3">
-        Consejo: si usás una pistola lectora USB, simplemente apuntá y dispará — detectará el código automáticamente.
+      <p className="text-xs text-zinc-500 mt-6 text-center">
+        Consejo: si usás una pistola lectora USB, simplemente apuntá y dispará — detectará el código automáticamente sin usar la cámara.
       </p>
     </div>
   );

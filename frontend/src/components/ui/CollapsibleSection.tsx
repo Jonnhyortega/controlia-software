@@ -10,6 +10,8 @@ interface CollapsibleSectionProps {
   children: React.ReactNode;
   icon?: LucideIcon;
   defaultOpen?: boolean;
+  open?: boolean;
+  onToggle?: (isOpen: boolean) => void;
   className?: string;
 }
 
@@ -18,29 +20,41 @@ export function CollapsibleSection({
   children,
   icon: Icon,
   defaultOpen = false,
+  open,
+  onToggle,
   className,
 }: CollapsibleSectionProps) {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+  
+  const isControlled = open !== undefined;
+  const isOpen = isControlled ? open : internalOpen;
+
+  const handleToggle = () => {
+    if (isControlled) {
+      onToggle?.(!isOpen);
+    } else {
+      setInternalOpen(!isOpen);
+    }
+  };
 
   return (
     <div
       className={cn(
-        "bg-white dark:bg-[#18181b] border border-gray-200 dark:border-zinc-800 rounded-md overflow-hidden shadow-sm transition-all mb-4",
+        "bg-white dark:bg-background border border-gray-200 dark:border-border rounded-md overflow-hidden shadow-sm transition-all mb-4",
         className
       )}
     >
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 bg-gray-50/50 dark:bg-zinc-900/30 hover:bg-gray-100 dark:hover:bg-zinc-800/50 transition-colors"
+        onClick={handleToggle}
+        className="w-full flex items-center justify-between px-5 py-3 bg-gray-200 hover:bg-gray-100 dark:bg-background dark:hover:bg-muted/10 transition-colors font-semibold text-gray-800 dark:text-gray-200"
       >
-        <div className="flex items-center gap-3 font-semibold text-gray-900 dark:text-gray-100 text-lg">
-          {Icon && <Icon size={20} className="text-primary" />}
-          {title}
+        <div className="flex items-center gap-2">
+          {Icon && <Icon className="w-5 h-5 text-primary" />}
+          <span>{title}</span>
         </div>
         <ChevronDown
-          size={20}
           className={cn(
-            "text-gray-500 transition-transform duration-300",
+            "w-5 h-5 text-gray-400 transition-transform duration-300",
             isOpen ? "rotate-180" : ""
           )}
         />

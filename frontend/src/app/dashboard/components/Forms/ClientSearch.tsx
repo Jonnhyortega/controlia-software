@@ -64,7 +64,7 @@ export default function ClientSearch({ clients, selectedClientId, onSelect }: Cl
             </div>
             <button 
                 onClick={() => handleSelect(null)}
-                className="p-1 hover:bg-primary/10 rounded-full transition"
+                className="p-1 hover:bg-primary/10 rounded-md transition"
                 title="Quitar cliente"
             >
                 <span className="text-xs font-bold px-2">Cambiar</span>
@@ -81,15 +81,15 @@ export default function ClientSearch({ clients, selectedClientId, onSelect }: Cl
                     setIsOpen(true);
                 }}
                 onFocus={() => setIsOpen(true)}
-                className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-zinc-900 focus:ring-2 focus:ring-primary/20 outline-none dark:text-white transition-all"
+                className="w-full pl-10 pr-4 py-3 rounded-md border border-gray-200 dark:border-zinc-700/50 bg-white dark:bg-zinc-800/50 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-gray-900 dark:text-white transition-all font-medium placeholder-gray-400"
             />
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
         </div>
       )}
 
       {/* DROPDOWN RESULTADOS */}
       {isOpen && !selectedClient && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1a1a1a] rounded-md shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden max-h-60 overflow-y-auto">
+        <div className="group absolute top-full left-0 right-0 mt-2 bg-white dark:bg-green-700 rounded-md shadow-2xl border border-gray-100 dark:border-zinc-800 overflow-hidden max-h-60 overflow-y-auto z-50">
           {filteredClients.length > 0 ? (
             <ul>
               {filteredClients.map((client) => (
@@ -103,7 +103,7 @@ export default function ClientSearch({ clients, selectedClientId, onSelect }: Cl
                   "
                 >
                   <div className="flex items-center gap-3">
-                    <div className="bg-gray-100 dark:bg-zinc-800 p-2 rounded-full text-gray-500">
+                    <div className="group-hover:bg-gray-500 group-hover:text-white dark:bg-zinc-800 p-2 rounded-md text-gray-500">
                       <User className="w-4 h-4" />
                     </div>
                     <div>

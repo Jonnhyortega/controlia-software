@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { UserCog, Users, ShieldCheck, Palette, Building2, CreditCard } from "lucide-react";
+import { UserCog, Users, ShieldCheck, Palette, Building2, CreditCard, Settings } from "lucide-react";
 import { useAuth } from "../../../context/authContext";
+import { CollapsibleSection } from "../../../components/ui/CollapsibleSection";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -44,37 +45,47 @@ export default function SettingsPage() {
   const cards = allCards.filter(c => !c.adminOnly || isAdmin);
 
   return (
-    <section className="p-6">
-      <h1 className="text-2xl font-semibold text-primary mb-6">
-        Configuración del sistema
-      </h1>
-
-      <p className="text-gray-500 dark:text-gray-400 mb-10">
-        Administrá tu cuenta, tus empleados y las preferencias de Controlia.
-      </p>
-
-      {/* Grid de tarjetas */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {cards.map((card, i) => (
-          <button
-            key={i}
-            onClick={card.action}
-            className="group bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] p-6 rounded-md 
-                      shadow-md hover:shadow-[0_10px_30px_rgba(37,99,235,0.08)] hover:border-primary/40 
-                       transition-all text-left"
-          >
-            <div className="mb-3">{card.icon}</div>
-
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-300 transition">
-              {card.title}
-            </h3>
-
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              {card.desc}
-            </p>
-          </button>
-        ))}
+    <section className="p-4 sm:p-6 max-w-7xl mx-auto space-y-5">
+      
+      {/* 🔹 HEADER: Título Cool */}
+      <div className="flex items-center gap-4 mb-2">
+        <div className="p-3 bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-2xl shadow-lg shadow-blue-500/20 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+           <Settings className="w-8 h-8 text-white" strokeWidth={1.5} />
+        </div>
+        <div className="flex flex-col">
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+             Configuración
+          </h1>
+          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+             Administrá tu cuenta y preferencias
+          </span>
+        </div>
       </div>
+
+      <CollapsibleSection title="Panel de Configuración" icon={UserCog} defaultOpen={true}>
+        {/* Grid de tarjetas */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 p-1">
+            {cards.map((card, i) => (
+            <button
+                key={i}
+                onClick={card.action}
+                className="group bg-white dark:bg-[#0f0f0f] border border-gray-200 dark:border-[#1f1f1f] p-6 rounded-md 
+                        shadow-sm hover:shadow-xl hover:shadow-primary/5 hover:border-primary/40 
+                        transition-all text-left"
+            >
+                <div className="mb-3">{card.icon}</div>
+
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-300 transition">
+                {card.title}
+                </h3>
+
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                {card.desc}
+                </p>
+            </button>
+            ))}
+        </div>
+      </CollapsibleSection>
     </section>
   );
 }

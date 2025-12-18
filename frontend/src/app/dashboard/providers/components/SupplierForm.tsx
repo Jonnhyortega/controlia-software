@@ -21,27 +21,27 @@ export function SupplierForm({
   onClose,
 }: SupplierFormProps) {
   return (
-    <div className="dark:bg-background bg-white rounded-md shadow-xl border border-gray-100 dark:border-border p-8 max-w-2xl mx-auto">
-      <div className="flex justify-between items-start mb-8 pb-4 border-b border-gray-100 dark:border-border">
-        <div className="flex items-center gap-3">
-            <div className="bg-primary/10 p-3 rounded-md text-primary">
-            <Building2 size={32} />
-            </div>
-            <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {editingId ? "Editar Proveedor" : "Nuevo Proveedor"}
-            </h2>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">
-                {editingId ? "Actualiza los datos del proveedor seleccionado." : "Registra un nuevo proveedor en el sistema."}
-            </p>
-            </div>
+    <div className="dark:bg-[#18181b] bg-white rounded-xl shadow-2xl border border-gray-200 dark:border-zinc-800 p-6 sm:p-8 max-w-2xl mx-auto relative overflow-hidden transition-all">
+      
+      {/* Header */}
+      <div className="flex items-center gap-5 mb-8 border-b border-gray-100 dark:border-zinc-800 pb-6 relative">
+        <div className="p-3.5 bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-2xl shadow-lg shadow-blue-500/20 transform hover:scale-105 transition-transform duration-300">
+          <Building2 className="w-7 h-7 text-white" strokeWidth={1.5} />
+        </div>
+        <div className="flex-1">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+            {editingId ? "Editar Proveedor" : "Nuevo Proveedor"}
+          </h2>
+          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">
+            {editingId ? "Actualiza los datos de la empresa seleccionada" : "Registra un nuevo proveedor o distribuidor"}
+          </p>
         </div>
         {onClose && (
             <button 
                 onClick={onClose} 
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                className="absolute top-0 right-0 text-gray-400 hover:text-gray-600 dark:hover:text-red-500 transition-colors p-2 hover:text-red  rounded-full"
             >
-                <X size={24} />
+                <X size={20} />
             </button>
         )}
       </div>
@@ -49,87 +49,72 @@ export function SupplierForm({
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Nombre */}
-          <div className="col-span-2">
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Nombre de la Empresa / Proveedor</label>
-            <div className="relative">
-                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <div className="col-span-2 space-y-1.5">
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">Nombre de la Empresa <span className="text-red-500">*</span></label>
+            <div className="relative group">
+                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors w-5 h-5 pointer-events-none" />
                 <input
                     name="name"
                     value={form.name}
                     onChange={handleChange}
                     placeholder="Ej: Distribuidora S.A."
                     required
-                    className="w-full pl-14 pr-4 py-3 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-medium"
                 />
             </div>
           </div>
 
           {/* Teléfono */}
-          <div>
-             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Teléfono</label>
-             <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <div className="space-y-1.5">
+             <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">Teléfono</label>
+             <div className="relative group">
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors w-5 h-5 pointer-events-none" />
                 <input
                     name="phone"
                     value={form.phone}
                     onChange={handleChange}
                     placeholder="Ej: 11 1234 5678"
-                    className="w-full pl-14 pr-4 py-3 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-medium"
                 />
              </div>
           </div>
 
           {/* Email */}
-          <div>
-             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Correo Electrónico</label>
-             <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <div className="space-y-1.5">
+             <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">Correo Electrónico</label>
+             <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors w-5 h-5 pointer-events-none" />
                 <input
                     name="email"
                     type="email"
                     value={form.email}
                     onChange={handleChange}
                     placeholder="contacto@empresa.com"
-                    className="w-full pl-14 pr-4 py-3 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all"
-                    style={{ paddingLeft: '18%' }}
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-medium"
                 />
              </div>
           </div>
 
           {/* Dirección */}
-          <div className="col-span-2">
-             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Dirección / Ubicación</label>
-             <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <div className="col-span-2 space-y-1.5">
+             <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">Dirección / Ubicación</label>
+             <div className="relative group">
+                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors w-5 h-5 pointer-events-none" />
                 <input
                     name="address"
                     value={form.address}
                     onChange={handleChange}
                     placeholder="Ej: Av. Corrientes 1234"
-                    className="w-full pl-14 pr-4 py-3 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-medium"
                 />
              </div>
           </div>
-
-          {/* Deuda */}
-          {/* <div className="col-span-2 md:col-span-1">
-             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Saldo / Deuda Inicial</label>
-             <FormattedPriceInput
-                name="debt"
-                value={form.debt}
-                onChange={handleChange}
-                placeholder="0"
-                disabled={false}
-             />
-             <p className="text-xs text-gray-400 mt-1">Saldo pendiente de pago a este proveedor.</p>
-          </div> */}
-
         </div>
 
-        <div className="pt-6 border-t border-gray-100 dark:border-border flex justify-end">
+        <div className="pt-8 border-t border-gray-100 dark:border-zinc-800/50 flex justify-end">
             <Button
               type="submit"
-              className="w-full md:w-auto bg-primary hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-md shadow-lg hover:shadow-primary/30 transition-all transform active:scale-95"
+              className="w-full md:w-auto bg-primary hover:bg-primary-700 text-white font-bold py-3.5 px-8 rounded-lg shadow-lg shadow-primary/25 transition-all transform active:scale-95 flex items-center justify-center"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Guardando..." : (editingId ? "Guardar Cambios" : "Registrar Proveedor")}
