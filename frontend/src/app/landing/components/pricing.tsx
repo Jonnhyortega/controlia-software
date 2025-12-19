@@ -6,46 +6,46 @@ import Link from "next/link";
 
 const plans = [
   {
-    name: 'Emprendedor',
-    price: '$0',
+    name: 'Básico',
+    price: '$15.000',
     period: '/mes',
-    description: 'Perfecto para empezar. 3 meses de prueba gratis.',
-    features: [
-      'Hasta 100 productos',
-      '1 usuario',
-      'Control de stock básico',
-      'Reportes de ventas simples',
-      'Soporte por email'
-    ],
-    popular: false
-  },
-  {
-    name: 'Crecimiento',
-    price: '$29',
-    period: '/mes',
-    description: 'Para negocios que están escalando sus operaciones.',
+    description: 'Todo lo esencial para arrancar. ¡Pruébalo 90 días GRATIS!',
     features: [
       'Productos ilimitados',
-      '3 usuarios',
-      'Control de stock avanzado',
-      'Reportes detallados y exportables',
-      'Soporte prioritario',
-      'Gestión de proveedores'
+      '1 usuario administrador',
+      'Ventas y Stock en tiempo real',
+      'Reportes básicos',
+      'Soporte por email'
     ],
     popular: true
   },
   {
-    name: 'Empresarial',
-    price: '$99',
+    name: 'Pro',
+    price: '$25.000',
     period: '/mes',
-    description: 'Soluciones a medida para grandes volúmenes.',
+    description: 'Para negocios en expansión que necesitan más control y equipo.',
     features: [
-      'Todo lo del plan Crecimiento',
+      'Todo lo del plan Básico',
+      'Hasta 5 usuarios (empleados)',
+      'Gestión financiera avanzada',
+      'Cuentas corrientes (Fiados)',
+      'Personalización de marca',
+      'Soporte prioritario WhatsApp'
+    ],
+    popular: false
+  },
+  {
+    name: 'Enterprise',
+    price: 'Consultar',
+    period: '',
+    description: 'Para franquicias, cadenas y necesidades corporativas.',
+    features: [
+      'Todo lo del plan Pro',
       'Usuarios ilimitados',
-      'Múltiples sucursales',
-      'API Access',
-      'Gerente de cuenta dedicado',
-      'SLA garantizado'
+      'Multi-sucursal centralizado',
+      'API y Webhooks',
+      'Onboarding dedicado',
+      'Contrato SLA'
     ],
     popular: false
   }

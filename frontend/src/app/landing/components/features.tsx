@@ -16,50 +16,50 @@ import {
 const features = [
   {
     icon: ScanBarcode,
-    title: 'Punto de Venta Ultra-Rápido',
-    description: 'Vende en segundos con nuestro POS optimizado. Compatible con lectores de código de barras y tickets.',
+    title: 'Ventas a la Velocidad de la Luz',
+    description: 'No hagas esperar a tus clientes. Nuestro POS está optimizado para procesar transacciones en segundos, con lector de códigos y tickets instantáneos.',
     color: 'from-blue-500 to-indigo-500',
     colSpan: 'md:col-span-2'
   },
   {
     icon: Package,
-    title: 'Inventario Inteligente',
-    description: 'Control total de stock. Alertas automáticas de stock bajo y reporte de movimientos.',
+    title: 'Stock Cero-Errores',
+    description: 'Olvídate de contar manualmente. El inventario se actualiza en tiempo real con cada venta. Recibe alertas inteligentes antes de quedarte sin mercadería.',
     color: 'from-emerald-500 to-teal-500',
     colSpan: 'md:col-span-1'
   },
   {
     icon: DollarSign,
-    title: 'Control Financiero',
-    description: 'Cierre de caja diario, registro de gastos y cálculo automático de ganancias.',
+    title: 'Finanzas Claras',
+    description: '¿Dónde está tu dinero? Visualiza tu ganancia real diaria, controla la caja chica y registra gastos sin ser contador.',
     color: 'from-orange-500 to-red-500',
     colSpan: 'md:col-span-1'
   },
   {
     icon: Users,
-    title: 'CRM & Proveedores',
-    description: 'Gestiona deudas de clientes (fiado) y cuentas corrientes con proveedores en un solo lugar.',
+    title: 'Gestión de Clientes & Fiados',
+    description: 'Fideliza a tus clientes con cuentas corrientes. Registra fiados y pagos parciales de forma segura y organizada. Adiós al cuaderno.',
     color: 'from-purple-500 to-pink-500',
     colSpan: 'md:col-span-2'
   },
   {
     icon: ShieldCheck,
-    title: 'Roles y Seguridad',
-    description: 'Crea cuentas para empleados con permisos limitados. Protege tu información sensible.',
+    title: 'Seguridad Militar',
+    description: 'Tus datos están encriptados. Define roles para tus empleados y controla qué pueden ver o modificar.',
     color: 'from-cyan-500 to-blue-500',
     colSpan: 'md:col-span-1'
   },
   {
     icon: BarChart3,
-    title: 'Reportes Detallados',
-    description: 'Toma decisiones basadas en datos reales. Gráficos de ventas, productos más vendidos y más.',
+    title: 'Tu Negocio en Números',
+    description: 'Toma decisiones informadas. Identifica tus productos estrella, horas pico y días más rentables con un clic.',
     color: 'from-violet-500 to-purple-500',
     colSpan: 'md:col-span-1'
   },
   {
     icon: Palette,
-    title: 'Personalización Total',
-    description: 'Modo oscuro/claro, logo de tu negocio en tickets y dashboard adaptable.',
+    title: 'Identidad Propia',
+    description: 'Tu marca importa. Personaliza los tickets con tu logo, elige tu tema (Oscuro/Claro) y haz que el sistema se sienta tuyo.',
     color: 'from-pink-500 to-rose-500',
     colSpan: 'md:col-span-1'
   }

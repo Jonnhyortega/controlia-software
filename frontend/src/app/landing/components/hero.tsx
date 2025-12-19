@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from './ui/button';
-import { ArrowRight, BarChart3, Rocket } from 'lucide-react';
+import { ArrowRight, BarChart3, Rocket, CheckCircle2 } from 'lucide-react';
 import Link from "next/link";
 
 const Hero = () => {
@@ -14,105 +14,123 @@ const Hero = () => {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-[#0f0f12] to-[#1a1b1e] pt-20 pb-32">
-      <div className="absolute inset-0 bg-gradient-to-b from-primary-900/20 via-transparent to-transparent"></div>
+    <section className="relative overflow-hidden bg-[#0a0a0c] pt-24 pb-32">
+      {/* Background Gradients */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/20 rounded-full blur-[120px] -z-10 opacity-50"></div>
+      <div className="absolute bottom-0 right-0 w-[800px] h-[600px] bg-blue-600/10 rounded-full blur-[100px] -z-10 opacity-30"></div>
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          
+          {/* Left Content */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-left"
+            className="flex-1 text-center lg:text-left"
           >
-              <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-2 mb-6"
+              className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 mb-8 backdrop-blur-md"
             >
-              <Rocket className="w-4 h-4 text-primary-300" />
-              <span className="text-sm text-primary-300 font-medium">Versión 2.0 disponible</span>
+              <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+              <span className="text-sm text-gray-300 font-medium tracking-wide">La solución preferida por PyMEs</span>
             </motion.div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-              Controla tu{' '}
-              <span className="bg-gradient-to-r from-primary-300 to-primary-600 bg-clip-text text-transparent">
-                negocio
-              </span>{' '}
-              sin complicaciones
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-[1.1] tracking-tight">
+              Gestiona tu negocio <br className="hidden lg:block"/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-blue-400 to-primary-400 animate-gradient-x">
+                sin límites
+              </span>
             </h1>
 
-            <p className="text-lg text-gray-400 mb-8 max-w-xl">
-              La plataforma integral para PyMEs y emprendedores. Facturación, inventario, clientes y reportes en una sola plataforma intuitiva.
+            <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              Dile adiós a las planillas de cálculo. Controlia centraliza tus ventas, stock, clientes y finanzas en una plataforma intuitiva diseñada para escalar.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href={isLoggedIn ? "/dashboard" : "/login?register=1"}>
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-10">
+              <Link href={isLoggedIn ? "/dashboard" : "/login?register=1"} className="w-full sm:w-auto">
                 <Button 
                   size="lg" 
-                  className="w-full sm:w-auto bg-primary hover:bg-primary-700 text-white group transition-all duration-300 relative overflow-hidden"
+                  className="w-full sm:w-auto px-8 py-6 text-lg bg-primary hover:bg-primary/90 text-white shadow-[0_0_30px_-10px_rgba(var(--primary-rgb),0.5)] group transition-all duration-300"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                  {isLoggedIn ? 'Ir al Dashboard' : 'Prueba gratis por 3 meses'}
-                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  {isLoggedIn ? 'Ir a mi Panel' : 'Comenzar Gratis'}
+                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Link href="/#features">
+              <Link href="/#features" className="w-full sm:w-auto">
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="w-full sm:w-auto border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-300"
+                  className="w-full sm:w-auto px-8 py-6 text-lg border-white/10 hover:bg-white/5 text-gray-300 transition-all font-medium"
                 >
-                  Conocer más
+                  Ver Funcionalidades
                 </Button>
               </Link>
             </div>
-            
-            <p className="mt-4 text-sm text-gray-500 font-medium">
-              No se requiere tarjeta de crédito • Cancelación en cualquier momento
-            </p>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-              className="mt-12 grid grid-cols-3 gap-4 md:flex md:items-center md:gap-8"
-            >
-              <div className="text-center md:text-left">
-                <div className="text-2xl md:text-3xl font-bold text-white">1000+</div>
-                <div className="text-xs md:text-sm text-gray-400">Usuarios felices</div>
-              </div>
-              <div className="hidden md:block h-12 w-px bg-gray-700"></div>
-              <div className="text-center md:text-left">
-                <div className="text-2xl md:text-3xl font-bold text-white">24/7</div>
-                <div className="text-xs md:text-sm text-gray-400">Soporte</div>
-              </div>
-              <div className="hidden md:block h-12 w-px bg-gray-700"></div>
-              <div className="text-center md:text-left">
-                <div className="text-2xl md:text-3xl font-bold text-white">100%</div>
-                <div className="text-xs md:text-sm text-gray-400">Seguro</div>
-              </div>
-            </motion.div>
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-sm text-gray-500 font-medium">
+               <div className="flex items-center gap-2">
+                 <CheckCircle2 className="w-4 h-4 text-green-500" /> Sin tarjeta de crédito
+               </div>
+               <div className="flex items-center gap-2">
+                 <CheckCircle2 className="w-4 h-4 text-green-500" /> Setup en 2 minutos
+               </div>
+               <div className="flex items-center gap-2">
+                 <CheckCircle2 className="w-4 h-4 text-green-500" /> Cancelación flexible
+               </div>
+            </div>
           </motion.div>
 
+          {/* Right Image/Dashboard Preview */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="relative hidden lg:block"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="flex-1 relative w-full max-w-[600px] lg:max-w-none"
           >
-            <div className="absolute inset-0 bg-primary/20 rounded-md blur-3xl"></div>
-            <img 
-              src="https://horizons-cdn.hostinger.com/e059da5a-bba4-4792-8c52-5124e2066510/8e0b5fe3bf6a4225c669e58fc0a53acf.png"
-              alt="CONTROLIA Dashboard" 
-              className="relative rounded-md shadow-2xl border border-gray-800 w-full hover:scale-[1.02] transition-transform duration-500"
-            />
+             <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 to-blue-600/30 rounded-xl blur-2xl group-hover:blur-3xl transition-all duration-700 opacity-70"></div>
+                <div className="relative rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-[#121214]">
+                   {/* Header Fake UI */}
+                   <div className="h-8 bg-[#1a1a1e] border-b border-white/5 flex items-center px-4 gap-2">
+                      <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50"></div>
+                      <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50"></div>
+                      <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50"></div>
+                   </div>
+                   {/* Main Image */}
+                   <img 
+                    src="https://horizons-cdn.hostinger.com/e059da5a-bba4-4792-8c52-5124e2066510/8e0b5fe3bf6a4225c669e58fc0a53acf.png" 
+                    alt="Controlia Dashboard Preview" 
+                    className="w-full h-auto object-cover opacity-90 hover:opacity-100 transition-opacity duration-500"
+                   />
+                   
+                   {/* Floating Badge */}
+                   <motion.div 
+                     initial={{ y: 20, opacity: 0 }}
+                     animate={{ y: 0, opacity: 1 }}
+                     transition={{ delay: 1, duration: 0.5 }}
+                     className="absolute bottom-6 left-6 right-6 bg-black/60 backdrop-blur-xl border border-white/10 p-4 rounded-lg flex items-center gap-4 shadow-xl"
+                   >
+                      <div className="bg-green-500/20 p-2 rounded-full">
+                        <BarChart3 className="text-green-500 w-6 h-6" />
+                      </div>
+                      <div>
+                        <p className="text-white font-bold text-sm">Ventas hoy</p>
+                        <p className="text-green-400 font-mono text-xs">+24% vs ayer</p>
+                      </div>
+                      <div className="ml-auto text-white font-bold text-lg">
+                        $145.200
+                      </div>
+                   </motion.div>
+                </div>
+             </div>
           </motion.div>
+
         </div>
       </div>
-
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-800 to-transparent"></div>
     </section>
   );
 };

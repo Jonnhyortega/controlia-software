@@ -59,6 +59,7 @@ export const theme = {
         fontFamily: {
             sans: ['Inter', 'system-ui', 'sans-serif'],
             display: ['Inter Tight', 'system-ui', 'sans-serif'],
+            'funnel-display': ['var(--font-funnel-display)', 'sans-serif'],
         },
         borderRadius: {
             lg: '14px',

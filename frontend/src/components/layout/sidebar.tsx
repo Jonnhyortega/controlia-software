@@ -7,8 +7,10 @@ import {
   Package,
   Truck,
   Settings,
-  Menu,
   Users,
+  ChevronLeft,
+  ChevronRight,
+  HelpCircle,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -32,28 +34,32 @@ export default function Sidebar() {
   return (
     <aside
       className={`
-        hidden md:flex
-        bg-gray-200/80 dark:bg-[#0E0E0E] text-gray-600 dark:text-gray-300 h-screen border-r border-gray-200 dark:border-[#1a1a1a]
+        relative hidden md:flex
+        bg-gray-50/80 dark:bg-[#0E0E0E] text-gray-600 dark:text-gray-300 h-screen border-r border-gray-200 dark:border-[#1a1a1a]
         flex-col justify-between transition-all duration-300
         ${collapsed ? "w-20" : "w-64"}
       `}
     >
+      {/* Collapse Button (Absolute) */}
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className="absolute -right-3 top-9 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-full p-1.5 text-gray-500 hover:text-primary transition-all shadow-md z-50 hover:scale-105"
+      >
+        {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+      </button>
+
       {/* TOP SECTION */}
       <div>
-        {/* Logo + Collapse Button */}
-        <div className="flex items-center justify-between px-3 py-5">
-          {!collapsed && (
-            <h1 className="text-xl font-bold tracking-wide text-gray-900 dark:text-white">
-              <img src="/logosinfondo.png" alt="Logo controlia" width={48} height={48} />
-            </h1>
-          )}
-
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#1f1f1f] transition text-gray-500 dark:text-gray-400"
-          >
-            <Menu size={22} />
-          </button>
+        {/* Logo */}
+        <div className={`flex items-center ${collapsed ? 'justify-center' : 'px-6'} py-6 transition-all`}>
+           <div className="relative w-10 h-10 flex-shrink-0">
+             <img src="/logosinfondo.png" alt="Logo" className="object-contain w-full h-full" />
+           </div>
+           {!collapsed && (
+              <span className="ml-3 font-bold text-lg text-gray-900 dark:text-white tracking-tight whitespace-nowrap font-funnel-display">
+                CONTROLIA
+              </span>
+           )}
         </div>
 
         {/* MAIN LINKS */}
@@ -158,6 +164,35 @@ export default function Sidebar() {
             );
           })}
         </nav>
+      </div>
+
+      {/* BOTTOM SECTION (Help) */}
+      <div className="p-2 mb-2">
+         <div className="relative group">
+            <button
+              onClick={() => router.push("/help")}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-md transition-all duration-200 hover:bg-gray-100 dark:hover:bg-[#1f1f1f] text-gray-600 dark:text-gray-400"
+            >
+              <HelpCircle
+                size={20}
+                className="text-gray-500 dark:text-gray-400 group-hover:text-primary"
+              />
+              {!collapsed && <span className="text-sm font-medium">Centro de ayuda</span>}
+            </button>
+
+             {collapsed && (
+                  <span
+                    className="
+                      absolute left-16 top-1/2 -translate-y-1/2 
+                      bg-gray-900 dark:bg-black text-white text-xs px-3 py-1.5 rounded-md opacity-0 
+                      group-hover:opacity-100 transition-all shadow-xl z-50
+                      border border-gray-800 pointer-events-none whitespace-nowrap
+                    "
+                  >
+                    Centro de ayuda
+                  </span>
+             )}
+         </div>
       </div>
     </aside>
   );

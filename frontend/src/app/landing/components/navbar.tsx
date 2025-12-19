@@ -20,7 +20,7 @@ export default function Navbar() {
             <div className="flex h-8 w-8 items-center justify-center rounded-md overflow-hidden">
               <img src="/icon.png" alt="Controlia" className="h-full w-full object-contain" />
             </div>
-            <span className="text-xl font-bold text-white tracking-tight">CONTROLIA</span>
+            <span className="text-xl font-bold text-white tracking-tight font-funnel-display">CONTROLIA</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
