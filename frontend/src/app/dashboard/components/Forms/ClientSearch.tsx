@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, User, Check } from "lucide-react";
+import { useCustomization } from "../../../../context/CustomizationContext";
 
 interface Client {
   _id: string;
   name: string;
   email?: string;
   dni?: string;
+  balance?: number;
 }
 
 interface ClientSearchProps {
@@ -15,6 +17,7 @@ interface ClientSearchProps {
 }
 
 export default function ClientSearch({ clients, selectedClientId, onSelect }: ClientSearchProps) {
+  const { formatCurrency } = useCustomization();
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -89,7 +92,7 @@ export default function ClientSearch({ clients, selectedClientId, onSelect }: Cl
 
       {/* DROPDOWN RESULTADOS */}
       {isOpen && !selectedClient && (
-        <div className="group absolute top-full left-0 right-0 mt-2 bg-white dark:bg-green-700 rounded-md shadow-2xl border border-gray-100 dark:border-zinc-800 overflow-hidden max-h-60 overflow-y-auto z-50">
+        <div className="group absolute top-full left-0 right-0 mt-2 bg-white dark:bg-zinc-900 rounded-md shadow-2xl border border-gray-100 dark:border-zinc-800 overflow-hidden max-h-60 overflow-y-auto z-50">
           {filteredClients.length > 0 ? (
             <ul>
               {filteredClients.map((client) => (
@@ -108,7 +111,14 @@ export default function ClientSearch({ clients, selectedClientId, onSelect }: Cl
                     </div>
                     <div>
                       <p className="font-medium text-gray-800 dark:text-gray-200">{client.name}</p>
-                      {client.dni && <p className="text-xs text-gray-500">DNI: {client.dni}</p>}
+                      <div className="flex items-center gap-2">
+                         {client.dni && <p className="text-xs text-gray-500">DNI: {client.dni}</p>}
+                         {client.balance !== undefined && (
+                            <p className={`text-xs font-semibold ${client.balance > 0 ? "text-red-500" : "text-green-500"}`}>
+                                {client.balance > 0 ? "Deuda:" : "Saldo:"} {formatCurrency(Math.abs(client.balance))}
+                            </p>
+                         )}
+                      </div>
                     </div>
                   </div>
                 </li>

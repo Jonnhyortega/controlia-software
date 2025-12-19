@@ -345,274 +345,297 @@ export default function SalesForm({
   return (
     <motion.div
       key="add-sale"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-      className="fixed inset-0 z-50 flex justify-center items-start overflow-y-auto bg-black/60 backdrop-blur-sm p-4 md:p-6 transition-all"
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.98 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-50 flex flex-col bg-white dark:bg-[#09090b] overflow-hidden"
     >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: -20 }}
-        transition={{ duration: 0.35 }}
-        className="relative w-full max-w-5xl bg-white dark:bg-[#18181b] rounded-md shadow-2xl my-4 md:my-8 border border-gray-200 dark:border-zinc-800 overflow-hidden"
-      >
-        <div className="relative flex items-center gap-5 p-6 sm:p-8 border-b border-gray-100 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50">
-          <div className="p-3.5 bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-md shadow-lg shadow-blue-500/20 transform hover:scale-105 transition-transform duration-300">
-             <ShoppingCart className="w-7 h-7 text-white" strokeWidth={1.5} />
+      {/* --- HEADER --- */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-[#09090b] shrink-0 z-30 shadow-sm">
+        <div className="flex items-center gap-4">
+          <div className="p-2 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg shadow-lg shadow-blue-500/20">
+            <ShoppingCart className="w-5 h-5 text-white" strokeWidth={2} />
           </div>
-          <div className="flex-1">
-             <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-               Registrar Nueva Venta
-             </h3>
-             <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">
-               Carga productos, selecciona cliente y método de pago
-             </p>
+          <div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight leading-none">
+              Registrar Nueva Venta
+            </h3>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+              {newSale.products.length} {newSale.products.length === 1 ? 'producto cargado' : 'productos cargados'}
+            </p>
           </div>
-
-          <button
-            onClick={onBack}
-            className="group p-2 rounded-md text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-all"
-          >
-             <X size={24} />
-          </button>
         </div>
 
-        <div className="p-6 sm:p-8 space-y-8">
-        <div className="bg-white dark:bg-[#18181b] rounded-md border border-gray-200 dark:border-zinc-800 overflow-hidden shadow-sm">
-          {/* Table Header (Desktop) */}
-          <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-3 bg-gray-50/80 dark:bg-zinc-900/80 border-b border-gray-200 dark:border-zinc-800 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-            <div className="col-span-5">Producto</div>
+        <button
+          onClick={onBack}
+          className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-all border border-transparent hover:border-gray-200 dark:hover:border-zinc-700"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+      {/* --- MAIN CONTENT (Split View) --- */}
+      <div className="flex flex-1 overflow-hidden relative flex-col md:flex-row">
+        
+        {/* --- LEFT PANEL: Product List (Flexible) --- */}
+        <div className="flex-1 flex flex-col bg-white dark:bg-[#09090b] relative overflow-hidden order-2 md:order-1">
+          
+          {/* Table Header (Sticky) */}
+          <div className="hidden md:grid grid-cols-12 gap-3 px-6 py-2 bg-gray-50/90 dark:bg-zinc-900/90 border-b border-gray-200 dark:border-zinc-800 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest backdrop-blur-sm z-10 sticky top-0">
+            <div className="col-span-5 pl-2">Producto</div>
             <div className="col-span-2 text-center">Cant.</div>
-            <div className="col-span-3 text-right pr-4">Precio Unit.</div>
-            <div className="col-span-2 text-center">Acciones</div>
+            <div className="col-span-3 text-right pr-2">Precio Unit.</div>
+            <div className="col-span-2 text-center"></div>
           </div>
 
-          <div className="divide-y divide-gray-100 dark:divide-zinc-800/50">
+          {/* Scrollable List */}
+          <div className="flex-1 overflow-y-auto px-2 md:px-4 py-2 space-y-1 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-zinc-800">
             {newSale.products.map((p, i) => {
               const isOther = p.productId === "otro";
               const selectedProduct = productsDB.find((item) => item._id === p.productId);
 
               return (
-                <div key={i} className="p-4 md:px-6 md:py-3 grid grid-cols-1 md:grid-cols-12 gap-4 items-center hover:bg-gray-50/50 dark:hover:bg-zinc-800/20 transition-colors group">
+                <div 
+                  key={i} 
+                  className="group grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3 items-center p-2 rounded-md hover:bg-blue-50/50 dark:hover:bg-blue-900/10 border border-transparent hover:border-blue-100 dark:hover:border-blue-800/30 transition-all"
+                >
                   
                   {/* Product Select */}
-                  <div className="md:col-span-5 flex flex-col gap-2">
-                     <span className="md:hidden text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Producto</span>
-                     <div className="relative">
-                       <select
+                  <div className="md:col-span-5 flex flex-col gap-1.5">
+                      <span className="md:hidden text-[10px] font-bold text-gray-500 uppercase">Producto</span>
+                      <div className="relative">
+                        <select
                           value={p.productId}
                           onChange={(e) => handleProductChange(i, "productId", e.target.value)}
-                          className="w-full appearance-none rounded-md border border-gray-200 dark:border-zinc-700/50 bg-gray-50 dark:bg-zinc-800/50 text-gray-900 dark:text-white px-4 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer"
+                          className={`w-full appearance-none rounded-md border ${isOther ? 'border-blue-300 dark:border-blue-700' : 'border-gray-200 dark:border-zinc-700'} bg-white dark:bg-zinc-900/50 text-gray-900 dark:text-white px-3 py-1.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all cursor-pointer`}
                         >
-                          <option value="">Seleccionar producto...</option>
+                          <option value="">Seleccionar...</option>
                           {productsDB.map((prod) => (
-                            <option key={prod._id} value={prod._id}>
-                              {prod.name} — Stock: {prod.stock}
+                            <option 
+                              key={prod._id} 
+                              value={prod._id}
+                              className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white"
+                            >
+                              {prod.name}
                             </option>
                           ))}
-                          <option value="otro">Otro (manual)</option>
+                          <option value="otro">➕ Otro (Manual)</option>
                         </select>
-                     </div>
+                      </div>
                       
                       {isOther && (
                         <input
                           type="text"
+                          autoFocus
                           placeholder="Nombre del producto..."
                           value={p.name}
                           onChange={(e) => handleProductChange(i, "name", e.target.value)}
-                          className="w-full rounded-md border border-gray-200 dark:border-zinc-700/50 bg-white dark:bg-zinc-900 text-gray-900 dark:text-white px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400"
+                          className="w-full rounded-md border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-900 dark:text-white px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-gray-400 shadow-sm"
                         />
                       )}
                   </div>
 
                   {/* Quantity */}
                   <div className="md:col-span-2">
-                     <span className="md:hidden text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-1 block">Cantidad</span>
-                     <input
+                      <span className="md:hidden text-[10px] font-bold text-gray-500 uppercase mb-1 block">Cant.</span>
+                      <input
                         type="number"
                         min={1}
                         value={p.quantity}
                         onChange={(e) => handleProductChange(i, "quantity", e.target.value)}
-                        className="w-full rounded-md border border-gray-200 dark:border-zinc-700/50 bg-gray-50 dark:bg-zinc-800/50 text-gray-900 dark:text-white px-2 py-2.5 text-sm text-center font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                        className="w-full rounded-md border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-900 dark:text-white px-2 py-1.5 text-sm text-center font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                       />
                   </div>
 
                   {/* Price */}
                   <div className="md:col-span-3">
-                     <span className="md:hidden text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-1 block">Precio</span>
-                     <div className="w-full">
+                      <span className="md:hidden text-[10px] font-bold text-gray-500 uppercase mb-1 block">Precio</span>
+                      <div className="w-full">
                         <FormattedPriceInput
                             name="price"
                             value={p.price}
                             disabled={!isOther && !!selectedProduct}
                             onChange={(e) => handleProductChange(i, "price", e.target.value)}
+                            className="py-1.5 text-sm"
                         />
-                     </div>
+                      </div>
                   </div>
 
                   {/* Actions */}
                   <div className="md:col-span-2 flex justify-end md:justify-center items-center">
                     <button
                       onClick={() => removeProductField(i)}
-                      className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-all"
-                      title="Quitar producto"
+                      className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                      title="Quitar"
                     >
-                      <Trash2 size={18} />
+                      <Trash2 size={16} />
                     </button>
                   </div>
 
                 </div>
               );
             })}
-          </div>
-
-          <div className="p-3 border-t border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/30">
-             <button
-                onClick={addProductField}
-                className="w-full py-2.5 flex items-center justify-center gap-2 text-primary font-semibold text-sm hover:bg-white dark:hover:bg-zinc-800 rounded-md transition-all border border-dashed border-primary/30 hover:border-primary/50"
-             >
-                <PlusCircle size={18} /> Agregar otro producto
-             </button>
+            
+            <div className="pt-2 pb-6 px-1">
+              <button
+                  onClick={addProductField}
+                  className="w-full py-3 border-2 border-dashed border-gray-200 dark:border-zinc-800 hover:border-blue-400 dark:hover:border-blue-600 rounded-lg flex items-center justify-center gap-2 text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-all group"
+              >
+                  <PlusCircle size={18} className="group-hover:scale-110 transition-transform" /> 
+                  <span className="font-semibold text-sm">Agregar línea vacía</span>
+              </button>
+            </div>
           </div>
         </div>
 
-          <div className="bg-gray-50 dark:bg-zinc-900/30 p-6 rounded-md border border-gray-200 dark:border-zinc-800 shadow-sm">
-            <label className="text-gray-700 dark:text-gray-300 flex items-center gap-2 font-semibold mb-3">
-              <CreditCard className="w-5 h-5 text-gray-400" />
-              Método de pago
-            </label>
-
-            <div className="relative">
-                <select
-                value={newSale.paymentMethod}
-                onChange={(e) =>
-                    setNewSale({ ...newSale, paymentMethod: e.target.value })
-                }
-                    className="w-full appearance-none rounded-md border border-gray-200 dark:border-zinc-700/50 px-4 py-3 bg-white dark:bg-zinc-800/50 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium cursor-pointer"
-                >
-                <option value="efectivo" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Efectivo</option>
-                <option value="tarjeta" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Tarjeta</option>
-                <option value="transferencia" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Transferencia</option>
-                <option value="mercado pago" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Mercado Pago</option>
-                <option value="cuenta corriente" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Cuenta Corriente</option>
-                <option value="otro" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Otro</option>
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                </div>
-            </div>
-          </div>
-
-
-          <div className="bg-gray-50 dark:bg-zinc-900/30 p-6 rounded-md border border-gray-200 dark:border-zinc-800 shadow-sm">
-             <ClientSearch 
-                clients={clientsDB}
-                selectedClientId={newSale.clientId}
-                onSelect={(client) => setNewSale({ 
-                  ...newSale, 
-                  clientId: client ? client._id : "",
-                  // Si deseleccionan cliente, reseteamos el pago al total (undefined = total)
-                  amountPaid: client ? newSale.amountPaid : undefined 
-                })}
-             />
-
-              {/* 💵 PAGO PARCIAL / CUENTA CORRIENTE */}
-              {newSale.clientId && (
-                <div className="mt-4 pt-4 border-t border-gray-300 dark:border-gray-700">
-                    <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
-                        <div className="flex-1 w-full">
-                           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                             Monto que abona hoy:
-                           </label>
-                           <div className="relative">
-                              <DollarSign className="absolute right-3 top-1/2 -translate-y-1/2 text-green-400 w-4 h-4" />
-                              <input 
-                                type="number" 
-                                min={0}
-                                max={newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0)}
-                                value={newSale.amountPaid !== undefined ? newSale.amountPaid : newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0)}
-                                onChange={(e) => {
-                                   const val = Number(e.target.value);
-                                   const total = newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0);
-                                   // Prevent paying more than total
-                                   if (val > total) return;
-                                   setNewSale({ ...newSale, amountPaid: val });
-                                }}
-                                className="w-full pl-9 pr-4 py-2 rounded-md bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 outline-none transition font-mono font-medium"
-                              />
-                           </div>
-                        </div>
-
-                        <div className="flex-1 w-full p-3 bg-red-50 dark:bg-red-900/10 rounded-md border border-red-100 dark:border-red-900/20">
-                             <span className="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest block mb-0.5">
-                               Se genera deuda
-                             </span>
-                             <span className="text-xl font-bold text-red-700 dark:text-red-300">
-                                {formatCurrency(
-                                  Math.max(0, newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0) - (newSale.amountPaid !== undefined ? newSale.amountPaid : newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0)))
-                                )}
-                             </span>
-                        </div>
+        {/* --- RIGHT PANEL: Controls (Sidebar) --- */}
+        <div className="w-full md:w-[400px] xl:w-[450px] bg-gray-50 dark:bg-[#121212] border-t md:border-t-0 md:border-l border-gray-200 dark:border-zinc-800 flex flex-col shrink-0 z-20 shadow-[-10px_0_30px_-15px_rgba(0,0,0,0.05)] order-1 md:order-2 h-[40vh] md:h-auto">
+           
+           <div className="flex-1 overflow-y-auto p-5 md:p-6 space-y-6">
+              
+              {/* Payment Method */}
+              <div className="space-y-3">
+                <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                  <CreditCard size={14} /> Método de pago
+                </label>
+                <div className="relative">
+                    <select
+                      value={newSale.paymentMethod}
+                      onChange={(e) => setNewSale({ ...newSale, paymentMethod: e.target.value })}
+                      className="w-full appearance-none rounded-lg border border-gray-300 dark:border-zinc-700 px-4 py-2.5 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium cursor-pointer shadow-sm text-sm"
+                    >
+                      <option value="efectivo">Efectivo</option>
+                      <option value="tarjeta">Tarjeta</option>
+                      <option value="transferencia">Transferencia</option>
+                      <option value="mercado pago">Mercado Pago</option>
+                      <option value="cuenta corriente">Cuenta Corriente</option>
+                      <option value="otro">Otro</option>
+                    </select>
+                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-500">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
                 </div>
-              )}
-          </div>
+              </div>
 
-          <div className="flex flex-col md:flex-row justify-end items-end md:items-center gap-6 mt-8 p-6 bg-gray-50 dark:bg-zinc-900/30 rounded-md border border-dotted border-gray-300 dark:border-zinc-700">
-            <span className="text-lg font-medium text-gray-500 dark:text-gray-400 block">
-                {newSale.amountPaid !== undefined && newSale.amountPaid < newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0) 
-                    ? "Monto a abonar hoy:" 
-                    : "Total de la venta:"}
-            </span>
-            <div className="flex flex-col items-end md:items-end gap-1">
-              <span className="text-4xl font-extrabold text-gray-900 dark:text-white">
-                {formatCurrency(
-                  newSale.amountPaid !== undefined 
-                  ? newSale.amountPaid 
-                  : newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0)
-                )}
-              </span>
-              
-              {newSale.amountPaid !== undefined && newSale.amountPaid < newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0) && (
-                <span className="text-sm text-red-600 dark:text-red-400 font-medium bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded-md">
-                    Total real: {formatCurrency(newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0))}
-                </span>
-              )}
-            </div>           
-          </div>
+              {/* Client Search */}
+              <div className="space-y-3">
+                 <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                    <Hash size={14} /> Cliente
+                 </label>
+                 <div className="bg-white dark:bg-zinc-800 rounded-lg border border-gray-300 dark:border-zinc-700 shadow-sm p-1">
+                    <ClientSearch 
+                        clients={clientsDB}
+                        selectedClientId={newSale.clientId}
+                        onSelect={(client) => setNewSale({ 
+                          ...newSale, 
+                          clientId: client ? client._id : "",
+                          amountPaid: client ? newSale.amountPaid : undefined 
+                        })}
+                    />
+                 </div>
+              </div>
 
-          <div className="pb-8 px-2">
-            <motion.button
-                whileTap={{ scale: 0.98 }}
-                disabled={loading}
-                onClick={handleSubmit}
-                className="w-full py-4 bg-primary hover:bg-primary-700 text-white font-bold text-lg rounded-md shadow-xl shadow-primary/20 flex items-center justify-center gap-3 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-                <ShoppingCart className="w-6 h-6" />
-                {loading ? "Procesando venta..." : "Registrar venta"}
-            </motion.button>
+               {/* Partial Payment Logic */}
+               {newSale.clientId && (
+                <div className="p-4 bg-white dark:bg-[#18181b] rounded-xl border border-gray-200 dark:border-zinc-800 shadow-sm space-y-4">
+                    <div>
+                        <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2">
+                          Monto a abonar hoy
+                        </label>
+                        <div className="relative">
+                          <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-green-400 w-4 h-4" />
+                          <input 
+                            type="number" 
+                            min={0}
+                            placeholder="Monto..."
+                            value={(newSale.amountPaid !== undefined ? newSale.amountPaid : newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0))}
+                            onChange={(e) => {
+                                const val = Number(e.target.value);
+                                const total = newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0);
+                                if (val > total) return;
+                                setNewSale({ ...newSale, amountPaid: val });
+                            }}
+                            className="w-full pl-9 pr-4 py-2 rounded-md text-right bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 focus:ring-2 focus:ring-blue-500 outline-none font-mono font-medium text-sm"
+                          />
+                        </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/10 rounded-lg border border-red-100 dark:border-red-900/20">
+                         <span className="text-xs font-bold text-red-600 dark:text-red-400 uppercase">
+                           Genera Deuda
+                         </span>
+                         <span className="text-sm font-bold text-red-700 dark:text-red-300 font-mono">
+                            {formatCurrency(
+                              Math.max(0, newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0) - (newSale.amountPaid !== undefined ? newSale.amountPaid : newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0)))
+                            )}
+                         </span>
+                    </div>
+                </div>
+               )}
+
+           </div>
+
+           {/* TOTAL & SUBMIT (Bottom Fixed) */}
+           <div className="p-5 md:p-6 bg-white dark:bg-[#18181b] border-t border-gray-200 dark:border-zinc-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-30">
+              <div className="flex flex-col gap-1 mb-4">
+                  <div className="flex justify-between items-center text-gray-500 dark:text-gray-400">
+                      <span className="text-sm font-medium">
+                        {newSale.amountPaid !== undefined && newSale.amountPaid < newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0) 
+                         ? "Total a pagar hoy:" 
+                         : "Total Venta:"}
+                      </span>
+                      {newSale.amountPaid !== undefined && newSale.amountPaid < newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0) && (
+                         <span className="text-xs text-gray-400 line-through">
+                            {formatCurrency(newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0))}
+                         </span>
+                      )}
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+                        {formatCurrency(
+                        newSale.amountPaid !== undefined 
+                        ? newSale.amountPaid 
+                        : newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0)
+                        )}
+                    </span>
+                  </div>
+              </div>
+
+              <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  disabled={loading}
+                  onClick={handleSubmit}
+                  className="w-full py-3.5 bg-primary hover:bg-primary-700 text-white font-bold text-base rounded-lg shadow-lg shadow-primary/25 flex items-center justify-center gap-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                  {loading ? (
+                    <>Procesando...</>
+                  ) : (
+                    <>
+                       <ShoppingCart className="w-5 h-5" /> Confirmar Venta
+                    </>
+                  )}
+              </motion.button>
+           </div>
+        </div>
+      </div>
+
+      <ConfirmDialog
+        open={confirmDialog.open}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        confirmText="Confirmar"
+        cancelText="Cancelar"
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={confirmDialog.onCancel}
+      />
+      {scannerOpen && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="max-w-2xl w-full bg-black rounded-xl overflow-hidden shadow-2xl border border-zinc-800">
+            <BarcodeScanner onDetected={handleSaleBarcodeDetected} onClose={() => setScannerOpen(false)} />
           </div>
         </div>
-
-        <ConfirmDialog
-          open={confirmDialog.open}
-          title={confirmDialog.title}
-          message={confirmDialog.message}
-          confirmText="Confirmar"
-          cancelText="Cancelar"
-          onConfirm={confirmDialog.onConfirm}
-          onCancel={confirmDialog.onCancel}
-        />
-        {scannerOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-            <div className="max-w-3xl w-full rounded-md p-4">
-              <BarcodeScanner onDetected={handleSaleBarcodeDetected} onClose={() => setScannerOpen(false)} />
-            </div>
-          </div>
-        )}
-      </motion.div>
+      )}
     </motion.div>
   );
 }

@@ -105,6 +105,7 @@ export interface Supplier {
   email?: string;
   address?: string;
   createdAt?: string;
+  balance?: number;
 }
 
 export interface Client {

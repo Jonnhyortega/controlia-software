@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 /**
  * Hook para manejar tanto escaner físico (Teclado/USB) como visual (Cámara).
  */
-export function useScanner(onDetected: (code: string) => void) {
+export function useScanner(onDetected: (code: string) => void, allowInsideInputs: boolean = false) {
   // Estado para el modal visual (cámara web)
   const [isCameraOpen, setIsCameraOpen] = useState(false);
 
@@ -18,7 +18,7 @@ export function useScanner(onDetected: (code: string) => void) {
         const target = e.target as HTMLElement;
         const isInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
         
-        if (isInput) return;
+        if (isInput && !allowInsideInputs) return;
 
         const now = Date.now();
         const timeDiff = now - lastKeyTime.current;

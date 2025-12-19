@@ -32,7 +32,7 @@ export default function ProductsPage() {
     <section className="overflow-y-auto h-screen flex flex-col gap-5 p-4 sm:p-6" data-scrollable>
       {/* HEADER */}
       <div className="flex items-center gap-4 mb-2">
-        <div className="p-3 bg-gradient-to-br from-primary to-primary/80 dark:from-primary dark:to-primary/60 rounded-2xl shadow-lg shadow-primary/25 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+        <div className="p-3 bg-gradient-to-br from-primary to-primary/80 dark:from-primary dark:to-primary/60 rounded-md shadow-lg shadow-primary/25 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
            <Package className="w-8 h-8 text-primary-foreground" strokeWidth={1.5} />
         </div>
         <div className="flex flex-col">

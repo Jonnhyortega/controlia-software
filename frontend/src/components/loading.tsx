@@ -23,7 +23,7 @@ export default function Loading({
             <img 
               src="/icon.png" 
               alt="Controlia Logo" 
-              className="w-8 h-8 object-contain opacity-90 rounded-2xl"
+              className="w-8 h-8 object-contain opacity-90 rounded-md"
             />
         </div>
 

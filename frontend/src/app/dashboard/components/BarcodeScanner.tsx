@@ -78,7 +78,7 @@ export default function BarcodeScanner({ onDetected, onClose }: BarcodeScannerPr
   }, [onDetected, onClose]);
 
   return (
-    <div className="relative bg-black rounded-lg overflow-hidden shadow-2xl flex flex-col items-center justify-center w-full max-w-lg mx-auto aspect-[4/3]">
+    <div className="relative bg-black rounded-md overflow-hidden shadow-2xl flex flex-col items-center justify-center w-full max-w-lg mx-auto aspect-[4/3]">
       <button 
         onClick={onClose}
         className="absolute top-4 right-4 z-20 text-white bg-black/50 p-2 rounded-full hover:bg-black/80 backdrop-blur-sm"
@@ -112,7 +112,7 @@ export default function BarcodeScanner({ onDetected, onClose }: BarcodeScannerPr
 
             {/* Overlay Grid */}
             <div className="absolute inset-0 pointer-events-none border-2 border-white/30">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-48 border-2 border-red-500/80 rounded-lg shadow-[0_0_0_100vw_rgba(0,0,0,0.5)]">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-48 border-2 border-red-500/80 rounded-md shadow-[0_0_0_100vw_rgba(0,0,0,0.5)]">
                     <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-red-500"></div>
                     <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-red-500"></div>
                     <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-red-500"></div>

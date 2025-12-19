@@ -49,7 +49,7 @@ export default function SettingsPage() {
       
       {/* 🔹 HEADER: Título Cool */}
       <div className="flex items-center gap-4 mb-2">
-        <div className="p-3 bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-2xl shadow-lg shadow-blue-500/20 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+        <div className="p-3 bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-md shadow-lg shadow-blue-500/20 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
            <Settings className="w-8 h-8 text-white" strokeWidth={1.5} />
         </div>
         <div className="flex flex-col">

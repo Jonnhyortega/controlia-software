@@ -1,14 +1,17 @@
 "use client";
 
-import { ArrowDownRight } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useCustomization } from "@/context/CustomizationContext";
+import { useAuth } from "@/context/authContext";
 
 interface ExpensesTableProps {
   expenses: { description: string; amount: number }[];
+  onDelete: (index: number) => void;
 }
 
-export default function ExpensesTable({ expenses }: ExpensesTableProps) {
+export default function ExpensesTable({ expenses, onDelete }: ExpensesTableProps) {
   const { formatCurrency } = useCustomization();
+  const { user } = useAuth();
   
   if (!expenses || expenses.length === 0) return null;
   
@@ -35,8 +38,17 @@ export default function ExpensesTable({ expenses }: ExpensesTableProps) {
                 <td className="py-3 px-6 text-gray-700 font-medium">
                   {expense.description}
                 </td>
-                <td className="py-3 px-6 text-right font-bold text-red-600">
+                <td className="py-3 px-6 text-right font-bold text-red-600 flex items-center justify-end gap-3">
                   - {formatCurrency(expense.amount)}
+                  {user?.role === "admin" && (
+                    <button 
+                      onClick={() => onDelete(i)}
+                      className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
+                      title="Eliminar gasto"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

@@ -15,6 +15,10 @@ interface ProductFormProps {
   onClickClose: () => void;
 }
 
+// Import useScanner
+import { useScanner } from "../../hooks/useScanner";
+import { useToast } from "../../../../context/ToastContext";
+
 // 💵 Componente interno para manejar inputs de moneda
 function CurrencyInput({ 
   value, 
@@ -176,6 +180,14 @@ function FormattedPriceInput({
 
 
 export function ProductForm({ form, setForm, suppliers, categories, setShowCategories, onSubmit, setScannerOpen, isSubmitting, onClickClose }: ProductFormProps) {
+  const toast = useToast();
+  
+  // 🔌 Escaner físico activo en el formulario
+  useScanner((code) => {
+    setForm((prev: any) => ({ ...prev, barcode: code }));
+    toast.success(`Código asignado: ${code}`);
+  }, true);
+
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setForm((prev: any) => ({ ...prev, [name]: value }));
@@ -359,14 +371,6 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
                     className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-md text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-mono font-medium"
                 />
             </div>
-            <button
-                type="button"
-                onClick={() => setScannerOpen(true)}
-                className="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 px-4 rounded-md transition-colors flex items-center justify-center"
-                title="Abrir Escáner"
-            >
-                <ScanBarcode size={22} />
-            </button>
             </div>
         </div>
 

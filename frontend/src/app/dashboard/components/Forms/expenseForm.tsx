@@ -2,11 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { X, CheckCircle2, DollarSign, User, FileText } from "lucide-react";
-import { updateDailyCash, getSuppliers, createTransaction } from "../../../../utils/api";
+import { X, CheckCircle2, DollarSign, User, FileText, Upload } from "lucide-react";
+import { updateDailyCash, getSuppliers } from "../../../../utils/api";
+import { createTransaction } from "../../../../utils/transactions";
 import { useToast } from "../../../../context/ToastContext";
+import { useCustomization } from "../../../../context/CustomizationContext";
 
 import { FormattedPriceInput } from "../../../../components/FormattedPriceInput";
+import SupplierSearch from "./SupplierSearch";
 
 interface ExpenseFormProps {
   cashId: string;
@@ -22,6 +25,7 @@ export default function ExpenseForm({
   onCreated,
 }: ExpenseFormProps) {
   const toast = useToast();
+  const { formatCurrency } = useCustomization();
   const [loading, setLoading] = useState(false);
   const [suppliers, setSuppliers] = useState<any[]>([]);
   
@@ -30,6 +34,16 @@ export default function ExpenseForm({
   const [amount, setAmount] = useState<number>(0);
   const [description, setDescription] = useState("");
   const [selectedSupplier, setSelectedSupplier] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      setFile(selectedFile);
+      setPreviewUrl(URL.createObjectURL(selectedFile));
+    }
+  };
 
   // Load suppliers
   useEffect(() => {
@@ -67,14 +81,20 @@ export default function ExpenseForm({
 
     try {
       // 1. Si es pago a proveedor, creamos la TRANSACCIÓN (impacta deuda/historial)
+      // 1. Si es pago a proveedor, creamos la TRANSACCIÓN (impacta deuda/historial)
       if (type === "supplier") {
-         await createTransaction({
-            type: "SUPPLIER_PAYMENT",
-            amount: Number(amount),
-            supplierId: selectedSupplier,
-            description: description || "Pago desde caja diaria",
-            date: new Date(),
-         });
+         const transactionData = new FormData();
+         transactionData.append("type", "SUPPLIER_PAYMENT");
+         transactionData.append("amount", amount.toString());
+         transactionData.append("supplierId", selectedSupplier);
+         transactionData.append("description", description || "Pago desde caja diaria");
+         transactionData.append("date", new Date().toISOString());
+         
+         if (file) {
+            transactionData.append("image", file);
+         }
+
+         await createTransaction(transactionData);
       }
 
       // 2. Registramos la salida en la CAJA DIARIA (impacta efectivo en mano)
@@ -108,7 +128,7 @@ export default function ExpenseForm({
     >
       {/* Header */}
       <div className="flex items-center gap-5 p-6 border-b border-gray-100 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 relative">
-        <div className="p-3.5 bg-gradient-to-br from-rose-500 to-red-600 dark:from-rose-600 dark:to-red-700 rounded-2xl shadow-lg shadow-rose-500/20 transform hover:scale-105 transition-transform duration-300">
+        <div className="p-3.5 bg-primary dark:bg-primary rounded-md shadow-lg shadow-primary/20 transform hover:scale-105 transition-transform duration-300">
            <DollarSign className="w-7 h-7 text-white" strokeWidth={1.5} />
         </div>
         <div>
@@ -127,7 +147,7 @@ export default function ExpenseForm({
         
         {/* Type Selector */}
         <div className="flex gap-4">
-          <label className={`flex-1 cursor-pointer border rounded-lg p-4 flex flex-col items-center gap-3 transition-all ${type === "general" ? "border-rose-500 bg-rose-50 dark:bg-rose-900/10 text-rose-700 dark:text-rose-400 shadow-sm" : "border-gray-200 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400"}`}>
+          <label className={`flex-1 cursor-pointer border rounded-md p-4 flex flex-col items-center gap-3 transition-all ${type === "general" ? "border-rose-500 bg-rose-50 dark:bg-rose-900/10 text-rose-700 dark:text-rose-400 shadow-sm" : "border-gray-200 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400"}`}>
             <input 
               type="radio" 
               name="type" 
@@ -140,7 +160,7 @@ export default function ExpenseForm({
             <span className="font-semibold text-sm">Gasto General</span>
           </label>
 
-          <label className={`flex-1 cursor-pointer border rounded-lg p-4 flex flex-col items-center gap-3 transition-all ${type === "supplier" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/10 text-blue-700 dark:text-blue-400 shadow-sm" : "border-gray-200 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400"}`}>
+          <label className={`flex-1 cursor-pointer border rounded-md p-4 flex flex-col items-center gap-3 transition-all ${type === "supplier" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/10 text-blue-700 dark:text-blue-400 shadow-sm" : "border-gray-200 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400"}`}>
             <input 
               type="radio" 
               name="type" 
@@ -169,27 +189,11 @@ export default function ExpenseForm({
         {type === "supplier" ? (
           <div className="space-y-5">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-1">
-                Proveedor
-              </label>
-              <div className="relative">
-                <select
-                    value={selectedSupplier}
-                    onChange={(e) => setSelectedSupplier(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-gray-900 dark:text-white font-medium appearance-none"
-                    style={{ backgroundImage: "none" }}
-                >
-                    <option value="" className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">Seleccionar proveedor...</option>
-                    {suppliers.map((s) => (
-                    <option key={s._id} value={s._id} className="bg-white dark:bg-zinc-900 text-gray-900 dark:text-white">
-                        {s.name}
-                    </option>
-                    ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                </div>
-              </div>
+                 <SupplierSearch 
+                    suppliers={suppliers}
+                    selectedSupplierId={selectedSupplier}
+                    onSelect={(s) => setSelectedSupplier(s ? s._id : "")}
+                 />
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-1">
@@ -200,8 +204,32 @@ export default function ExpenseForm({
                 placeholder="Ej. Pago parcial, Factura A..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-gray-900 dark:text-white placeholder:text-gray-400 font-medium"
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-gray-900 dark:text-white placeholder:text-gray-400 font-medium"
               />
+            </div>
+
+            <div>
+                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-1">Comprobante (Opcional)</label>
+                 <div className="border-2 border-dashed border-gray-200 dark:border-zinc-700/50 rounded-md p-4 text-center hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition cursor-pointer relative group">
+                    <input 
+                        type="file" 
+                        onChange={handleFileChange}
+                        accept="image/*,.pdf"
+                        className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                    />
+                    
+                    {previewUrl ? (
+                        <div className="flex flex-col items-center relative">
+                            <img src={previewUrl} alt="Preview" className="h-24 object-contain rounded-md mb-2 shadow-sm" />
+                            <p className="text-xs text-primary font-medium">Clic para cambiar</p>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col items-center text-gray-400 dark:text-gray-500 group-hover:text-primary transition-colors">
+                            <Upload size={24} className="mb-2" />
+                            <span className="text-sm font-medium">Subir imagen o PDF</span>
+                        </div>
+                    )}
+                 </div>
             </div>
           </div>
         ) : (
@@ -214,7 +242,7 @@ export default function ExpenseForm({
               placeholder="Ej. Limpieza, Alquiler, Retiro..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-gray-900 dark:text-white placeholder:text-gray-400 font-medium"
+              className="w-full px-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-gray-900 dark:text-white placeholder:text-gray-400 font-medium"
             />
           </div>
         )}

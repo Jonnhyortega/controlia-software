@@ -161,6 +161,10 @@ export default function TransactionModal({
 
   if (!isOpen) return null;
 
+  function formatCurrency(value: string): string {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <Overlay>
       <div className="bg-white dark:bg-[#1a1a1a] p-6 rounded-md w-full max-w-md relative shadow-2xl">
@@ -193,7 +197,7 @@ export default function TransactionModal({
                 step="0.01"
                 min="0"
                 value={formData.amount}
-                onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, amount: formatCurrency(e.target.value) })}
                 className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-zinc-900 focus:ring-2 focus:ring-primary/20 outline-none dark:text-white"
                 placeholder="0.00"
               />

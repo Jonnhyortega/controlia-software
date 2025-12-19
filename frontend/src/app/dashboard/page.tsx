@@ -20,9 +20,10 @@ import Overlay from "./components/overlay";
 import CloseCashForm from "./components/Forms/closeCashForm";
 import SalesForm from "./components/Forms/salesForm";
 import ExpenseForm from "./components/Forms/expenseForm";
+import { ConfirmDialog } from "./components/confirmDialog";
 
 import Loading from "../../components/loading";
-import { api } from "../../utils/api";
+import { api, updateDailyCash } from "../../utils/api";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { X, Gift, Sparkles, TrendingDown, BarChart3, ReceiptText } from "lucide-react";
@@ -41,6 +42,14 @@ export default function DashboardPage() {
   const [showSalesForm, setShowSalesForm] = useState(false);
   const [showCloseCashForm, setShowCloseCashForm] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
+  
+  const [confirmDialog, setConfirmDialog] = useState({
+      open: false,
+      title: "",
+      message: "",
+      onConfirm: () => {},
+      onCancel: () => {},
+    });
 
   // 🎁 Welcome Modal Logic
   const searchParams = useSearchParams();
@@ -91,6 +100,32 @@ export default function DashboardPage() {
     } catch {
       toast.error("No se pudo anular la venta");
     }
+  };
+
+  const handleExpenseDelete = (index: number) => {
+    setConfirmDialog({
+        open: true,
+        title: "Eliminar gasto",
+        message: "¿Estás seguro de eliminar este gasto?",
+        onConfirm: async () => {
+             setConfirmDialog((prev) => ({ ...prev, open: false }));
+             
+             if (!data?.extraExpenses) return;
+
+             const newExpenses = [...data.extraExpenses];
+             newExpenses.splice(index, 1);
+             
+             try {
+                await updateDailyCash(data._id, { extraExpenses: newExpenses });
+                toast.success("Gasto eliminado");
+                reload();
+             } catch (error) {
+                console.error("Error deleting expense:", error);
+                toast.error("Error al eliminar gasto");
+             }
+        },
+        onCancel: () => setConfirmDialog((prev) => ({ ...prev, open: false })),
+    });
   };
 
 
@@ -227,7 +262,10 @@ export default function DashboardPage() {
       {/* 📉 Gastos Desplegables */}
       {data?.extraExpenses.length > 0 && (
          <CollapsibleSection title="Gastos y Pagos del Día" icon={TrendingDown} defaultOpen={false}>
-             <ExpensesTable expenses={data?.extraExpenses || []} />
+             <ExpensesTable 
+                expenses={data?.extraExpenses || []} 
+                onDelete={handleExpenseDelete}
+             />
          </CollapsibleSection>
       )}
 
@@ -279,6 +317,16 @@ export default function DashboardPage() {
           </Overlay>
         )}
       </AnimatePresence>
+      
+      <ConfirmDialog
+        open={confirmDialog.open}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={confirmDialog.onCancel}
+      />
 
       {/* 🎁 Welcome Modal */}
       <AnimatePresence>

@@ -112,9 +112,9 @@ const Hero = () => {
                      initial={{ y: 20, opacity: 0 }}
                      animate={{ y: 0, opacity: 1 }}
                      transition={{ delay: 1, duration: 0.5 }}
-                     className="absolute bottom-6 left-6 right-6 bg-black/60 backdrop-blur-xl border border-white/10 p-4 rounded-lg flex items-center gap-4 shadow-xl"
+                     className="absolute bottom-6 left-6 right-6 bg-black/60 backdrop-blur-xl border border-white/10 p-4 rounded-md flex items-center gap-4 shadow-xl"
                    >
-                      <div className="bg-green-500/20 p-2 rounded-full">
+                      <div className="bg-green-500/20 p-2 rounded-md">
                         <BarChart3 className="text-green-500 w-6 h-6" />
                       </div>
                       <div>

@@ -112,7 +112,7 @@ export default function EmployeesPage() {
        
        {/* HEADER */}
        <div className="flex items-center gap-4 mb-2">
-        <div className="p-3 bg-gradient-to-br from-primary to-primary/80 dark:from-primary dark:to-primary/60 rounded-2xl shadow-lg shadow-primary/25 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+        <div className="p-3 bg-gradient-to-br from-primary to-primary/80 dark:from-primary dark:to-primary/60 rounded-md shadow-lg shadow-primary/25 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
            <Shield className="w-8 h-8 text-primary-foreground" strokeWidth={1.5} />
         </div>
         <div className="flex flex-col">
@@ -210,7 +210,7 @@ export default function EmployeesPage() {
                                 type="text" 
                                 value={formData.name}
                                 onChange={e => setFormData({...formData, name: e.target.value})}
-                                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] focus:ring-2 focus:ring-primary outline-none"
+                                className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] focus:ring-2 focus:ring-primary outline-none"
                                 placeholder="Juan Pérez"
                             />
                         </div>
@@ -222,7 +222,7 @@ export default function EmployeesPage() {
                                 type="email" 
                                 value={formData.email}
                                 onChange={e => setFormData({...formData, email: e.target.value})}
-                                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] focus:ring-2 focus:ring-primary outline-none"
+                                className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] focus:ring-2 focus:ring-primary outline-none"
                                 placeholder="usuario@controlia.com"
                             />
                         </div>
@@ -236,7 +236,7 @@ export default function EmployeesPage() {
                                 required={!editingId}
                                 value={formData.password}
                                 onChange={e => setFormData({...formData, password: e.target.value})}
-                                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] focus:ring-2 focus:ring-primary outline-none"
+                                className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] focus:ring-2 focus:ring-primary outline-none"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -246,7 +246,7 @@ export default function EmployeesPage() {
                             <select
                                 value={formData.role}
                                 onChange={e => setFormData({...formData, role: e.target.value as any})} 
-                                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] focus:ring-2 focus:ring-primary outline-none"
+                                className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] focus:ring-2 focus:ring-primary outline-none"
                             >
                                 <option value="empleado">Empleado (Acceso Limitado)</option>
                                 <option value="admin">Admin (Acceso Total)</option>
@@ -257,14 +257,14 @@ export default function EmployeesPage() {
                             <button 
                                 type="button"
                                 onClick={() => setShowModal(false)}
-                                className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-[#3f3f46] hover:bg-gray-50 dark:hover:bg-[#27272a] text-gray-700 dark:text-gray-300 font-medium transition-colors"
+                                className="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-[#3f3f46] hover:bg-gray-50 dark:hover:bg-[#27272a] text-gray-700 dark:text-gray-300 font-medium transition-colors"
                             >
                                 Cancelar
                             </button>
                             <button 
                                 type="submit"
                                 disabled={submitting}
-                                className="flex-1 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-md transition-all active:scale-95 disabled:opacity-50"
+                                className="flex-1 px-4 py-2 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-md transition-all active:scale-95 disabled:opacity-50"
                             >
                                 {submitting ? "Guardando..." : "Guardar"}
                             </button>

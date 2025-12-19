@@ -25,7 +25,7 @@ export default function DashboardHeader({
         {/* Left Side: Title & Revenue */}
         <div className="text-center md:text-left space-y-3">
           <div className="flex items-center justify-center md:justify-start gap-4">
-            <div className="p-3 bg-gradient-to-br from-primary to-primary/80 dark:from-primary dark:to-primary/60 rounded-2xl shadow-lg shadow-primary/25 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+            <div className="p-3 bg-gradient-to-br from-primary to-primary/80 dark:from-primary dark:to-primary/60 rounded-md shadow-lg shadow-primary/25 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
               <Wallet className="w-8 h-8 text-primary-foreground" strokeWidth={1.5} />
             </div>
             <div>

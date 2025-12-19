@@ -25,7 +25,7 @@ export function SupplierForm({
       
       {/* Header */}
       <div className="flex items-center gap-5 mb-8 border-b border-gray-100 dark:border-zinc-800 pb-6 relative">
-        <div className="p-3.5 bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-2xl shadow-lg shadow-blue-500/20 transform hover:scale-105 transition-transform duration-300">
+        <div className="p-3.5 bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-md shadow-lg shadow-blue-500/20 transform hover:scale-105 transition-transform duration-300">
           <Building2 className="w-7 h-7 text-white" strokeWidth={1.5} />
         </div>
         <div className="flex-1">
@@ -59,7 +59,7 @@ export function SupplierForm({
                     onChange={handleChange}
                     placeholder="Ej: Distribuidora S.A."
                     required
-                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-medium"
+                    className="w-full pl-12 pr-4 py-3 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700/50 rounded-md text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-medium"
                 />
             </div>
           </div>
@@ -74,7 +74,7 @@ export function SupplierForm({
                     value={form.phone}
                     onChange={handleChange}
                     placeholder="Ej: 11 1234 5678"
-                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-medium"
+                    className="w-full pl-12 pr-4 py-3 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700/50 rounded-md text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-medium"
                 />
              </div>
           </div>
@@ -90,7 +90,7 @@ export function SupplierForm({
                     value={form.email}
                     onChange={handleChange}
                     placeholder="contacto@empresa.com"
-                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-medium"
+                    className="w-full pl-12 pr-4 py-3 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700/50 rounded-md text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-medium"
                 />
              </div>
           </div>
@@ -105,7 +105,7 @@ export function SupplierForm({
                     value={form.address}
                     onChange={handleChange}
                     placeholder="Ej: Av. Corrientes 1234"
-                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-medium"
+                    className="w-full pl-12 pr-4 py-3 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700/50 rounded-md text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-medium"
                 />
              </div>
           </div>
@@ -114,7 +114,7 @@ export function SupplierForm({
         <div className="pt-8 border-t border-gray-100 dark:border-zinc-800/50 flex justify-end">
             <Button
               type="submit"
-              className="w-full md:w-auto bg-primary hover:bg-primary-700 text-white font-bold py-3.5 px-8 rounded-lg shadow-lg shadow-primary/25 transition-all transform active:scale-95 flex items-center justify-center"
+              className="w-full md:w-auto bg-primary hover:bg-primary-700 text-white font-bold py-3.5 px-8 rounded-md shadow-lg shadow-primary/25 transition-all transform active:scale-95 flex items-center justify-center"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Guardando..." : (editingId ? "Guardar Cambios" : "Registrar Proveedor")}

@@ -57,7 +57,7 @@ export default function CloseCashForm({
     >
       {/* HEADER */}
       <div className="flex items-center gap-5 p-6 border-b border-gray-100 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50">
-        <div className="p-3.5 bg-gradient-to-br from-amber-500 to-orange-600 dark:from-amber-600 dark:to-orange-700 rounded-2xl shadow-lg shadow-amber-500/20 transform hover:scale-105 transition-transform duration-300">
+        <div className="p-3.5 bg-gradient-to-br from-amber-500 to-orange-600 dark:from-amber-600 dark:to-orange-700 rounded-md shadow-lg shadow-amber-500/20 transform hover:scale-105 transition-transform duration-300">
            <Lock className="w-7 h-7 text-white" strokeWidth={1.5} />
         </div>
         <div>

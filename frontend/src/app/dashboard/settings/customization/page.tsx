@@ -15,7 +15,7 @@ const SectionCard = ({ title, icon: Icon, children }: { title: string; icon: Luc
   <motion.div 
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
-    className="bg-white dark:bg-[#18181b] rounded-lg shadow-sm border border-gray-200 dark:border-[#27272a] overflow-hidden"
+    className="bg-white dark:bg-[#18181b] rounded-md shadow-sm border border-gray-200 dark:border-[#27272a] overflow-hidden"
   >
     <div className="px-6 py-4 border-b border-gray-100 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#1f1f1f]/30 flex items-center gap-3">
         <div className="p-2 bg-primary/10 rounded-md text-primary">
@@ -122,7 +122,7 @@ export default function CustomizationPage() {
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
          <div className="flex items-center gap-4">
-            <div className="p-3 bg-gradient-to-br from-primary to-primary/80 dark:from-primary dark:to-primary/60 rounded-2xl shadow-lg shadow-primary/25 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+            <div className="p-3 bg-gradient-to-br from-primary to-primary/80 dark:from-primary dark:to-primary/60 rounded-md shadow-lg shadow-primary/25 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
                 <Palette className="w-8 h-8 text-primary-foreground" strokeWidth={1.5} />
             </div>
             <div>
@@ -134,7 +134,7 @@ export default function CustomizationPage() {
          <button
             onClick={handleSave}
             disabled={isSaving || isUploading}
-            className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2.5 rounded-lg font-bold shadow-md shadow-primary/20 transition-all active:scale-95 disabled:opacity-50"
+            className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2.5 rounded-md font-bold shadow-md shadow-primary/20 transition-all active:scale-95 disabled:opacity-50"
          >
             <Save size={18} />
             Guardar Cambios
@@ -148,7 +148,7 @@ export default function CustomizationPage() {
               <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
                  {/* Preview Box */}
                  <div className="relative group">
-                    <div className={`w-32 h-32 rounded-2xl border-2 border-dashed flex items-center justify-center overflow-hidden bg-gray-50 dark:bg-zinc-900 transition-colors ${previewLogo ? 'border-primary/50' : 'border-gray-300 dark:border-zinc-700'}`}>
+                    <div className={`w-32 h-32 rounded-md border-2 border-dashed flex items-center justify-center overflow-hidden bg-gray-50 dark:bg-zinc-900 transition-colors ${previewLogo ? 'border-primary/50' : 'border-gray-300 dark:border-zinc-700'}`}>
                         {previewLogo ? (
                             <img src={previewLogo} alt="Logo Preview" className="w-full h-full object-contain p-2" />
                         ) : (
@@ -187,7 +187,7 @@ export default function CustomizationPage() {
                         <button
                            onClick={() => fileInputRef.current?.click()}
                            disabled={isUploading}
-                           className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
+                           className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 rounded-md text-sm font-medium hover:bg-gray-50 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
                         >
                             {isUploading ? (
                                 <span className="animate-pulse">Subiendo...</span>
@@ -238,7 +238,7 @@ export default function CustomizationPage() {
                             name="theme"
                             value={formData.theme}
                             onChange={handleChange}
-                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none"
+                            className="w-full px-4 py-2.5 rounded-md border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none"
                         >
                             <option value="light">Claro (Light Mode)</option>
                             <option value="dark">Oscuro (Dark Mode)</option>
@@ -252,7 +252,7 @@ export default function CustomizationPage() {
                                 name="currency"
                                 value={formData.currency}
                                 onChange={handleChange}
-                                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none"
+                                className="w-full pl-10 pr-4 py-2.5 rounded-md border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none"
                             >
                                 <option value="ARS">Peso Argentino (ARS)</option>
                                 <option value="USD">Dólar Estadounidense (USD)</option>
@@ -276,7 +276,7 @@ export default function CustomizationPage() {
                             name="dateFormat"
                             value={formData.dateFormat}
                             onChange={handleChange}
-                             className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none"
+                             className="w-full px-4 py-2.5 rounded-md border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none"
                         >
                             <option value="DD/MM/YYYY">DD/MM/YYYY (31/12/2023)</option>
                             <option value="MM/DD/YYYY">MM/DD/YYYY (12/31/2023)</option>
@@ -289,7 +289,7 @@ export default function CustomizationPage() {
                             name="timeFormat"
                             value={formData.timeFormat}
                             onChange={handleChange}
-                             className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none"
+                             className="w-full px-4 py-2.5 rounded-md border border-gray-300 dark:border-[#3f3f46] bg-white dark:bg-[#09090b] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none"
                         >
                             <option value="HH:mm">24 Horas (14:30)</option>
                             <option value="hh:mm a">12 Horas (02:30 PM)</option>

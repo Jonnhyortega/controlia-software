@@ -7,6 +7,7 @@ import { useAuth } from "../../../../context/authContext";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useToast } from "../../../../context/ToastContext";
+import { ConfirmDialog } from "../confirmDialog";
 
 interface PaymentHistorySectionProps {
   context: "CLIENT" | "SUPPLIER";
@@ -24,6 +25,13 @@ export default function PaymentHistorySection({ context, entityId, refreshParent
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"CLIENT_PAYMENT" | "SUPPLIER_PAYMENT" | "CLIENT_DEBT" | "SUPPLIER_DEBT">("CLIENT_PAYMENT");
   const [editingTransaction, setEditingTransaction] = useState<Transaction | undefined>(undefined);
+  const [confirmDialog, setConfirmDialog] = useState({
+        open: false,
+        title: "",
+        message: "",
+        onConfirm: () => {},
+        onCancel: () => {},
+  });
 
   const fetchTransactions = async () => {
     try {
@@ -42,17 +50,25 @@ export default function PaymentHistorySection({ context, entityId, refreshParent
     if (entityId) fetchTransactions();
   }, [entityId, context]);
 
-  const handleDelete = async (id: string) => {
-    if(!confirm("¿Estás seguro de eliminar este movimiento? Se revertirá el saldo.")) return;
-    try {
-        await deleteTransaction(id);
-        toast.success("Movimiento eliminado y saldo revertido");
-        fetchTransactions();
-        refreshParent?.();
-    } catch (error) {
-        console.error(error);
-        toast.error("Error al eliminar movimiento");
-    }
+  const handleDelete = (id: string) => {
+    setConfirmDialog({
+        open: true,
+        title: "Eliminar movimiento",
+        message: "¿Estás seguro de eliminar este movimiento? Se revertirá el saldo.",
+        onConfirm: async () => {
+             setConfirmDialog((prev) => ({ ...prev, open: false }));
+             try {
+                await deleteTransaction(id);
+                toast.success("Movimiento eliminado y saldo revertido");
+                fetchTransactions();
+                refreshParent?.();
+            } catch (error) {
+                console.error(error);
+                toast.error("Error al eliminar movimiento");
+            }
+        },
+        onCancel: () => setConfirmDialog((prev) => ({ ...prev, open: false })),
+    });
   }
 
   const openModal = (type: "PAYMENT" | "DEBT", transaction?: Transaction) => {
@@ -176,6 +192,16 @@ export default function PaymentHistorySection({ context, entityId, refreshParent
           </table>
         </div>
       )}
+
+      <ConfirmDialog
+        open={confirmDialog.open}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        confirmText="Confirmar"
+        cancelText="Cancelar"
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={confirmDialog.onCancel}
+      />
 
       {/* MODAL */}
       {modalOpen && (
