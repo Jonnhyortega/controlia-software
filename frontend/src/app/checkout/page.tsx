@@ -55,20 +55,19 @@ function CheckoutContent() {
   const handlePayment = async () => {
     setLoading(true);
     try {
-      // TODO: Implement backend call to generate payment preference
-      // const response = await api.post('/payments/create_preference', { planId });
-      // window.location.href = response.data.init_point;
+      // Llamada al backend para crear la preferencia de suscripción en Mercado Pago
+      const { createSubscription } = await import("../../utils/api");
+      const response = await createSubscription(planId as "basic" | "gestion" | "avanzado");
       
-      console.log("Processing payment for", planId);
-      
-      // Simulation of delay
-      setTimeout(() => {
-        alert("Integración con Mercado Pago pendiente.\nAquí redirigiremos a la pasarela de pago.");
-        setLoading(false);
-      }, 1500);
+      if (response && response.init_point) {
+         window.location.href = response.init_point;
+      } else {
+         throw new Error("No se recibió el link de pago");
+      }
 
     } catch (error) {
       console.error("Payment error", error);
+      alert("Hubo un error al iniciar el pago. Por favor intenta nuevamente.");
       setLoading(false);
     }
   };

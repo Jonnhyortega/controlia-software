@@ -610,3 +610,10 @@ export const createTransaction = async (data: {
   return res.data;
 };
 
+// NUEVA FUNCIONALIDAD SUSCRIPCIONES
+export const createSubscription = async (plan: "basic" | "gestion" | "avanzado"): Promise<{ init_point: string; id: string }> => {
+  const res = await api.post("/subscriptions/create", { plan });
+  return res.data;
+};
+
+
