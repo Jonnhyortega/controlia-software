@@ -42,9 +42,14 @@ export default function ExpensesTable({ expenses, onDelete }: ExpensesTableProps
                   - {formatCurrency(expense.amount)}
                   {user?.role === "admin" && (
                     <button 
-                      onClick={() => onDelete(i)}
-                      className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
-                      title="Eliminar gasto"
+                      onClick={() => !(expense as any).isTransaction && onDelete(i)}
+                      disabled={(expense as any).isTransaction}
+                      className={`p-1.5 rounded-md transition-colors ${
+                        (expense as any).isTransaction 
+                          ? "text-gray-300 dark:text-gray-700 cursor-not-allowed" 
+                          : "text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      }`}
+                      title={(expense as any).isTransaction ? "Este gasto está vinculado a un pago de proveedor. Gestionalo desde 'Proveedores' > 'Historial'." : "Eliminar gasto"}
                     >
                       <Trash2 size={16} />
                     </button>

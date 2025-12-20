@@ -17,7 +17,7 @@ export default function DashboardHeader({
   const { formatCurrency } = useCustomization();
 
   return (
-    <header className="relative w-full bg-white dark:bg-[#09090b] border border-gray-100 dark:border-zinc-900 p-6 md:p-8 rounded-md shadow-sm overflow-hidden group">
+    <header className="relative w-full bg-white dark:bg-[#09090b] border border-primary p-6 md:p-8 rounded-md shadow-sm overflow-hidden group">
       {/* Decorative Blob */}
       <div className="absolute top-0 right-0 p-32 bg-primary/5 dark:bg-primary/10 rounded-full blur-[90px] pointer-events-none -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-colors duration-700 opacity-50 dark:opacity-100" />
 

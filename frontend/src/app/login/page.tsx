@@ -353,7 +353,7 @@ export default function AuthPage() {
                 <div className="bg-gradient-to-r from-primary/20 to-transparent border border-primary/20 rounded-md p-4">
                     <p className="font-bold text-primary-300 text-sm mb-1">🎁 Prueba Gratis de 90 días</p>
                     <p className="text-xs text-gray-400">
-                      Disfruta del Plan Básico sin costo. Luego $15.000 ARS/mes.
+                      Disfruta del Plan Base sin costo. Luego $15.000 ARS/mes.
                     </p>
                 </div>
 

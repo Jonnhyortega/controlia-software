@@ -6,10 +6,10 @@ import Link from "next/link";
 
 const plans = [
   {
-    name: 'Básico',
+    name: 'Plan Base',
     price: '$15.000',
     period: '/mes',
-    description: 'Todo lo esencial para arrancar. ¡Pruébalo 90 días GRATIS!',
+    description: 'Ideal para kioscos y comercios chicos. Suena accesible y no minimiza al cliente.',
     features: [
       'Productos ilimitados',
       '1 usuario administrador',
@@ -17,30 +17,30 @@ const plans = [
       'Reportes básicos',
       'Soporte por email'
     ],
-    popular: true
+    popular: false
   },
   {
-    name: 'Pro',
+    name: 'Plan Gestión',
     price: '$25.000',
     period: '/mes',
-    description: 'Para negocios en expansión que necesitan más control y equipo.',
+    description: 'Control total con Controlia Gestión. Para el comercio que ya se toma en serio el negocio.',
     features: [
-      'Todo lo del plan Básico',
+      'Todo lo del Plan Base',
       'Hasta 5 usuarios (empleados)',
       'Gestión financiera avanzada',
       'Cuentas corrientes (Fiados)',
       'Personalización de marca',
       'Soporte prioritario WhatsApp'
     ],
-    popular: false
+    popular: true
   },
   {
-    name: 'Enterprise',
+    name: 'Plan Avanzado',
     price: 'Consultar',
     period: '',
-    description: 'Para franquicias, cadenas y necesidades corporativas.',
+    description: 'Cuando el negocio crece, pasás a Avanzado. Para negocios que mueven volumen.',
     features: [
-      'Todo lo del plan Pro',
+      'Todo lo del Plan Gestión',
       'Usuarios ilimitados',
       'Multi-sucursal centralizado',
       'API y Webhooks',

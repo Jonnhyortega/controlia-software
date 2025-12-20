@@ -3,6 +3,7 @@ import { X, Upload, Calendar, DollarSign, FileText } from "lucide-react";
 import { Button } from "../button";
 import Overlay from "../overlay";
 import { createTransaction, updateTransaction } from "../../../../utils/transactions";
+import { getTodayDailySales, updateDailyCash } from "../../../../utils/api";
 import { Transaction } from "../../../../types/api";
 import { useToast } from "../../../../context/ToastContext";
 
@@ -143,8 +144,49 @@ export default function TransactionModal({
              
              // No adjuntamos la imagen al pago automático, se queda en la deuda
              await createTransaction(paymentData);
+
+             // ---------------------------------------------------------
+             // UPDATE DAILY CASH WITH THIS INITIAL PAYMENT
+             try {
+                const dailyCash = await getTodayDailySales();
+                if (dailyCash && dailyCash.status === "abierta") {
+                    const newExpense = {
+                        description: `Pago a Proveedor (Inicial): ${formData.description || "Entrega"}`,
+                        amount: Number(initialPayment)
+                    };
+                    // Append to existing
+                    const currentExpenses = dailyCash.extraExpenses || [];
+                    await updateDailyCash(dailyCash._id, {
+                        extraExpenses: [...currentExpenses, newExpense]
+                    });
+                }
+             } catch (err) {
+                console.error("Error updating daily cash with initial payment", err);
+             }
+             // ---------------------------------------------------------
+
              toast.success("Deuda y Pago inicial registrados");
          } else {
+             
+             // IF IT IS A DIRECT PAYMENT (Not debt initial payment, but a straightforward payment transaction)
+             if (type === "SUPPLIER_PAYMENT") {
+                  try {
+                    const dailyCash = await getTodayDailySales();
+                    if (dailyCash && dailyCash.status === "abierta") {
+                        const newExpense = {
+                            description: `Pago a Proveedor: ${formData.description || "Pago directo"}`,
+                            amount: Number(formData.amount)
+                        };
+                        const currentExpenses = dailyCash.extraExpenses || [];
+                        await updateDailyCash(dailyCash._id, {
+                            extraExpenses: [...currentExpenses, newExpense]
+                        });
+                    }
+                 } catch (err) {
+                    console.error("Error updating daily cash with direct payment", err);
+                 }
+             }
+
              toast.success("Movimiento registrado correctamente");
          }
       }
@@ -161,9 +203,7 @@ export default function TransactionModal({
 
   if (!isOpen) return null;
 
-  function formatCurrency(value: string): string {
-    throw new Error("Function not implemented.");
-  }
+
 
   return (
     <Overlay>
@@ -197,7 +237,7 @@ export default function TransactionModal({
                 step="0.01"
                 min="0"
                 value={formData.amount}
-                onChange={(e) => setFormData({ ...formData, amount: formatCurrency(e.target.value) })}
+                onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                 className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-zinc-900 focus:ring-2 focus:ring-primary/20 outline-none dark:text-white"
                 placeholder="0.00"
               />
@@ -302,7 +342,7 @@ export default function TransactionModal({
                 type="button"
                 variant="outline"
                 onClick={onClose}
-                className="flex-1"
+                className="flex-1 text-black dark:text-white dark:hover:text-black"
                 disabled={loading}
              >
                 Cancelar

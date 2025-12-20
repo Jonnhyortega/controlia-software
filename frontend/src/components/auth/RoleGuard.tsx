@@ -3,6 +3,7 @@
 import { useAuth } from "@/context/authContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Loading from "../loading";
 
 export default function RoleGuard({ children, role = "admin" }: { children: React.ReactNode, role?: string }) {
   const { user, loading } = useAuth();
@@ -19,7 +20,7 @@ export default function RoleGuard({ children, role = "admin" }: { children: Reac
     }
   }, [user, loading, role, router]);
 
-  if (loading) return <p className="p-10 text-gray-500">Cargando permisos...</p>;
+  if (loading) return <Loading fullscreen />;
 
   // Si no cumple, no renderizar nada (el useEffect redirigirá)
   if (!user || user.role !== role) return null;

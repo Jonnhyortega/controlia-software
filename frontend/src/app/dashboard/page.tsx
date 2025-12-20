@@ -103,6 +103,9 @@ export default function DashboardPage() {
   };
 
   const handleExpenseDelete = (index: number) => {
+    if (!data?.extraExpenses) return;
+    const itemToDelete = data.extraExpenses[index];
+
     setConfirmDialog({
         open: true,
         title: "Eliminar gasto",
@@ -110,18 +113,33 @@ export default function DashboardPage() {
         onConfirm: async () => {
              setConfirmDialog((prev) => ({ ...prev, open: false }));
              
-             if (!data?.extraExpenses) return;
-
-             const newExpenses = [...data.extraExpenses];
-             newExpenses.splice(index, 1);
-             
              try {
-                await updateDailyCash(data._id, { extraExpenses: newExpenses });
-                toast.success("Gasto eliminado");
-                reload();
+                 // 1. Si es una Transacción (Pago a Proveedor), usar su endpoint específico
+                 if (itemToDelete.isTransaction && itemToDelete._id) {
+                     await api.delete(`/transactions/${itemToDelete._id}`);
+                     toast.success("Pago eliminado correctamente");
+                     reload();
+                     return;
+                 }
+
+                 // 2. Si es un gasto manual, actualizamos la caja diaria
+                 // IMPORTANTE: Filtramos las que SON transacciones para no guardarlas como texto plano
+                 const cleanExpenses = data.extraExpenses.filter((e: any, i: number) => {
+                     // Borrar el item seleccionado
+                     if (i === index) return false;
+                     // Borrar items que sean transacciones (se regeneran solos al recargar)
+                     if (e.isTransaction) return false;
+                     return true;
+                 });
+                 
+                 // Enviamos la lista limpia y overwrite=true para reemplazar
+                 await updateDailyCash(data._id, { extraExpenses: cleanExpenses, overwrite: true } as any);
+                 toast.success("Gasto eliminado");
+                 reload();
+
              } catch (error) {
                 console.error("Error deleting expense:", error);
-                toast.error("Error al eliminar gasto");
+                toast.error("Error al eliminar gasto. Intente recargar.");
              }
         },
         onCancel: () => setConfirmDialog((prev) => ({ ...prev, open: false })),
@@ -245,7 +263,7 @@ export default function DashboardPage() {
         </div>
         ) : 
         (
-          <div className="flex bg-white dark:bg-zinc-900 flex-col items-center justify-center py-14 text-gray-400 border border-gray-200 dark:border-zinc-800 rounded-md">
+          <div className="flex bg-white dark:bg-zinc-900 flex-col items-center justify-center py-14 text-gray-400 border border-gray-200 dark:border-zinc-800 rounded-md mb-6">
             <ReceiptText className="w-12 h-12 mb-3 opacity-60" />
             <p className="text-center text-gray-500 dark:text-gray-400 text-lg">
               Todavía no registraste ventas.
@@ -362,7 +380,7 @@ export default function DashboardPage() {
 
                 <div className="bg-[#1a1a1a] rounded-md p-4 mb-6 text-left border border-gray-800">
                   <p className="text-gray-300 text-sm mb-3">
-                    Has comenzado tu periodo de prueba de <strong>90 días</strong> del Plan Básico.
+                    Has comenzado tu periodo de prueba de <strong>90 días</strong> del Plan Base.
                   </p>
                   <ul className="space-y-2 text-sm text-gray-400">
                     <li className="flex items-center gap-2">
@@ -377,7 +395,7 @@ export default function DashboardPage() {
                 </div>
 
                 <p className="text-xs text-gray-500 mb-6">
-                  Al finalizar los 90 días, podrás suscribirte al Plan Básico por solo <strong>$15.000 ARS/mes</strong> para continuar usando el servicio.
+                  Al finalizar los 90 días, podrás suscribirte al Plan Base por solo <strong>$15.000 ARS/mes</strong> para continuar usando el servicio.
                 </p>
 
                 <button

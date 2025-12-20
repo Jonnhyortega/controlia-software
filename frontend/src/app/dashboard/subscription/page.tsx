@@ -60,7 +60,9 @@ export default function SubscriptionPage() {
             <CardTitle className="flex justify-between items-center">
               <span>Plan Actual</span>
               <Badge variant={isValid ? "default" : "destructive"}>
-                {user?.membershipTier === 'basic' ? 'Prueba Gratuita' : user?.membershipTier || 'Básico'}
+                {user?.membershipTier === 'basic' ? 'Plan Base (Prueba)' : 
+                 user?.membershipTier === 'gestion' ? 'Plan Gestión' :
+                 user?.membershipTier === 'avanzado' ? 'Plan Avanzado' : 'Plan Base'}
               </Badge>
             </CardTitle>
             <CardDescription>

@@ -131,18 +131,18 @@ export default function Sidebar() {
               <div key={item.label} className="relative group mb-1">
                 <button
                   onClick={() => router.push(item.path)}
-                  className={`
+                  className={`group
                     w-full flex items-center gap-3 px-4 py-3 rounded-md transition-all duration-200
                     ${
                       active
                         ? "bg-primary text-white shadow-lg shadow-primary/20 font-medium"
-                        : "hover:bg-gray-100 dark:hover:bg-[#1f1f1f] text-gray-600 dark:text-gray-400"
+                        : "hover:bg-primary-500 text-gray-600 dark:text-gray-400"
                     }
                   `}
                 >
                   <Icon
                     size={20}
-                    className={active ? "text-white" : "text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200"}
+                    className={active ? "text-white" : "text-gray-500 dark:text-gray-400 group-hover:text-primary-100"}
                   />
 
                   {!collapsed && <span className="text-sm">{item.label}</span>}

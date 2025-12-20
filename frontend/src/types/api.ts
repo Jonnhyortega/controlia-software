@@ -6,7 +6,7 @@ export interface UserAPI {
   businessName: string;
   email: string;
   role?: string;
-  membershipTier?: "basic" | "medium" | "pro";
+  membershipTier?: "basic" | "gestion" | "avanzado";
   active?: boolean;
   isEmailVerified?: boolean;
   logoUrl?: string;
@@ -21,7 +21,7 @@ export interface AuthResponse {
   businessName: string;
   email: string;
   role?: string;
-  membershipTier?: "basic" | "medium" | "pro";
+  membershipTier?: "basic" |  "gestion" | "avanzado";
   active?: boolean;
   isEmailVerified?: boolean;
   logoUrl?: string;

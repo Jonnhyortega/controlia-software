@@ -65,16 +65,15 @@ export default function Navbar() {
             {businessName || nameProfile}
           </span>
 
-          <div className="relative group">
+          <div className="relative group ">
             {/* Avatar */}
             {imgPerfil ? (
               <img
                 src={imgPerfil}
                 alt="Perfil"
                 title={capitalize(user?.name || "Usuario")}
-                width={48}
-                height={48}
-                className="rounded-full cursor-pointer transition shadow-sm border border-gray-200 dark:border-gray-700"
+                width={50}
+                className="rounded-[50%] cursor-pointer transition shadow-sm border border-gray-200 dark:border-gray-700"
               />
             ) : (
               <ContactRound

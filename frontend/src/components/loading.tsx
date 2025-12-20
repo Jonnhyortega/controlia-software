@@ -12,7 +12,7 @@ export default function Loading({
   return (
     <div
       suppressHydrationWarning
-      className={`flex flex-col items-center justify-center gap-4 text-gray-600 ${
+      className={`h-full w-full flex flex-col items-center justify-center gap-4 text-gray-600 ${
         fullscreen ? "fixed inset-0 bg-gray-200/80 dark:bg-background  z-50 backdrop-blur-sm" : "py-8"
       }`}
     >
