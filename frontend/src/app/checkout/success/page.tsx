@@ -6,7 +6,7 @@ import { CheckCircle2, ArrowRight, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../../../components/ui/button";
 import { Card, CardContent } from "../../../components/ui/card";
-import { useWindowSize } from "@/hooks/use-window-size"; // We might not have this hook, I'll use standard rect or just css
+
 import confetti from "canvas-confetti"; // I need to verify if this is installed or use a simpler approach. 
 // Safest bet without installing new packages is pure framer motion or just triggering confetti if available. 
 // I'll skip canvas-confetti import to avoid "module not found" if not installed, and stick to CSS/Motion.

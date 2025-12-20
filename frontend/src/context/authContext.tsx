@@ -22,7 +22,7 @@ interface User {
   businessName: string;
   email: string;
   role?: string;
-  membershipTier?: "basic" | "medium" | "pro";
+  membershipTier?: "basic" | "medium" | "pro" | "gestion" | "avanzado";
   active?: boolean;
   isEmailVerified?: boolean;
   logoUrl?: string;
@@ -142,7 +142,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         businessName: businessName || name, // Fallback temporal
         email: userEmail, 
         role: role || undefined,
-        membershipTier: membershipTier as "basic" | "medium" | "pro",
+        membershipTier: membershipTier as "basic" | "medium" | "pro" | "gestion" | "avanzado",
         active: active ?? undefined, // boolean
         isEmailVerified: isEmailVerified ?? undefined, // boolean
         logoUrl: logoUrl || undefined,
