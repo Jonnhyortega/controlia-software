@@ -13,6 +13,7 @@ export interface UserAPI {
   address?: string; // New field
   membershipStartDate?: string;
   trialDaysRemaining?: string | number;
+  subscriptionStatus?: string;
 }
 
 export interface AuthResponse {
@@ -27,6 +28,7 @@ export interface AuthResponse {
   logoUrl?: string;
   membershipStartDate?: string;
   trialDaysRemaining?: string | number;
+  subscriptionStatus?: string;
   token: string;
 }
 

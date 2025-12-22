@@ -16,6 +16,7 @@ import RoleGuard from "@/components/auth/RoleGuard";
 export default function SubscriptionPage() {
   const { user } = useAuth();
   const [trialDaysRemaining, setTrialDaysRemaining] = useState<string | number>(user?.trialDaysRemaining || 0);
+  const [status, setStatus] = useState<string | undefined>(user?.subscriptionStatus);
   const [loading, setLoading] = useState(true);
 
   // 🔄 Fetch fresh profile data on mount (like Navbar)
@@ -25,6 +26,9 @@ export default function SubscriptionPage() {
         const data = await getProfile();
         if (data.trialDaysRemaining !== undefined) {
           setTrialDaysRemaining(data.trialDaysRemaining);
+        }
+        if (data.subscriptionStatus) {
+            setStatus(data.subscriptionStatus);
         }
       } catch (error) {
         console.error("Error fetching profile in subscription page", error);
@@ -38,37 +42,44 @@ export default function SubscriptionPage() {
     ? parseInt(trialDaysRemaining, 10) 
     : (trialDaysRemaining || 0);
   
-  const isValid = daysRemaining > 0;
+  const isAuthorized = status === 'authorized';
+  const isValid = daysRemaining > 0 || isAuthorized;
 
   const totalTrialDays = 90;
   const progress = ((totalTrialDays - daysRemaining) / totalTrialDays) * 100;
 
   return (
     <RoleGuard role="admin">
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Mi Suscripción</h1>
-          <p className="text-muted-foreground">Gestiona tu plan y facturación.</p>
-        </div>
+    <div className="p-6 space-y-8 flex flex-col items-center justify-center min-h-[60vh]">
+      <div className="text-center space-y-2">
+          <h1 className="text-4xl font-bold tracking-tight">Mi Suscripción</h1>
+          <p className="text-muted-foreground text-lg">Gestiona tu plan y facturación de manera sencilla.</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="w-full max-w-5xl mx-auto">
         {/* Current Plan Card */}
-        <Card className="md:col-span-1">
+        <Card className="w-full shadow-lg border-muted/60">
           <CardHeader>
             <CardTitle className="flex justify-between items-center">
               <span>Plan Actual</span>
-              <Badge variant={isValid ? "default" : "destructive"}>
-                {user?.membershipTier === 'basic' ? 'Plan Base (Prueba)' : 
-                 user?.membershipTier === 'gestion' ? 'Plan Gestión' :
-                 user?.membershipTier === 'avanzado' ? 'Plan Avanzado' : 'Plan Base'}
+              <Badge variant={isAuthorized ? "default" : isValid ? "default" : "destructive"}>
+                {isAuthorized ? (
+                  user?.membershipTier === 'basic' ? 'Plan Base' :
+                  user?.membershipTier === 'gestion' ? 'Plan Gestión' :
+                  user?.membershipTier === 'avanzado' ? 'Plan Avanzado' : 'Plan Base'
+                ) : (
+                  user?.membershipTier === 'basic' ? 'Plan Base (Prueba)' : 
+                  user?.membershipTier === 'gestion' ? 'Plan Gestión' :
+                  user?.membershipTier === 'avanzado' ? 'Plan Avanzado' : 'Plan Base'
+                )}
               </Badge>
             </CardTitle>
             <CardDescription>
-              {isValid 
-                ? "Disfruta de todas las funciones premium durante el periodo de prueba." 
-                : "Tu periodo de prueba ha finalizado."}
+              {isAuthorized 
+                ? "Tienes una suscripción activa. ¡Gracias por confiar en Controlia!"
+                : isValid 
+                  ? "Disfruta de todas las funciones premium durante el periodo de prueba." 
+                  : "Tu periodo de prueba ha finalizado."}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -107,25 +118,7 @@ export default function SubscriptionPage() {
           </CardContent>
         </Card>
 
-        {/* Payment Method Placeholder */}
-        <Card className="md:col-span-1 border-dashed">
-          <CardHeader>
-            <CardTitle>Método de Pago</CardTitle>
-            <CardDescription>
-              No se requiere tarjeta de crédito para el periodo de prueba.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center h-[200px] text-center space-y-4">
-            <div className="p-3 bg-muted rounded-full">
-              <AlertCircle className="w-6 h-6 text-muted-foreground" />
-            </div>
-            <div>
-              <p className="font-medium">Sin método de pago</p>
-              <p className="text-sm text-muted-foreground">Agrega uno para continuar después de la prueba.</p>
-            </div>
-            <Button variant="outline" disabled>Agregar Método de Pago</Button>
-          </CardContent>
-        </Card>
+{/* Payment Method section removed as per request */}
       </div>
     </div>
     </RoleGuard>

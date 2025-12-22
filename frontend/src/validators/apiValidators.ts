@@ -15,6 +15,7 @@ export const AuthResponseSchema = z.object({
   createdAt: z.string().nullable().optional(),
   trialDaysRemaining: z.union([z.string(), z.number()]).nullable().optional(),
   address: z.string().nullable().optional(),
+  subscriptionStatus: z.string().nullable().optional(),
 });
 
 export const SaleProductSchema = z.object({

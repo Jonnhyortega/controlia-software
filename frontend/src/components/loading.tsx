@@ -1,61 +1,105 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function Loading({
-  message = "Cargando datos...",
+  message = "Cargando Controlia...",
   fullscreen = false,
+  size = 64, // Default size for the spinner
 }: {
   message?: string;
   fullscreen?: boolean;
+  size?: number;
 }) {
   return (
     <div
       suppressHydrationWarning
-      className={`h-full w-full flex flex-col items-center justify-center gap-4 text-gray-600 ${
-        fullscreen ? "fixed inset-0 bg-gray-200/80 dark:bg-background  z-50 backdrop-blur-sm" : "py-8"
+      className={`flex flex-col items-center justify-center gap-6 text-foreground ${
+        fullscreen
+          ? "fixed inset-0 bg-background/80 z-50 backdrop-blur-md"
+          : "w-full h-full min-h-[200px]"
       }`}
     >
-      {/* 🔵 Spinner animado estilo Controlia */}
-      <div className="relative w-16 h-16 flex items-center justify-center">
-        {/* Logo Central Estático */}
+      <div 
+        className="relative flex items-center justify-center"
+        style={{ width: size, height: size }}
+      >
+        {/* 🏢 Logo Central */}
         <div className="absolute inset-0 flex items-center justify-center z-10">
-            <img 
-              src="/icon.png" 
-              alt="Controlia Logo" 
-              className="w-8 h-8 object-contain opacity-90 rounded-md"
-            />
+          <div className="relative w-[50%] h-[50%]">
+             <Image
+               src="/icon.png"
+               alt="Controlia Logo"
+               fill
+               className="object-contain"
+               priority
+             />
+          </div>
         </div>
 
-        {/* Spinner Giratorio */}
-        <motion.div
-           className="w-full h-full"
-           initial={{ rotate: 0 }}
-           animate={{ rotate: 360 }}
-           transition={{
-             repeat: Infinity,
-             duration: 1.2,
-             ease: "linear",
-           }}
+        {/* ⭕ Anillo de fondo sutil */}
+        <svg
+          className="absolute inset-0 w-full h-full rotate-[-90deg]"
+          viewBox="0 0 100 100"
         >
-          <div suppressHydrationWarning className="w-full h-full rounded-full border-4 border-primary border-t-transparent" />
-        </motion.div>
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className="text-primary/10"
+          />
+        </svg>
+
+        {/* 🌀 Spinner animado (Barra circular) */}
+        <motion.svg
+          className="absolute inset-0 w-full h-full overflow-visible"
+          viewBox="0 0 100 100"
+          animate={{ rotate: 360 }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        >
+           <defs>
+            <linearGradient id="spinner-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="currentColor" stopOpacity="0" />
+              <stop offset="50%" stopColor="currentColor" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="currentColor" stopOpacity="1" />
+            </linearGradient>
+          </defs>
+          <motion.circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="none"
+            stroke="currentColor" // Or url(#spinner-gradient) for cooler effect
+            strokeWidth="3"
+            strokeLinecap="round"
+            className="text-primary"
+            strokeDasharray="180 251.2" // ~70% filled
+            // Optional: Animate dasharray for "breathing" circle
+          />
+        </motion.svg>
       </div>
 
-      {/* Texto animado */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ repeat: Infinity, duration: 1.5, repeatType: "mirror" }}
-        className="text-sm font-medium tracking-wide"
-      >
-        {message}
-      </motion.p>
-
-      {/* Firma sutil */}
-      <p className="text-[11px] text-black dark:text-gray-400 mt-2">
-        Controlia • Sistema de gestión inteligente
-      </p>
+      {/* 📜 Texto animado opcional */}
+      {message && (
+        <motion.div
+           initial={{ opacity: 0, y: 10 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.5 }}
+           className="flex flex-col items-center gap-1"
+        >
+          <p className="text-sm font-medium tracking-wide text-muted-foreground animate-pulse">
+            {message}
+          </p>
+        </motion.div>
+      )}
     </div>
   );
 }

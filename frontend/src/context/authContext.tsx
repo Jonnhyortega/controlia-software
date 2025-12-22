@@ -29,6 +29,7 @@ interface User {
   address?: string;
   membershipStartDate?: string;
   trialDaysRemaining?: string | number;
+  subscriptionStatus?: string;
 }
 
 interface AuthContextType {
@@ -134,7 +135,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error("Respuesta inválida del servidor");
       }
 
-      const { token, _id, name, businessName, email: userEmail, role, membershipTier, active, isEmailVerified, logoUrl, address, membershipStartDate, createdAt, trialDaysRemaining } = parsed.data;
+      const { token, _id, name, businessName, email: userEmail, role, membershipTier, active, isEmailVerified, logoUrl, address, membershipStartDate, createdAt, trialDaysRemaining, subscriptionStatus } = parsed.data;
   
       const user: User = { 
         _id, 
@@ -148,7 +149,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logoUrl: logoUrl || undefined,
         address: address || undefined,
         membershipStartDate: (membershipStartDate || createdAt) || undefined,
-        trialDaysRemaining: trialDaysRemaining ?? undefined
+        trialDaysRemaining: trialDaysRemaining ?? undefined,
+        subscriptionStatus: subscriptionStatus || undefined,
       };
   
       // 💾 Guardamos todo en cookies y localStorage
