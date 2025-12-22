@@ -22,14 +22,15 @@ interface User {
   businessName: string;
   email: string;
   role?: string;
-  membershipTier?: "basic" | "medium" | "pro" | "gestion" | "avanzado";
+  membershipTier?: "basic" | "gestion" | "avanzado";
   active?: boolean;
   isEmailVerified?: boolean;
   logoUrl?: string;
   address?: string;
   membershipStartDate?: string;
+  membershipEndDate?: string;
   trialDaysRemaining?: string | number;
-  subscriptionStatus?: string;
+  subscriptionStatus?: "pending" | "authorized" | "paused" | "cancelled" | null;
 }
 
 interface AuthContextType {
@@ -143,14 +144,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         businessName: businessName || name, // Fallback temporal
         email: userEmail, 
         role: role || undefined,
-        membershipTier: membershipTier as "basic" | "medium" | "pro" | "gestion" | "avanzado",
+        membershipTier: membershipTier as "basic" | "avanzado" | "gestion",
         active: active ?? undefined, // boolean
         isEmailVerified: isEmailVerified ?? undefined, // boolean
         logoUrl: logoUrl || undefined,
         address: address || undefined,
         membershipStartDate: (membershipStartDate || createdAt) || undefined,
         trialDaysRemaining: trialDaysRemaining ?? undefined,
-        subscriptionStatus: subscriptionStatus || undefined,
+        subscriptionStatus: (subscriptionStatus as "pending" | "authorized" | "paused" | "cancelled" | null) || undefined,
       };
   
       // 💾 Guardamos todo en cookies y localStorage
