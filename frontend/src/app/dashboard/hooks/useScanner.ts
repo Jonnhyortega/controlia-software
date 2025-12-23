@@ -43,7 +43,7 @@ export function useScanner(onDetected: (code: string) => void, allowInsideInputs
                 onDetected(scannedCode);
             }
             // Si fue un Enter suelto (buffer vacío), lo dejamos pasar (ej: navegación normal)
-        } else if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
+        } else if (e.key && e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
             // 4. Acumular caracteres imprimibles
             buffer.current += e.key;
         }

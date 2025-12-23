@@ -20,11 +20,19 @@ import { X, Package, Settings2, List } from "lucide-react";
 import Overlay from "../components/overlay";
 import { CollapsibleSection } from "../../../components/ui/CollapsibleSection";
 
+import { useAuth } from "../../../context/authContext";
+import { PLAN_LIMITS } from "../../../constants/planLimits";
+
 export default function ProductsPage() {
+  const { user } = useAuth();
   const p = useProducts();
 
   // NUEVO → mostrar modal de categorías
   const [showCategories, setShowCategories] = useState(false);
+
+  const planName = (user?.membershipTier || 'basic').toLowerCase();
+  const limits = PLAN_LIMITS[planName as keyof typeof PLAN_LIMITS] || PLAN_LIMITS.basic;
+  const isLimitReached = p.products.length >= limits.products;
 
   if (p.loading) return <Loading />;
 
@@ -40,7 +48,7 @@ export default function ProductsPage() {
             Productos
           </h1>
           <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-            Gestión de inventario y stock
+            Gestión de inventario y stock ({p.products.length} / {limits.products})
           </span>
         </div>
       </div>
@@ -62,6 +70,7 @@ export default function ProductsPage() {
               })
             }
             setShowCategories={setShowCategories} // ← NUEVO
+            isLimitReached={isLimitReached}
           />
 
           {/* BUSCADOR */}

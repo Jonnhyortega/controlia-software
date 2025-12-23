@@ -3,16 +3,16 @@ import { motion } from 'framer-motion';
 import { Button } from './ui/button';
 import { Check, Sparkles } from 'lucide-react';
 import Link from "next/link";
-
+import { PLAN_LIMITS } from '@/constants/planLimits';
 const plans = [
   {
     name: 'Plan Base',
-    price: '$15.000',
+    price: '$25.000',
     period: '/mes',
     description: 'Ideal para kioscos y comercios chicos. Suena accesible y no minimiza al cliente.',
     features: [
-      'Productos ilimitados',
-      '1 usuario administrador',
+      `Cantidad de productos: ${PLAN_LIMITS?.basic?.products || 100}`,
+      `Hasta ${PLAN_LIMITS?.basic?.users || 1} usuarios (empleados)`,
       'Ventas y Stock en tiempo real',
       'Reportes básicos',
       'Soporte por email'
@@ -21,12 +21,12 @@ const plans = [
   },
   {
     name: 'Plan Gestión',
-    price: '$25.000',
+    price: '$59.000',
     period: '/mes',
     description: 'Control total con Controlia Gestión. Para el comercio que ya se toma en serio el negocio.',
     features: [
-      'Todo lo del Plan Base',
-      'Hasta 5 usuarios (empleados)',
+       `Cantidad de productos: ${PLAN_LIMITS?.gestion?.products || 5000}`,
+      `Hasta ${PLAN_LIMITS?.gestion?.users || 2} usuarios (empleados)`,
       'Gestión financiera avanzada',
       'Cuentas corrientes (Fiados)',
       'Personalización de marca',
@@ -36,7 +36,7 @@ const plans = [
   },
   {
     name: 'Plan Avanzado',
-    price: 'Consultar',
+    price: 'Proximamente',
     period: '',
     description: 'Cuando el negocio crece, pasás a Avanzado. Para negocios que mueven volumen.',
     features: [

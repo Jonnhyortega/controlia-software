@@ -1,16 +1,18 @@
 "use client";
 
-import { Plus, XCircle, Package, Settings } from "lucide-react";
+import { Package, Settings } from "lucide-react";
 import { Button } from "../../components/button";
+import { LimitAwareButton } from "../../components/LimitAwareButton";
 
 interface HeaderActionsProps {
   showForm: boolean;
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
   resetForm: () => void;
-  setShowCategories: React.Dispatch<React.SetStateAction<boolean>>; // 👈 NUEVO
+  setShowCategories: React.Dispatch<React.SetStateAction<boolean>>;
+  isLimitReached?: boolean;
 }
 
-export function HeaderActions({ showForm, setShowForm, resetForm, setShowCategories }: HeaderActionsProps) {
+export function HeaderActions({ showForm, setShowForm, resetForm, setShowCategories, isLimitReached }: HeaderActionsProps) {
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-start gap-4">
       <div className="flex items-center justify-between w-full md:w-auto">
@@ -37,18 +39,15 @@ export function HeaderActions({ showForm, setShowForm, resetForm, setShowCategor
           Categorías
         </Button>
 
-        <Button
-          onClick={() => {
-            resetForm();
-            setShowForm((prev) => !prev);
-          }}
-          variant={showForm ? "secondary" : "default"}
-          className="rounded-md px-4 py-2 flex items-center justify-center gap-2 z-index-10000 w-full md:w-auto"
-        >          
-            <>
-              <Plus className="w-4 h-4" /> Nuevo producto
-            </>         
-        </Button>
+        <LimitAwareButton
+            isLimitReached={!!isLimitReached}
+            onClick={() => {
+               resetForm();
+               setShowForm((prev) => !prev);
+            }}
+            label="Nuevo producto"
+            className="w-full md:w-auto"
+        />
       </div>
     </div>
   );

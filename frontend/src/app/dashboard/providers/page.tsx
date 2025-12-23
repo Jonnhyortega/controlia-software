@@ -23,12 +23,16 @@ import {
 } from "lucide-react";
 import { Button } from "../components/button";
 import { ConfirmDialog } from "../components/confirmDialog";
+import { LimitAwareButton } from "../components/LimitAwareButton";
 import Loading from "../../../components/loading";
 import { useToast } from "../../../context/ToastContext";
 import Overlay from "../components/overlay";
 import { SupplierForm } from "./components/SupplierForm";
 import PaymentHistorySection from "../components/Transactions/PaymentHistorySection";
 import { CollapsibleSection } from "../../../components/ui/CollapsibleSection";
+import { useAuth } from "../../../context/authContext";
+import { PLAN_LIMITS } from "../../../constants/planLimits";
+
 
 
 
@@ -36,6 +40,7 @@ import { CollapsibleSection } from "../../../components/ui/CollapsibleSection";
 
 export default function SuppliersPage() {
   const toast = useToast();
+  const { user } = useAuth();
 
 
   // 📦 Estados principales
@@ -77,6 +82,10 @@ export default function SuppliersPage() {
         setLoading(false);
       }
     };
+
+  const planName = (user?.membershipTier || 'basic').toLowerCase();
+  const limits = PLAN_LIMITS[planName as keyof typeof PLAN_LIMITS] || PLAN_LIMITS.basic;
+  const isLimitReached = suppliers.length >= limits.suppliers;
 
   // 🔹 Cargar proveedores al montar
   useEffect(() => {
@@ -123,9 +132,16 @@ export default function SuppliersPage() {
         debt: 0,
       });
       setShowForm(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error al guardar proveedor:", err);
-      toast.error("Error al guardar proveedor ❌");
+      const msg = err.response?.data?.message || err.message || "";
+      const status = err.response?.status;
+
+      if (status === 403) {
+         toast.error(`🔒 ${msg}`);
+      } else {
+         toast.error(msg || "Error al guardar proveedor ❌");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -210,7 +226,8 @@ export default function SuppliersPage() {
              </div>
 
              {/* Botón Nuevo */}
-             <Button
+             <LimitAwareButton
+                isLimitReached={isLimitReached}
                 onClick={() => {
                   setEditingId(null);
                   setForm({
@@ -222,11 +239,9 @@ export default function SuppliersPage() {
                   });
                   setShowForm(true);
                 }}
-                className="bg-primary hover:bg-primary-700 text-white px-5 py-2.5 rounded-md shadow-md transition-all flex items-center justify-center gap-2 font-bold"
-              >
-                <Plus size={20} />
-                <span>Nuevo Proveedor</span>
-              </Button>
+                label="Nuevo Proveedor"
+                limitMessage="Has alcanzado el límite de proveedores de tu plan."
+              />
          </div>
       {/* </CollapsibleSection> */}
 

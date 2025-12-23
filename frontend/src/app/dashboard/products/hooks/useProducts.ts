@@ -170,8 +170,11 @@ export function useProducts() {
     } catch(error: any) {
       console.error("Error guardando producto:", error);
       const msg = error.response?.data?.message || error.message || "";
+      const status = error.response?.status;
       
-      if (msg.includes("E11000") || msg.includes("duplicate key")) {
+      if (status === 403) {
+        toast.error(`🔒 ${msg}`);
+      } else if (msg.includes("E11000") || msg.includes("duplicate key")) {
         toast.error("El código de barras ya existe en otro producto.");
       } else {
         toast.error(msg || "Error al guardar el producto");

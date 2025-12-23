@@ -55,15 +55,9 @@ export default function Loading({
         </svg>
 
         {/* 🌀 Spinner animado (Barra circular) */}
-        <motion.svg
-          className="absolute inset-0 w-full h-full overflow-visible"
+        <svg
+          className="absolute inset-0 w-full h-full overflow-visible animate-spin"
           viewBox="0 0 100 100"
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: "linear",
-          }}
         >
            <defs>
             <linearGradient id="spinner-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -72,7 +66,7 @@ export default function Loading({
               <stop offset="100%" stopColor="currentColor" stopOpacity="1" />
             </linearGradient>
           </defs>
-          <motion.circle
+          <circle
             cx="50"
             cy="50"
             r="40"
@@ -84,7 +78,7 @@ export default function Loading({
             strokeDasharray="180 251.2" // ~70% filled
             // Optional: Animate dasharray for "breathing" circle
           />
-        </motion.svg>
+        </svg>
       </div>
 
       {/* 📜 Texto animado opcional */}

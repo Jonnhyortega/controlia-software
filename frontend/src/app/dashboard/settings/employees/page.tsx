@@ -71,7 +71,14 @@ export default function EmployeesPage() {
       fetchEmployees();
     } catch (error: any) {
         console.error(error);
-        toast.error(error.message || "Error al guardar empleado");
+        const msg = error.response?.data?.message || error.message || "Error al guardar empleado";
+        const status = error.response?.status;
+
+        if (status === 403) {
+            toast.error(`🔒 ${msg}`);
+        } else {
+            toast.error(msg);
+        }
     } finally {
         setSubmitting(false);
     }

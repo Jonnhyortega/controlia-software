@@ -321,7 +321,13 @@ export default function SalesForm({
         } catch (error: any) {
           console.error("Error al registrar:", error);
           const msg = error?.response?.data?.message || error?.message || "Error desconocido.";
-          toast.error(`❌ ${msg}`);
+          const status = error.response?.status;
+
+          if (status === 403) {
+             toast.error(`🔒 ${msg}`);
+          } else {
+             toast.error(`❌ ${msg}`);
+          }
         } finally {
           setLoading(false);
           setConfirmDialog((prev) => ({ ...prev, open: false }));
