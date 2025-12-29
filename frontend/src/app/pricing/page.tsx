@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { useRouter } from "next/navigation";
+import React, { Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "../../context/authContext";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
@@ -67,15 +67,20 @@ const plans: PricingPlan[] = [
   }
 ];
 
-export default function PricingPage() {
+function PricingContent() {
   const { user } = useAuth();
+  const searchParams = useSearchParams();
   const router = useRouter();
+  const isExpiredQuery = searchParams.get("expired") === "true";
 
   // Determine if check for trial. 
   // Assuming if trialDaysRemaining is huge or matches logic, it's trial.
   // Or simply rely on "basic" membership + positive trial days.
   const isTrial = (user?.trialDaysRemaining && Number(user.trialDaysRemaining) > 0) || false;
   
+  // Also check if user status explicitly says cancelled or paused (or we rely on the query param for now)
+  const isExpired = isExpiredQuery || user?.subscriptionStatus === "cancelled" || user?.subscriptionStatus === "paused";
+
   // If in trial, show all. If subscribed to a paid plan, hide current plan.
   // Note: user.membershipTier defaults to 'basic' often. 
   // We need to differentiate Paid Basic from Trial Basic if possible.
@@ -85,7 +90,8 @@ export default function PricingPage() {
   const currentPlanId = user?.membershipTier || 'basic';
 
   const visiblePlans = plans.filter(plan => {
-    if (isTrial) return true;
+    // Si está en trial o vencido, mostramos TODOS los planes (incluyendo basic para que pueda pagarlo)
+    if (isTrial || isExpired) return true;
     return plan.id !== currentPlanId;
   });
 
@@ -242,5 +248,13 @@ export default function PricingPage() {
         </div>
       </div>
     </RoleGuard>
+  );
+}
+
+export default function PricingPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background" />}>
+      <PricingContent />
+    </Suspense>
   );
 }

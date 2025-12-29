@@ -85,6 +85,15 @@ api.interceptors.response.use(
         }
       }
     }
+
+    // 🔒 Interceptor de SUSCRIPCIÓN VENCIDA (403 con flag específico)
+    if (error.response?.status === 403 && error.response?.data?.subscriptionExpired) {
+        console.warn("⛔ Suscripción vencida. Redirigiendo...");
+        if (typeof window !== "undefined" && !window.location.pathname.includes("/subscription-expired")) {
+             window.location.replace("/subscription-expired");
+        }
+    }
+
     return Promise.reject(error);
   }
 );
@@ -616,4 +625,8 @@ export const createSubscription = async (plan: "basic" | "gestion" | "avanzado")
   return res.data;
 };
 
-
+// 🆘 SOLICITAR DÍA DE EMERGENCIA
+export const requestEmergencyAccess = async (): Promise<{ message: string; accessUntil: string }> => {
+  const res = await api.post("/users/emergency-access");
+  return res.data;
+};
