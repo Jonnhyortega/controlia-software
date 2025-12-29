@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Filter, Download } from "lucide-react";
 import SalesRow from "./salesRow";
 import ReceiptModal from "./ReceiptModal";
@@ -23,6 +23,15 @@ export default function SalesTable({
   const [searchTerm, setSearchTerm] = useState("");
   const [filterMethod, setFilterMethod] = useState("all");
   const [selectedReceiptSale, setSelectedReceiptSale] = useState<any>(null);
+
+  // Paginación
+  const ITEMS_PER_PAGE = 7;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Resetear página al filtrar
+  // Usamos useEffect para resetear cuando cambian los filtros
+  // (Nota: Esto requiere importar useEffect, si no está importado dará error, verificar imports)
+
 
   // 🔍 Filtrar ventas
   const filteredSales = sales.filter((sale) => {
@@ -50,6 +59,14 @@ export default function SalesTable({
 
     return true;
   });
+
+  // Resetear página al filtrar
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterMethod]);
+
+  const totalPages = Math.ceil(filteredSales.length / ITEMS_PER_PAGE);
+  const paginatedSales = filteredSales.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   // 📥 Exportar a CSV
   const handleExport = () => {
@@ -146,12 +163,12 @@ export default function SalesTable({
           </thead>
 
           <tbody className="divide-y divide-gray-100 dark:divide-[#27272a] bg-white dark:bg-[#18181b]">
-            {filteredSales.length > 0 ? (
-                filteredSales.map((sale, i) => (
+            {paginatedSales.length > 0 ? (
+                paginatedSales.map((sale, i) => (
                 <SalesRow
                     key={sale._id}
                     sale={sale}
-                    index={filteredSales.length - i - 1} // Index visual
+                    index={filteredSales.length - ((currentPage - 1) * ITEMS_PER_PAGE) - i - 1} // Index visual exacto
                     expanded={expanded}
                     onExpand={onExpand}
                     onRevert={onRevert}
@@ -168,6 +185,29 @@ export default function SalesTable({
           </tbody>
         </table>
       </div>
+      
+      {/* Paginación */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between mt-4">
+             <button
+               disabled={currentPage === 1}
+               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+               className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-zinc-800 dark:border-zinc-700 dark:text-gray-300"
+             >
+               Anterior
+             </button>
+             <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+               Página <span className="text-gray-900 dark:text-white">{currentPage}</span> / {totalPages}
+             </span>
+             <button
+               disabled={currentPage === totalPages}
+               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+               className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-zinc-800 dark:border-zinc-700 dark:text-gray-300"
+             >
+               Siguiente
+             </button>
+        </div>
+      )}
       
       {/* 🧾 Modal Ticket */}
       {selectedReceiptSale && (

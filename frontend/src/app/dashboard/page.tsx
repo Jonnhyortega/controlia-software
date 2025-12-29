@@ -102,6 +102,37 @@ export default function DashboardPage() {
     }
   };
 
+  // Keyboard Shortcuts for Dashboard
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // 1. Si Confirm Dialog está abierto, no interferir (él mismo se maneja)
+      if (confirmDialog.open) return;
+
+      // 2. Escape: Cerrar modales (con confirmación)
+      if (e.key === "Escape") {
+         if (showSalesForm || showCloseCashForm || showExpenseForm) {
+            e.preventDefault();
+            setConfirmDialog({
+                open: true,
+                title: "Descartar cambios",
+                message: "¿Estás seguro de cerrar el formulario? Se perderán los datos no guardados.",
+                onConfirm: () => {
+                    setConfirmDialog((prev) => ({ ...prev, open: false }));
+                    setShowSalesForm(false);
+                    setShowCloseCashForm(false);
+                    setShowExpenseForm(false);
+                },
+                onCancel: () => setConfirmDialog((prev) => ({ ...prev, open: false })),
+            });
+         }
+      }
+
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showSalesForm, showCloseCashForm, showExpenseForm, confirmDialog.open]);
+
   const handleExpenseDelete = (index: number) => {
     if (!data?.extraExpenses) return;
     const itemToDelete = data.extraExpenses[index];
@@ -199,6 +230,9 @@ export default function DashboardPage() {
 
   return (
     <>
+      <div className="mt-8 border-gray-100 dark:border-zinc-900">
+        {data?.status === "cerrada" && data && <ClosedCashSummary data={data} />}
+      </div>
       <DashboardHeader
         userRole={user?.role}
         showSalesForm={showSalesForm}
@@ -290,7 +324,7 @@ export default function DashboardPage() {
 
       <AnimatePresence>
         {showSalesForm && (
-          <Overlay>
+          <Overlay className="!max-w-[95vw] !w-full !h-[90vh] !p-0">
             <SalesForm
               scannedCode={pendingScannedCode}
               onBack={() => {
@@ -409,11 +443,6 @@ export default function DashboardPage() {
           </Overlay>
         )}
       </AnimatePresence>
-
-      <div className="mt-8 border-gray-100 dark:border-zinc-900">
-        {data?.status === "cerrada" && data && <ClosedCashSummary data={data} />}
-      </div>
-
     </>
 
   );

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getDailyCashByDate } from "../../../utils/api";
+import { getTodayDailySales } from "../../../utils/api";
 
 export function useSales() {
   const [data, setData] = useState<any>(null);
@@ -9,17 +9,8 @@ export function useSales() {
   const reload = async () => {
     setLoading(true);
     try {
-      // Calcular fecha en Argentina (YYYY-MM-DD)
-      const now = new Date();
-      const formatter = new Intl.DateTimeFormat("en-CA", {
-        timeZone: "America/Argentina/Buenos_Aires",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      });
-
-      const argentinaDate = formatter.format(now); // YYYY-MM-DD
-      const res = await getDailyCashByDate(argentinaDate);
+      // Usamos el endpoint que obtiene (o crea) la caja de "hoy" según el backend
+      const res = await getTodayDailySales();
       setData(res);
     } catch {
       setData(null);

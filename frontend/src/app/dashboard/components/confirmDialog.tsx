@@ -34,13 +34,31 @@ export function ConfirmDialog({
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
+      
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          e.stopPropagation();
+          onCancel();
+        } else if (e.key === "Enter") {
+          e.preventDefault();
+          e.stopPropagation();
+          onConfirm();
+        }
+      };
+
+      window.addEventListener("keydown", handleKeyDown);
+      return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+      
     } else {
       document.body.style.overflow = "unset";
     }
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [open]);
+  }, [open, onCancel, onConfirm]);
 
   if (!mounted) return null;
 

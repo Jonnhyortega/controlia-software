@@ -73,26 +73,26 @@ export default function ClosedCashSummary({ data }: ClosedCashSummaryProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-md shadow-sm border border-gray-200 overflow-hidden mb-8"
+      className="bg-card text-card-foreground rounded-xl shadow-sm border border-border overflow-hidden mb-8"
     >
       {/* Header */}
-      <div className="bg-gray-200 border-b border-gray-100 px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="bg-muted/30 border-b border-border px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-            <CheckCircle2 className="text-green-500" size={20} />
+          <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+            <CheckCircle2 className="text-emerald-500" size={20} />
             Resumen de Cierre de Caja
           </h2>
-          <p className="text-sm text-gray-500 mt-1">
-            La caja fue cerrada correctamente hoy a las <span className="font-semibold text-gray-700">{formattedTime}</span>
+          <p className="text-sm text-muted-foreground mt-1">
+            La caja fue cerrada correctamente hoy a las <span className="font-semibold text-foreground">{formattedTime}</span>
           </p>
         </div>
         <div
-          className={`px-4 py-2 rounded-md text-sm font-semibold border ${
+          className={`px-4 py-2 rounded-lg text-sm font-semibold border ${
             difference === 0
-              ? "bg-green-50 text-green-700 border-green-200"
+              ? "bg-emerald-500/10 text-emerald-600 border-emerald-200 dark:border-emerald-800 dark:text-emerald-400"
               : isPositive
-              ? "bg-blue-50 text-blue-700 border-blue-200"
-              : "bg-amber-50 text-amber-700 border-amber-200"
+              ? "bg-blue-500/10 text-blue-600 border-blue-200 dark:border-blue-800 dark:text-blue-400"
+              : "bg-amber-500/10 text-amber-600 border-amber-200 dark:border-amber-800 dark:text-amber-400"
           }`}
         >
           {difference === 0
@@ -104,73 +104,73 @@ export default function ClosedCashSummary({ data }: ClosedCashSummaryProps) {
       {/* Grid de Métricas Principales */}
       <div className="p-6 grid grid-cols-1 justify-center sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Ingresos (Ventas) */}
-        <div className="relative overflow-hidden rounded-md bg-blue-50/50 p-4 border border-blue-100">
+        <div className="relative overflow-hidden rounded-xl bg-blue-50/50 dark:bg-blue-950/20 p-4 border border-blue-100 dark:border-blue-900">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-blue-100 text-blue-600 rounded-md">
+            <div className="p-2 bg-blue-100/80 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg">
               <TrendingUp size={20} />
             </div>
-            <span className="text-sm font-medium text-gray-600">Ingresos</span>
+            <span className="text-sm font-medium text-muted-foreground">Ingresos</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalSalesAmount)}</p>
+          <p className="text-2xl font-bold text-foreground">{formatCurrency(totalSalesAmount)}</p>
         </div>
 
         {/* Egresos (Gastos + Pagos) */}
-        <div className="relative overflow-hidden rounded-md bg-rose-50/50 p-4 border border-rose-100">
+        <div className="relative overflow-hidden rounded-xl bg-rose-50/50 dark:bg-rose-950/20 p-4 border border-rose-100 dark:border-rose-900">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-rose-100 text-rose-600 rounded-md">
+            <div className="p-2 bg-rose-100/80 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400 rounded-lg">
               <TrendingDown size={20} />
             </div>
-            <span className="text-sm font-medium text-gray-600">Egresos</span>
+            <span className="text-sm font-medium text-muted-foreground">Egresos</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalOut || 0)}</p>
+          <p className="text-2xl font-bold text-foreground">{formatCurrency(totalOut || 0)}</p>
         </div>
 
          {/* Ganancia Pura (Neta) */}
-         <div className="relative overflow-hidden rounded-md bg-emerald-50/50 p-4 border border-emerald-100">
+         <div className="relative overflow-hidden rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 p-4 border border-emerald-100 dark:border-emerald-900">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-emerald-100 text-emerald-600 rounded-md">
+            <div className="p-2 bg-emerald-100/80 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-lg">
               <DollarSign size={20} />
             </div>
-            <span className="text-sm font-medium text-gray-600">Ganancia Pura</span>
+            <span className="text-sm font-medium text-muted-foreground">Ganancia Pura</span>
           </div>
-          <p className={`text-2xl font-bold ${netProfit >= 0 ? "text-emerald-700" : "text-rose-600"}`}>
+          <p className={`text-2xl font-bold ${netProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
             {formatCurrency(netProfit)}
           </p>
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
              (Ventas - Costos - Gastos)
           </p>
         </div>
 
         {/* Real en Caja (Lo que se contó) */}
-        {/* <div className="relative overflow-hidden rounded-md bg-slate-900 p-4 text-white shadow-lg ring-1 ring-black/5">
+        {/* <div className="relative overflow-hidden rounded-xl bg-secondary p-4 text-secondary-foreground border border-border">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-slate-800 text-slate-300 rounded-md">
+            <div className="p-2 bg-background text-muted-foreground rounded-lg">
               <AlertCircle size={20} />
             </div>
-            <span className="text-sm font-medium text-slate-300">Real en Efectivo</span>
+            <span className="text-sm font-medium text-muted-foreground">Real en Efectivo</span>
           </div>
-          <p className="text-2xl font-bold text-white">{formatCurrency(finalReal || 0)}</p>
+          <p className="text-2xl font-bold text-foreground">{formatCurrency(finalReal || 0)}</p>
         </div> */}
       </div>
 
       {/* Desglose de Métodos de Pago */}
       <div className="px-6 pb-6">
-          <h3 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+          <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
             <CreditCard size={16} />
             Desglose de Operaciones
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
              {Object.entries(paymentMethods).map(([method, { count, total }]) => (
-               <div key={method} className="bg-gray-200 border border-gray-100 rounded-md p-3 flex justify-between items-center">
+               <div key={method} className="bg-muted/40 border border-border rounded-lg p-3 flex justify-between items-center transition-colors hover:bg-muted/60">
                   <div>
-                    <p className="font-semibold text-gray-800 capitalize">{method}</p>
-                    <p className="text-xs text-gray-500">{count} operaciones</p>
+                    <p className="font-semibold text-foreground capitalize">{method}</p>
+                    <p className="text-xs text-muted-foreground">{count} operaciones</p>
                   </div>
-                  <span className="font-bold text-gray-900">{formatCurrency(total)}</span>
+                  <span className="font-bold text-foreground">{formatCurrency(total)}</span>
                </div>
              ))}
              {Object.keys(paymentMethods).length === 0 && (
-                <p className="text-sm text-gray-400 italic">No hubo operaciones registradas.</p>
+                <p className="text-sm text-muted-foreground italic">No hubo operaciones registradas.</p>
              )}
           </div>
       </div>

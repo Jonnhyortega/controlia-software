@@ -99,7 +99,29 @@ export default function SalesForm({
     
     handleSaleBarcodeDetected(scannedCode);
     onScannedConsumed?.();
+    handleSaleBarcodeDetected(scannedCode);
+    onScannedConsumed?.();
   }, [scannedCode, productsDB]);
+
+  // Handle Enter to Submit
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+        // Si hay un modal de confirmación abierto, ignorar
+        if (confirmDialog.open) return;
+        
+        // Si el foco está en un textarea, ignorar (aunque no hay textareas por ahora)
+        if (e.target instanceof HTMLTextAreaElement) return;
+
+        if (e.key === "Enter") {
+            // Prevenir submit doble o accidental
+            e.preventDefault();
+            handleSubmit();
+        }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [confirmDialog.open, newSale]); // newSale dep needed for handleSubmit closure freshness
 
   const BarcodeScanner = useMemo(
     () =>
@@ -355,7 +377,7 @@ export default function SalesForm({
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.98 }}
       transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-50 flex flex-col bg-white dark:bg-[#09090b] overflow-hidden"
+      className="flex flex-col w-full h-full bg-white dark:bg-[#09090b] overflow-hidden"
     >
       {/* --- HEADER --- */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-[#09090b] shrink-0 z-30 shadow-sm">
