@@ -101,7 +101,7 @@ export async function getDashboardData(): Promise<{
 }> {
   try {
     const [latestDaily, products, clients] = await Promise.allSettled([
-      api.get("/daily-cash/today"),
+      api.get(`/daily-cash/today?t=${Date.now()}`),
       api.get("/products"),
       api.get("/clients"),
     ]);
@@ -141,7 +141,7 @@ export async function getDashboardData(): Promise<{
 
 // 📊 Obtener caja del día (equivale a daily sales)
 export const getTodayDailySales = async (): Promise<DailyCash | null> => {
-  const res = await api.get("/daily-cash/today");
+  const res = await api.get(`/daily-cash/today?t=${Date.now()}`);
   const parsed = DailyCashSchema.safeParse(res.data);
   // If the response doesn't match our schema, don't attempt to coerce it into DailyCash — return null
   return parsed.success ? parsed.data : null;
