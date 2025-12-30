@@ -34,21 +34,7 @@ const plans = [
     ],
     popular: true
   },
-  {
-    name: 'Plan Avanzado',
-    price: 'Proximamente',
-    period: '',
-    description: 'Cuando el negocio crece, pasás a Avanzado. Para negocios que mueven volumen.',
-    features: [
-      'Todo lo del Plan Gestión',
-      'Usuarios ilimitados',
-      'Multi-sucursal centralizado',
-      'API y Webhooks',
-      'Onboarding dedicado',
-      'Contrato SLA'
-    ],
-    popular: false
-  }
+
 ];
 
 const Pricing = () => {
@@ -70,7 +56,7 @@ const Pricing = () => {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-center gap-8 max-w-7xl mx-auto">
           {plans.map((plan, index) => (
             <motion.div
               key={plan.name}

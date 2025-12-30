@@ -35,7 +35,7 @@ const sections = [
           <li>Navega a la sección <strong>Productos</strong> en el menú lateral.</li>
           <li>Haz clic en el botón <strong>"Nuevo Producto"</strong>.</li>
           <li>Completa los campos obligatorios: Nombre, Precio de Costo, Precio de Venta y Stock inicial.</li>
-          <li>Opcionalmente, puedes escanear un <strong>código de barras</strong> para asignarlo automáticamente.</li>
+          <li>Opcionalmente, puedes escanear un <strong>código de barras</strong> para asignarlo automáticamente. No necesitas instalacion, el software lo detecta automaticamente y copia el codigo en el campo correspondiente.</li>
           <li>Guarda los cambios.</li>
         </ol>
 
@@ -57,11 +57,11 @@ const sections = [
           El módulo de ventas está optimizado para la velocidad:
         </p>
         <ul className="list-disc pl-5 space-y-2 text-gray-300">
-          <li>Usa el <strong>escáner de código de barras</strong> para agregar productos al carrito instantáneamente.</li>
-          <li>O busca manualmente por nombre escribiendo en la barra de búsqueda.</li>
+          <li>Usa el <strong>escáner de código de barras</strong> para agregar productos al carrito instantáneamente. Recorda que el producto debe estar previamente cargado en el stock, de lo contrario, se agregara un producto nuevo sin nombre, y quedara registrado como "producto manual".</li>
+          <li>Tambien se puede buscar manualmente por nombre escribiendo en la barra de búsqueda.</li>
           <li>Ajusta las cantidades directamente en la tabla de venta.</li>
           <li>Selecciona el <strong>Método de Pago</strong> (Efectivo, Tarjeta, Transferencia, etc.).</li>
-          <li>Haz clic en <strong>Finalizar Venta</strong> para registrar la transacción y descontar el stock.</li>
+          <li>Haz clic en <strong>Finalizar Venta</strong> para registrar la transacción, este movimienot automaticamente descuenta del stock del producto actualizado.</li>
         </ul>
       </div>
     )

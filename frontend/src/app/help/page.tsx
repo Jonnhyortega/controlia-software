@@ -138,11 +138,11 @@ export default function HelpPage() {
   const faqs = [
     {
       question: "¿Cómo registro mi primera venta?",
-      answer: "Dirígete al Dashboard y haz clic en 'Nueva Venta'. Selecciona los productos escaneando el código de barras o buscándolos por nombre. Finalmente, elige el método de pago y confirma la operación."
+      answer: "Dirígete al Dashboard y haz clic en 'Nueva Venta' o scanea un producto con el scanner, esto abrira la ventana de cobro. Selecciona los productos escaneando el código de barras o buscándolos por nombre. Finalmente, elige el método de pago y confirma la operación."
     },
     {
       question: "¿Puedo usar Controlia en mi celular?",
-      answer: "¡Sí! Controlia es totalmente responsivo y funciona perfectamente en celulares, tablets y computadoras..."
+      answer: "¡Sí! Controlia es totalmente responsivo y funciona perfectamente en celulares, tablets y computadoras. Pero con muchas limitaciones, se recomienda usarlo en computadoras."
     },
     {
       question: "¿Cómo reinicio mi contraseña?",

@@ -114,7 +114,7 @@ export default function SecurityPage() {
       </section>
 
       {/* Responsible Disclosure */}
-      <section className="container mx-auto px-4 py-12 text-center max-w-2xl">
+      <section className="flex flex-col items-center container mx-auto px-4 py-12 text-center max-w-2xl">
          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-500/10 mb-6">
             <AlertTriangle className="w-6 h-6 text-yellow-500" />
          </div>
@@ -122,9 +122,10 @@ export default function SecurityPage() {
          <p className="text-gray-400 mb-6">
             Si crees haber encontrado una falla de seguridad en nuestra plataforma, por favor repórtala de inmediato para que podamos solucionarla.
          </p>
-         <a href="mailto:security@controlia.com" className="text-blue-400 font-medium hover:underline">
-            security@controlia.com
+         <a href="mailto:astralvisionestudio@gmail.com" className="text-blue-400 font-medium hover:underline">
+            astralvisionestudio@gmail.com
          </a>
+         <small className="text-gray-400 font-[200]">Empresa desarrolladora del sistema</small>
       </section>
 
       {/* Footer */}
