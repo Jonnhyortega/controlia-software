@@ -85,11 +85,11 @@ export default function DashboardHeader({
           {/* Close Cash (Tertiary/Standard Action) */}
           <button
             onClick={onCloseCash}
-            disabled={isCashClosed && userRole !== "admin"}
+            disabled={isCashClosed}
             className={`flex items-center gap-2 px-5 py-3.5 rounded-md font-medium border transition-all active:scale-95 hover:-translate-y-0.5
                   ${
-                    isCashClosed && userRole !== "admin"
-                      ? "opacity-50 cursor-not-allowed"
+                    isCashClosed
+                      ? "opacity-50 cursor-not-allowed bg-gray-100 border-gray-200 text-gray-400 dark:bg-zinc-800 dark:border-zinc-800 dark:text-zinc-600"
                       : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50 dark:bg-zinc-900 dark:border-zinc-800 dark:text-gray-300 dark:hover:bg-zinc-800"
                   }
                `}

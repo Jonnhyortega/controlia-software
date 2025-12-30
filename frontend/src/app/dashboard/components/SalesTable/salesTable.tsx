@@ -102,7 +102,7 @@ export default function SalesTable({
       
       {/* 🛠️ Barra de Herramientas (Solo si NO es simpleMode) */}
       {!simpleMode && (
-        <div className="flex flex-col md:flex-row gap-3 justify-between items-center bg-gray-200 dark:bg-[#18181b] p-3 rounded-md border border-gray-200 dark:border-[#27272a] transition-colors">
+        <div className="flex flex-col md:flex-row gap-3 justify-between items-center bg-gray-200 dark:bg-[#18181b] p-3 rounded-md border border-gray-200 dark:border-[#27272a] transition-colors ">
           
           {/* Buscador */}
           <div className="relative w-full md:w-auto flex-1 max-w-sm">
@@ -152,7 +152,7 @@ export default function SalesTable({
       <div className="border border-gray-200 dark:border-[#27272a] rounded-md overflow-hidden transition-colors">
         <table className="w-full text-sm">
           <thead className="bg-gray-200 dark:bg-[#09090b] text-gray-700 dark:text-gray-200 border-b dark:border-[#27272a]">
-            <tr>
+            <tr className="overflow-y-auto">
               <th className="hidden md:table-cell py-3 px-4 text-left font-semibold">#</th>
               <th className="py-3 px-4 text-left font-semibold">Fecha y hora</th>
               <th className="hidden md:table-cell py-3 px-4 text-left font-semibold">Método</th>

@@ -25,7 +25,7 @@ const CTA = () => {
             </h2>
             
             <p className="text-gray-400 text-lg mb-10 max-w-xl mx-auto">
-                Únete a la comunidad de emprendedores que confían en Controlia para gestionar sus operaciones diarias. 3 meses de prueba gratis.
+                Únete a la comunidad de emprendedores que confían en Controlia para gestionar sus operaciones diarias. 15 dias de prueba gratis.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -188,7 +188,7 @@ export default function DashboardPage() {
   const normalizedTransactions = transactionsList.map((tx: any) => ({
       _id: tx._id,
       createdAt: tx.date || tx.createdAt,
-      paymentMethod: "Cobro Deuda", // Etiqueta distintiva
+      paymentMethod: "Cobro Deuda", // Etiqzueta distintiva
       total: tx.amount,
       amountPaid: tx.amount,
       amountDebt: 0,
@@ -249,6 +249,7 @@ export default function DashboardPage() {
           setShowExpenseForm(false);
         }}
         onCloseCash={() => {
+          if (data?.status === "cerrada") return;
           setShowCloseCashForm(true);
           setShowSalesForm(false);
           setShowExpenseForm(false);
@@ -414,7 +415,7 @@ export default function DashboardPage() {
 
                 <div className="bg-[#1a1a1a] rounded-md p-4 mb-6 text-left border border-gray-800">
                   <p className="text-gray-300 text-sm mb-3">
-                    Has comenzado tu periodo de prueba de <strong>90 días</strong> del Plan Base.
+                    Has comenzado tu periodo de prueba de <strong>15 días</strong> del Plan Base.
                   </p>
                   <ul className="space-y-2 text-sm text-gray-400">
                     <li className="flex items-center gap-2">
@@ -429,7 +430,7 @@ export default function DashboardPage() {
                 </div>
 
                 <p className="text-xs text-gray-500 mb-6">
-                  Al finalizar los 90 días, podrás suscribirte al Plan Base por solo <strong>$15.000 ARS/mes</strong> para continuar usando el servicio.
+                  Al finalizar los 15 días, podrás suscribirte al Plan Base por solo <strong>$25.000 ARS/mes</strong> para continuar usando el servicio.
                 </p>
 
                 <button

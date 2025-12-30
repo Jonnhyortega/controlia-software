@@ -86,6 +86,36 @@ export default function SubscriptionPage() {
   }
 
 
+  // Determine effective plan tier for display
+  const PLAN_DETAILS = {
+      basic: [
+        `Hasta ${100} productos`,
+        `Hasta ${300} operaciones/mes`,
+        "1 usuario",
+        "Soporte básico por email"
+      ],
+      gestion: [
+         `Hasta ${5000} productos`,
+         `Hasta ${2000} operaciones/mes`,
+         "2 usuarios",
+         "Soporte prioritario WhatsApp"
+      ],
+      avanzado: [
+         "Productos ilimitados (12k)",
+         "Operaciones ilimitadas (6k)",
+         "Usuarios ilimitados",
+         "Onboarding dedicado"
+      ]
+  };
+
+  const effectiveTier = (user?.membershipTier || 'basic') as keyof typeof PLAN_DETAILS;
+  const currentFeatures = PLAN_DETAILS[effectiveTier] || PLAN_DETAILS.basic;
+  
+  // Logic to determine if we show "Trial" or "Subscription Date"
+  // If status is present (authorized, cancelled, paused), we look at membershipEndDate.
+  // If status is missing, we look at trialDays.
+  const hasSubscription = status && ['authorized', 'cancelled', 'paused'].includes(status);
+
   return (
     <RoleGuard role="admin">
     <div className="p-6 space-y-8 flex flex-col items-center justify-center min-h-[60vh]">
@@ -111,13 +141,15 @@ export default function SubscriptionPage() {
           <CardContent className="space-y-6">
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                {isAuthorized ? (
+                {hasSubscription ? (
                   <>
-                    <span className="text-muted-foreground">Próxima renovación</span>
+                    <span className="text-muted-foreground">
+                        {status === 'cancelled' ? "Acceso válido hasta" : "Próxima renovación"}
+                    </span>
                     <span className="font-medium">
                         {user?.membershipEndDate 
                             ? new Date(user.membershipEndDate).toLocaleDateString() 
-                            : "Suscripción indefinida"}
+                            : "Indefinido"}
                     </span>
                   </>
                 ) : (
@@ -128,7 +160,7 @@ export default function SubscriptionPage() {
                 )}
               </div>
 
-              {!isAuthorized && (
+              {!isAuthorized && !hasSubscription && (
                 <>
                     <Progress value={progress} className="h-2" />
                     <p className="text-xs text-muted-foreground text-right">
@@ -136,21 +168,17 @@ export default function SubscriptionPage() {
                     </p>
                 </>
               )}
+               
+               {/* Show progress bar for Cancelled subscriptions too? No, usually not needed unless we want to show time left. */}
             </div>
 
             <div className="bg-muted/50 p-4 rounded-md space-y-3">
-              <div className="flex items-center gap-2 text-sm">
-                <CheckCircle2 className="w-4 h-4 text-primary" />
-                <span>Acceso completo al sistema</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <CheckCircle2 className="w-4 h-4 text-primary" />
-                <span>Sin límites de productos</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <CheckCircle2 className="w-4 h-4 text-primary" />
-                <span>Soporte prioritario</span>
-              </div>
+              {currentFeatures.map((feature, i) => (
+                <div key={i} className="flex items-center gap-2 text-sm">
+                    <CheckCircle2 className="w-4 h-4 text-primary" />
+                    <span>{feature}</span>
+                </div>
+              ))}
             </div>
 
             <Button className="w-full" asChild>

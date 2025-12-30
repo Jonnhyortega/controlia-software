@@ -15,20 +15,20 @@ const Footer = () => {
     'Producto': [
       { label: 'Características', href: '/#features' },
       { label: 'Precios', href: '/#pricing' },
-      { label: 'Integraciones', href: '/integrations' },
-      { label: 'Actualizaciones', href: '/updates' },
+      // { label: 'Integraciones', href: '/integrations' },
+      // { label: 'Actualizaciones', href: '/updates' },
     ],
     'Empresa': [
       { label: 'Sobre nosotros', href: '/about' },
-      { label: 'Blog', href: '/blog' },
-      { label: 'Carreras', href: '/careers' },
-      { label: 'Prensa', href: '/press' },
+      // { label: 'Blog', href: '/blog' },
+      // { label: 'Carreras', href: '/careers' },
+      // { label: 'Prensa', href: '/press' },
     ],
     'Recursos': [
       { label: 'Documentación', href: '/docs' },
-      { label: 'Tutoriales', href: '/tutorials' },
+      // { label: 'Tutoriales', href: '/tutorials' },
       { label: 'Centro de ayuda', href: '/help' },
-      { label: 'API', href: '/api-docs' },
+      // { label: 'API', href: '/api-docs' },
     ],
     'Legal': [
       { label: 'Privacidad', href: '/privacy' },

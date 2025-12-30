@@ -81,6 +81,7 @@ export interface DailyCash {
   status?: string;
   createdAt?: string;
   closedAt?: string;
+  updatedAt?: string;
   transactions?: Transaction[];
 
 }
