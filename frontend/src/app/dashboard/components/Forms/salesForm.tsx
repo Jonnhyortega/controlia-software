@@ -409,6 +409,14 @@ export default function SalesForm({
         {/* --- LEFT PANEL: Product List (Flexible) --- */}
         <div className="flex-1 flex flex-col bg-white dark:bg-[#09090b] relative overflow-hidden order-2 md:order-1">
           
+          {/* Search Bar Area */}
+          <div className="px-6 pt-6 pb-2">
+             <ProductSearch 
+                products={productsDB}
+                onSelect={addProductToSale}
+             />
+          </div>
+
           {/* Table Header (Sticky) */}
           <div className="hidden md:grid grid-cols-12 gap-3 px-6 py-2 bg-gray-50/90 dark:bg-zinc-900/90 border-b border-gray-200 dark:border-zinc-800 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest backdrop-blur-sm z-10 sticky top-0">
             <div className="col-span-5 pl-2">Producto</div>

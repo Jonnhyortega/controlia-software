@@ -66,7 +66,7 @@ const Pricing = () => {
             Precios simples y transparentes
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Elige el plan que mejor se adapte a tus necesidades. 3 meses de prueba gratis.
+            Elige el plan que mejor se adapte a tus necesidades. 15 dias de prueba gratis.
           </p>
         </motion.div>
 

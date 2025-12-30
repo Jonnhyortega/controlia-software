@@ -22,7 +22,7 @@ export default function AboutPage() {
 
             <h2 className="text-2xl font-bold text-white mt-12 mb-4">Nuestra Historia</h2>
             <p className="text-gray-400 mb-6">
-              Nacimos con la idea de que la tecnología no debería ser una barrera para el crecimiento, sino un catalizador. Vimos cómo muchos dueños de negocios luchaban con hojas de cálculo desordenadas y sistemas costosos e intuitivos, y decidimos crear algo diferente.
+              Nacimos con la idea de que la tecnología no debería ser una barrera para el crecimiento, sino un catalizador. Vimos cómo muchos dueños de negocios luchaban con hojas de cálculo desordenadas y sistemas costosos y poco intuitivos, y decidimos crear algo diferente.
             </p>
 
             <h2 className="text-2xl font-bold text-white mt-12 mb-4">Lo que nos mueve</h2>
@@ -32,11 +32,11 @@ export default function AboutPage() {
               <li><strong>Comunidad:</strong> Crecemos junto con nuestros usuarios, escuchando sus necesidades.</li>
             </ul>
 
-            <div className="bg-primary/10 border border-primary/20 rounded-md p-8 mt-12 text-center">
+            {/* <div className="bg-primary/10 border border-primary/20 rounded-md p-8 mt-12 text-center">
               <h3 className="text-xl font-bold text-white mb-2">¿Te gustaría formar parte?</h3>
               <p className="text-gray-400 mb-6">Estamos siempre buscando talento apasionado.</p>
               <a href="/careers" className="text-primary-300 font-semibold hover:underline">Ver vacantes abiertas &rarr;</a>
-            </div>
+            </div> */}
           </div>
         </motion.div>
       </div>

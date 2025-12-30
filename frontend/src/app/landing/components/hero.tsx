@@ -102,7 +102,7 @@ const Hero = () => {
                    </div>
                    {/* Main Image */}
                    <img 
-                    src="https://horizons-cdn.hostinger.com/e059da5a-bba4-4792-8c52-5124e2066510/8e0b5fe3bf6a4225c669e58fc0a53acf.png" 
+                    src="/dashboard-hero.png" 
                     alt="Controlia Dashboard Preview" 
                     className="w-full h-auto object-cover opacity-90 hover:opacity-100 transition-opacity duration-500"
                    />

@@ -73,7 +73,7 @@ export default function Navbar() {
                 alt="Perfil"
                 title={capitalize(user?.name || "Usuario")}
                 width={50}
-                className="rounded-[50%] cursor-pointer transition shadow-sm border border-gray-200 dark:border-gray-700"
+                className="rounded-[50%] cursor-pointer transition shadow-sm  dark:border-gray-700"
               />
             ) : (
               <ContactRound

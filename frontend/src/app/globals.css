@@ -201,3 +201,21 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
 /* small utility to center content in panels */
 .panel-center { display: flex; align-items: center; justify-content: center; }
 
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #09090b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272a; /* zinc-800 */
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46; /* zinc-700 */
+}

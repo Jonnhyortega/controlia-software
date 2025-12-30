@@ -8,6 +8,7 @@ interface Product {
   price: number;
   stock: number;
   barcode?: string;
+  category?: { name: string } | string; // Support populated object or string ID
 }
 
 interface ProductSearchProps {
@@ -25,11 +26,17 @@ export default function ProductSearch({ products, onSelect }: ProductSearchProps
   const filteredProducts = products.filter((product) => {
     if (!query) return false;
     const lowerQuery = query.toLowerCase();
+    
+    const categoryName = typeof product.category === 'object' && product.category !== null
+        ? product.category.name 
+        : (typeof product.category === 'string' ? product.category : "");
+
     return (
       product.name.toLowerCase().includes(lowerQuery) ||
-      (product.barcode && product.barcode.includes(lowerQuery))
+      (product.barcode && product.barcode.includes(lowerQuery)) ||
+      (categoryName && categoryName.toLowerCase().includes(lowerQuery))
     );
-  }).slice(0, 5); // Limitar a 5 resultados para no saturar
+  }).slice(0, 10); // Aumenté un poco el límite
 
   // Cerrar al hacer click fuera
   useEffect(() => {
