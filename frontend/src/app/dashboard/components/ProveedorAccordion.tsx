@@ -46,7 +46,7 @@ export function ProveedorAccordion({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.35, ease: "easeInOut" }}
-            className="overflow-hidden"
+            className="overflow-hidden overflow-x-auto"
           >
             <table className="w-full text-sm text-gray-700 dark:text-gray-300">
               <thead>
@@ -57,7 +57,7 @@ export function ProveedorAccordion({
                   <th className="p-3 text-left">Stock</th>
                   <th className="hidden md:table-cell p-3 text-left">Costo</th>
                   <th className="hidden md:table-cell p-3 text-left">Codigo</th>
-                  <th className="p-3 text-center">Acciones</th>
+                  <th className="hidden xl:table-cell p-3 text-center">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -75,7 +75,8 @@ export function ProveedorAccordion({
                     <td className={`p-3 ${p.stock === 0 ? "font-bold text-red-600 dark:text-red-400" : ""}`}>{p.stock}</td>
                     <td className="hidden md:table-cell p-3">${p.cost}</td>
                     <td className="hidden md:table-cell p-3">#{p.barcode}</td>
-                    <td className="p-3 flex items-center justify-center gap-3">
+                    <td className="hidden xl:table-cell p-3">
+                      <div className="flex items-center justify-center gap-3">
                       <button
                         onClick={() => {onEdit(p)}}
                         className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition"
@@ -97,6 +98,7 @@ export function ProveedorAccordion({
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
+                      </div>
                     </td>
                   </motion.tr>
                 ))}

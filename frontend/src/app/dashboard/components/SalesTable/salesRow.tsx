@@ -153,7 +153,7 @@ export default function SalesRow({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.25 }}
-              className="rounded-md border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#18181b] shadow-sm p-4"
+              className="rounded-md border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#18181b] shadow-sm p-4 overflow-x-auto"
             >
               <h4 className="font-semibold text-gray-800 dark:text-white mb-3">
                 Detalles de la operación

@@ -9,9 +9,9 @@ import ReceiptModal from "../components/SalesTable/ReceiptModal";
 import { useAuth } from "../../../context/authContext";
 
 // Helper Component for Metrics
-function InfoCard({ title, value, color = "text-gray-900 dark:text-gray-100" }: { title: string; value: string; color?: string }) {
+function InfoCard({ title, value, color = "text-gray-900 dark:text-gray-100", className = "" }: { title: string; value: string; color?: string; className?: string }) {
   return (
-    <div className="flex flex-col bg-gray-200 dark:bg-white/5 px-3 py-2 rounded-md border border-gray-100 dark:border-white/10">
+    <div className={`flex flex-col bg-gray-200 dark:bg-white/5 px-3 py-2 rounded-md border border-gray-100 dark:border-white/10 ${className}`}>
       <span className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">{title}</span>
       <span className={`font-bold text-sm md:text-base ${color}`}>{value}</span>
     </div>
@@ -199,7 +199,7 @@ export default function HistorySales() {
                                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                                                             <InfoCard title="Ingresos totales" value={formatCurrency(totalSales)} color="text-primary" />
                                                             <InfoCard title="Gastos / Salidas" value={formatCurrency(totalOut)} color="text-red-500" />
-                                                            <InfoCard title="Ingresos netos" value={formatCurrency(expected)} />
+                                                            <InfoCard title="Ingresos netos" value={formatCurrency(expected)} className="col-span-2 md:col-span-1" />
                                                             {/* <InfoCard 
                                                                 title="Diferencia" 
                                                                 value={formatCurrency(difference)} 
@@ -208,39 +208,79 @@ export default function HistorySales() {
                                                         </div>
 
                                                         {d.sales?.length > 0 ? (
-                                                            <div className="border border-gray-200 dark:border-border rounded-md overflow-hidden bg-white dark:bg-background">
-                                                                <table className="w-full text-sm">
-                                                                    <thead className="bg-gray-100 dark:bg-zinc-900 text-gray-500 dark:text-gray-400 font-medium uppercase text-xs">
-                                                                        <tr>
-                                                                            <th className="py-2 px-4 text-left font-semibold">Hora</th>
-                                                                            <th className="py-2 px-4 text-left font-semibold">Productos</th>
-                                                                            <th className="py-2 px-4 text-left hidden sm:table-cell font-semibold">Método</th>
-                                                                            <th className="py-2 px-4 text-right font-semibold">Total</th>
-                                                                            <th className="py-2 px-4 text-center font-semibold">Acciones</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody className="divide-y divide-gray-100 dark:divide-gray-800 text-gray-700 dark:text-gray-300">
-                                                                        {d.sales.map((sale: any) => (
-                                                                            <tr key={sale._id} className="hover:bg-gray-50 dark:hover:bg-zinc-900/20 transition">
-                                                                                <td className="py-3 px-4 whitespace-nowrap">{formatLocalTime(sale.createdAt)}</td>
-                                                                                <td className="py-3 px-4 max-w-[150px] truncate" title={sale.products?.map((p:any) => p.product?.name || p.name).join(", ")}>
-                                                                                    {sale.products?.length} items
-                                                                                </td>
-                                                                                <td className="py-3 px-4 hidden sm:table-cell capitalize">{sale.paymentMethod || "Efectivo"}</td>
-                                                                                <td className="py-3 px-4 text-right font-medium">{formatCurrency(sale.total)}</td>
-                                                                                <td className="py-3 px-4 text-center">
+                                                            <div className="rounded-md overflow-hidden bg-white dark:bg-background">
+                                                                
+                                                                {/* 🖥️ VISTA DESKTOP (Tabla) */}
+                                                                <div className="hidden md:block overflow-x-auto border border-gray-200 dark:border-border rounded-md">
+                                                                    <table className="w-full text-sm">
+                                                                        <thead className="bg-gray-100 dark:bg-zinc-900 text-gray-500 dark:text-gray-400 font-medium uppercase text-xs">
+                                                                            <tr>
+                                                                                <th className="py-2 px-4 text-left font-semibold">Hora</th>
+                                                                                <th className="py-2 px-4 text-left font-semibold">Productos</th>
+                                                                                <th className="py-2 px-4 text-left hidden sm:table-cell font-semibold">Método</th>
+                                                                                <th className="py-2 px-4 text-right font-semibold">Total</th>
+                                                                                <th className="py-2 px-4 text-center font-semibold">Acciones</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody className="divide-y divide-gray-100 dark:divide-gray-800 text-gray-700 dark:text-gray-300">
+                                                                            {d.sales.map((sale: any) => (
+                                                                                <tr key={sale._id} className="hover:bg-gray-50 dark:hover:bg-zinc-900/20 transition">
+                                                                                    <td className="py-3 px-4 whitespace-nowrap">{formatLocalTime(sale.createdAt)}</td>
+                                                                                    <td className="py-3 px-4 max-w-[150px] truncate" title={sale.products?.map((p:any) => p.product?.name || p.name).join(", ")}>
+                                                                                        {sale.products?.length} items
+                                                                                    </td>
+                                                                                    <td className="py-3 px-4 hidden sm:table-cell capitalize">{sale.paymentMethod || "Efectivo"}</td>
+                                                                                    <td className="py-3 px-4 text-right font-medium">{formatCurrency(sale.total)}</td>
+                                                                                    <td className="py-3 px-4 text-center">
+                                                                                        <button 
+                                                                                            onClick={(e) => { e.stopPropagation(); setSelectedReceiptSale(sale); }}
+                                                                                            className="p-1.5 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition"
+                                                                                            title="Ver Ticket"
+                                                                                        >
+                                                                                            <Printer size={16} />
+                                                                                        </button>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            ))}
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+
+                                                                {/* 📱 VISTA MOVIL (Tarjetas Verticales) */}
+                                                                <div className="md:hidden space-y-3">
+                                                                    {d.sales.map((sale: any) => (
+                                                                        <div key={sale._id} className="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-zinc-900/30 border border-gray-100 dark:border-zinc-800 rounded-lg">
+                                                                            <div className="flex justify-between items-start">
+                                                                                <div className="flex flex-col">
+                                                                                    <span className="text-xs font-medium text-gray-400">
+                                                                                        {formatLocalTime(sale.createdAt)}
+                                                                                    </span>
+                                                                                    <span className="text-base font-bold text-gray-900 dark:text-white">
+                                                                                        {formatCurrency(sale.total)}
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div className="flex items-center gap-2">
+                                                                                    <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 bg-white dark:bg-black/40 border border-gray-200 dark:border-zinc-700 rounded-full text-gray-500">
+                                                                                        {sale.paymentMethod || "Efectivo"}
+                                                                                    </span>
                                                                                     <button 
                                                                                         onClick={(e) => { e.stopPropagation(); setSelectedReceiptSale(sale); }}
-                                                                                        className="p-1.5 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition"
-                                                                                        title="Ver Ticket"
+                                                                                        className="p-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-500 rounded-md"
                                                                                     >
-                                                                                        <Printer size={16} />
+                                                                                        <Printer size={14} />
                                                                                     </button>
-                                                                                </td>
-                                                                            </tr>
-                                                                        ))}
-                                                                    </tbody>
-                                                                </table>
+                                                                                </div>
+                                                                            </div>
+                                                                            
+                                                                            <div className="pt-2 border-t border-gray-200 dark:border-zinc-800/50">
+                                                                                <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
+                                                                                    <span className="font-semibold text-gray-500">Productos:</span> {sale.products?.map((p:any) => `${p.quantity}x ${p.product?.name || p.name}`).join(", ")}
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+
                                                             </div>
                                                         ) : (
                                                             <p className="text-center text-gray-500 py-4 text-sm">No hay detalles de ventas disponibles para esta fecha.</p>

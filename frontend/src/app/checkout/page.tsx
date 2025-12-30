@@ -26,12 +26,7 @@ const PLANS = {
     features: ["2.000 operaciones", "5.000 productos", "2 usuarios"],
     color: "text-blue-500"
   },
-  avanzado: {
-    name: "Plan Avanzado",
-    price: 120000,
-    features: ["6.000 operaciones", "12.000 productos", "Usuarios ilimitados"],
-    color: "text-purple-500"
-  }
+
 };
 
 function CheckoutContent() {

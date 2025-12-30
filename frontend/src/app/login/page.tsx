@@ -187,7 +187,14 @@ export default function AuthPage() {
         const el = document.getElementById('gsi-button');
         try {
           (window as any).google.accounts.id.initialize({ client_id: clientId, callback: (resp: any) => handleCredentialResponse(resp?.credential) });
-          (window as any).google.accounts.id.renderButton(el, { theme: 'outline', size: 'large' });
+          (window as any).google.accounts.id.renderButton(el, { 
+            theme: 'filled_black', 
+            size: 'large',
+            shape: 'pill',
+            width: '380',
+            text: 'continue_with',
+            logo_alignment: 'left'
+          });
         } catch (e) {
           console.warn('Error inicializando Google Sign-In', e);
         }
@@ -210,12 +217,65 @@ export default function AuthPage() {
     };
   }, []);
 
+  // Mouse interactive background logic
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      setMousePosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+
   return (
-    <section className="min-h-screen flex items-center justify-center bg-[#0b0b0b] text-white px-4 py-8">
-      <div className="max-w-5xl w-full flex flex-col md:flex-row items-center justify-center gap-12">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#050505] text-white px-4 py-8">
+      
+      {/* 🔮 Interactive Background Layers */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+        
+        {/* Shape 1 - Top Left (Primary) */}
+        <motion.div 
+          animate={{
+            x: mousePosition.x * -0.05,
+            y: mousePosition.y * -0.05,
+          }}
+          transition={{ type: "tween", ease: "backOut", duration: 0.5 }}
+          className="absolute -top-20 -left-20 w-[600px] h-[600px] bg-primary/60 rounded-full blur-[120px] opacity-70 mix-blend-screen"
+        />
+
+        {/* Shape 2 - Bottom Right (Secondary/Accent) */}
+        <motion.div 
+           animate={{
+            x: mousePosition.x * 0.05,
+            y: mousePosition.y * 0.05,
+          }}
+          transition={{ type: "tween", ease: "backOut", duration: 0.5 }}
+          className="absolute -bottom-32 -right-32 w-[700px] h-[700px] bg-indigo-600/50 rounded-full blur-[140px] opacity-70 mix-blend-screen"
+        />
+
+        {/* Shape 3 - Center (Subtle) */}
+        <motion.div 
+           animate={{
+            x: mousePosition.x * 0.02,
+            y: mousePosition.y * 0.02,
+          }}
+          transition={{ type: "tween", ease: "backOut", duration: 0.8 }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] bg-blue-500/30 rounded-full blur-[100px] opacity-50 rotate-12 mix-blend-screen"
+        />
+
+      </div>
+
+      <div className="relative z-10 max-w-5xl w-full flex flex-col md:flex-row items-center justify-center gap-12 backdrop-blur-sm">
         
         {/* Panel derecho (Central) */}
-        <div className="w-full max-w-md flex flex-col gap-6 bg-[#121212] p-8 rounded-md border border-gray-800 relative shadow-2xl">
+        <div className="w-full max-w-md flex flex-col gap-6 bg-[#121212]/80 backdrop-blur-xl p-8 rounded-2xl border border-white/10 relative shadow-2xl ring-1 ring-white/5">
           {/* Header */}
           <div className="text-center">
             <h1 className="text-xs tracking-[0.4em] font-bold text-gray-500 mb-4 uppercase">
@@ -351,10 +411,11 @@ export default function AuthPage() {
               >
                  {/* 🎁 Alerta de Prueba Gratuita */}
                 <div className="bg-gradient-to-r from-primary/20 to-transparent border border-primary/20 rounded-md p-4">
-                    <p className="font-bold text-primary-300 text-sm mb-1">🎁 Prueba Gratis de 90 días</p>
+                    <p className="font-bold text-primary-300 text-sm mb-1">🎁 Prueba Gratis de 15 días</p>
                     <p className="text-xs text-gray-400">
-                      Disfruta del Plan Base sin costo. Luego $15.000 ARS/mes.
+                      Disfruta del Plan Base sin costo. Luego $25.000 ARS/mes.  
                     </p>
+                    <small className="text-xs text-gray-600 w-full text-right">No se requiere tarjeta de credito</small>
                 </div>
 
                 <div className="space-y-4">

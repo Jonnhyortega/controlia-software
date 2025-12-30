@@ -49,22 +49,7 @@ const plans: PricingPlan[] = [
     ],
     color: "text-blue-500",
   },
-  {
-    id: 'avanzado',
-    name: "Avanzado",
-    price: "$120.000",
-    description: "Para comercios consolidados.",
-    features: [
-      "6.000 operaciones mensuales",
-      "12.000 productos",
-      "Usuarios ilimitados",
-      "Proveedores ilimitados"
-    ],
-    color: "text-purple-500",
-    highlight: "⭐ El más elegido",
-    quote: "“un empleado que nunca se equivoca”",
-    popular: true
-  }
+
 ];
 
 function PricingContent() {

@@ -44,7 +44,7 @@ export default function ExpensesTable({ expenses, onDelete }: ExpensesTableProps
                     <button 
                       onClick={() => !(expense as any).isTransaction && onDelete(i)}
                       disabled={(expense as any).isTransaction}
-                      className={`p-1.5 rounded-md transition-colors ${
+                      className={`p-1.5 rounded-md transition-colors hidden md:inline-flex ${
                         (expense as any).isTransaction 
                           ? "text-gray-300 dark:text-gray-700 cursor-not-allowed" 
                           : "text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
