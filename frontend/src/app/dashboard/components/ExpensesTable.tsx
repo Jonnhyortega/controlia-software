@@ -40,16 +40,13 @@ export default function ExpensesTable({ expenses, onDelete }: ExpensesTableProps
                 </td>
                 <td className="py-3 px-6 text-right font-bold text-red-600 flex items-center justify-end gap-3">
                   - {formatCurrency(expense.amount)}
-                  {user?.role === "admin" && (
+                  {user?.role === "admin" && 
+                   !(expense as any).isTransaction && 
+                   !expense.description.toLowerCase().startsWith("pago a proveedor") && (
                     <button 
-                      onClick={() => !(expense as any).isTransaction && onDelete(i)}
-                      disabled={(expense as any).isTransaction}
-                      className={`p-1.5 rounded-md transition-colors hidden md:inline-flex ${
-                        (expense as any).isTransaction 
-                          ? "text-gray-300 dark:text-gray-700 cursor-not-allowed" 
-                          : "text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
-                      }`}
-                      title={(expense as any).isTransaction ? "Este gasto está vinculado a un pago de proveedor. Gestionalo desde 'Proveedores' > 'Historial'." : "Eliminar gasto"}
+                      onClick={() => onDelete(i)}
+                      className="p-1.5 rounded-md transition-colors hidden md:inline-flex text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      title="Eliminar gasto"
                     >
                       <Trash2 size={16} />
                     </button>

@@ -98,14 +98,17 @@ export default function ExpenseForm({
       }
 
       // 2. Registramos la salida en la CAJA DIARIA (impacta efectivo en mano)
-      const newExpense = {
-        description: finalDescription,
-        amount: Number(amount),
-      };
+      // FIX: Solo registramos manualmente gastos generales. Los pagos a proveedores ya se impactan en el backend al crear la transacción.
+      if (type !== "supplier") {
+          const newExpense = {
+            description: finalDescription,
+            amount: Number(amount),
+          };
 
-      await updateDailyCash(cashId, {
-        extraExpenses: [newExpense],
-      });
+          await updateDailyCash(cashId, {
+            extraExpenses: [newExpense],
+          });
+      }
 
       toast.success("Movimiento registrado correctamente");
       onCreated();
