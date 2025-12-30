@@ -21,6 +21,7 @@ export default function VentasPage() {
   const [historySalesData, setHistorySalesData] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalSales, setTotalSales] = useState(0);
   const [loadingHistory, setLoadingHistory] = useState(false);
 
   // Cargar historial inicial al montar
@@ -38,6 +39,7 @@ export default function VentasPage() {
       setHistorySalesData(res.sales || []);
       setPage(res.page || 1);
       setTotalPages(res.pages || 1);
+      setTotalSales(res.total || 0);
     } catch (err) {
       console.error("Error fetching sales page:", err);
       // toast?.error?.("Error cargando historial de ventas"); // Silent fail preferred on init
@@ -140,44 +142,28 @@ export default function VentasPage() {
       </CollapsibleSection>
 
       {/* 📒 Lista Completa de Ventas (Paginada) */}
-      <CollapsibleSection title="Todas las Ventas" icon={List} defaultOpen={false}>
-         <div className="bg-white dark:bg-[#18181b] rounded-md shadow-sm border border-gray-200 dark:border-[#27272a] p-4 transition-colors">
-             {loadingHistory ? (
-                 <div className="py-8 text-center text-gray-500">Cargando ventas...</div>
-             ) : (
-                 <>
-                     <SalesTable 
-                         sales={historySalesData} 
-                         expanded={expandedSale}
-                         onExpand={(id) => setExpandedSale(expandedSale === id ? null : id)}
-                         onRevert={handleRevert}
-                         simpleMode={true} // Simple mode to avoid confusion with client-side local search
-                     />
-                     
-                     {/* Controles de Paginación */}
-                     <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100 dark:border-[#27272a]">
-                         <button 
-                             disabled={page <= 1}
-                             onClick={() => fetchHistorySales(page - 1)}
-                             className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#18181b] border border-gray-300 dark:border-[#3f3f46] rounded-md hover:bg-gray-50 dark:hover:bg-[#1f1f1f] disabled:opacity-50 disabled:cursor-not-allowed transition"
-                         >
-                             Anterior
-                         </button>
-                         <span className="text-sm text-gray-600 dark:text-gray-400">
-                             Página <span className="font-bold">{page}</span>
-                         </span>
-                         <button 
-                             disabled={page >= totalPages}
-                             onClick={() => fetchHistorySales(page + 1)}
-                             className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-[#18181b] border border-gray-300 dark:border-[#3f3f46] rounded-md hover:bg-gray-50 dark:hover:bg-[#1f1f1f] disabled:opacity-50 disabled:cursor-not-allowed transition"
-                         >
-                             Siguiente
-                         </button>
-                     </div>
-                 </>
-             )}
-         </div>
-      </CollapsibleSection>
+       <CollapsibleSection title={`Todas las Ventas (${totalSales})`} icon={List} defaultOpen={false}>
+          <div className="bg-white dark:bg-[#18181b] rounded-md shadow-sm border border-gray-200 dark:border-[#27272a] p-4 transition-colors">
+              {loadingHistory ? (
+                  <div className="py-8 text-center text-gray-500">Cargando ventas...</div>
+              ) : (
+                  <>
+                      <SalesTable 
+                          sales={historySalesData} 
+                          expanded={expandedSale}
+                          onExpand={(id) => setExpandedSale(expandedSale === id ? null : id)}
+                          onRevert={handleRevert}
+                          simpleMode={true} // Simple mode to avoid confusion with client-side local search
+                          manualPagination={{
+                              currentPage: page,
+                              totalPages: totalPages,
+                              onPageChange: (newPage) => fetchHistorySales(newPage)
+                          }}
+                      />
+                  </>
+              )}
+          </div>
+       </CollapsibleSection>
     </section>
   );
 }

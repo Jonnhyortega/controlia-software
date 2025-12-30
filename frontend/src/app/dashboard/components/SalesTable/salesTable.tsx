@@ -11,6 +11,11 @@ interface SalesTableProps {
   onExpand: (saleId: string) => void;
   onRevert: (saleId: string) => void;
   simpleMode?: boolean;
+  manualPagination?: {
+    currentPage: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
+  };
 }
 
 export default function SalesTable({
@@ -19,21 +24,25 @@ export default function SalesTable({
   onExpand,
   onRevert,
   simpleMode = false,
+  manualPagination,
 }: SalesTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterMethod, setFilterMethod] = useState("all");
   const [selectedReceiptSale, setSelectedReceiptSale] = useState<any>(null);
 
-  // Paginación
-  const ITEMS_PER_PAGE = 7;
-  const [currentPage, setCurrentPage] = useState(1);
 
-  // Resetear página al filtrar
-  // Usamos useEffect para resetear cuando cambian los filtros
-  // (Nota: Esto requiere importar useEffect, si no está importado dará error, verificar imports)
+  // Paginación Manual (Server-Side) o Automática (Client-Side)
+  // Si nos pasan manualPagination, usamos eso. Si no, calculamos localmente.
+  // const { currentPage, totalPages, onPageChange } = manualPagination || {};
 
+  // Internal state for client-side pagination
+  const [internalPage, setInternalPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
 
-  // 🔍 Filtrar ventas
+  // 🔍 Filtrar ventas (Client-Side filtering for 'simpleMode' or non-manual pagination)
+  // If manualPagination is active, 'sales' typically contains only the current page items,
+  // so filtering here might be redundant or limited to the current page.
+  // For 'All Sales' view (manualPagination), simpleMode is usually true, so this filter is bypassed anyway.
   const filteredSales = sales.filter((sale) => {
     // En modo simple, no filtramos (o podríamos limitar cantidad)
     if (simpleMode) return true;
@@ -60,20 +69,40 @@ export default function SalesTable({
     return true;
   });
 
-  // Resetear página al filtrar
+  // Reset internal page on filter change
   useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, filterMethod]);
+    if (!manualPagination) {
+        setInternalPage(1);
+    }
+  }, [searchTerm, filterMethod, manualPagination]);
 
-  const totalPages = Math.ceil(filteredSales.length / ITEMS_PER_PAGE);
-  const paginatedSales = filteredSales.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+  // Determine effective pagination values
+  const isManual = !!manualPagination;
+  
+  const effectivePage = isManual ? manualPagination.currentPage : internalPage;
+  const effectiveTotalPages = isManual 
+      ? manualPagination.totalPages 
+      : Math.ceil(filteredSales.length / ITEMS_PER_PAGE);
+  
+  const handlePageChange = (newPage: number) => {
+      if (newPage < 1 || newPage > effectiveTotalPages) return;
+      
+      if (isManual) {
+          manualPagination.onPageChange(newPage);
+      } else {
+          setInternalPage(newPage);
+      }
+  };
+
+  // Slice logic: If manual, show ALL passed sales (they are already a page). If automatic, slice.
+  const displaySales = isManual ? filteredSales : filteredSales.slice((internalPage - 1) * ITEMS_PER_PAGE, internalPage * ITEMS_PER_PAGE);
 
   // 📥 Exportar a CSV
   const handleExport = () => {
-    if (!filteredSales.length) return;
+    if (!displaySales.length) return;
 
     const headers = ["Fecha", "ID Venta", "Método Pago", "Productos", "Total"];
-    const rows = filteredSales.map(sale => {
+    const rows = displaySales.map(sale => {
        const date = new Date(sale.date || sale.createdAt).toLocaleDateString("es-AR") + " " + new Date(sale.date || sale.createdAt).toLocaleTimeString("es-AR");
        const products = sale.products.map((p: any) => `${p.quantity}x ${p.product?.name || "Manual"}`).join(" | ");
        return [
@@ -95,6 +124,34 @@ export default function SalesTable({
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  // Generate page numbers
+  const getPageNumbers = () => {
+    const totalButtons = 5;
+    
+    // Si hay menos paginas que los botones deseados, mostrar todas
+    if (effectiveTotalPages <= totalButtons) {
+        return Array.from({ length: effectiveTotalPages }, (_, i) => i + 1);
+    }
+
+    // Calcular inicio y fin para ventana deslizante
+    // Intentar centrar la pagina actual
+    let startPage = Math.max(1, effectivePage - Math.floor(totalButtons / 2));
+    let endPage = startPage + totalButtons - 1;
+
+    // Ajustar si nos pasamos del total
+    if (endPage > effectiveTotalPages) {
+        endPage = effectiveTotalPages;
+        startPage = Math.max(1, endPage - totalButtons + 1);
+    }
+
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+    }
+    
+    return pages;
   };
 
   return (
@@ -163,12 +220,12 @@ export default function SalesTable({
           </thead>
 
           <tbody className="divide-y divide-gray-100 dark:divide-[#27272a] bg-white dark:bg-[#18181b]">
-            {paginatedSales.length > 0 ? (
-                paginatedSales.map((sale, i) => (
+            {displaySales.length > 0 ? (
+                displaySales.map((sale, i) => (
                 <SalesRow
                     key={sale._id}
                     sale={sale}
-                    index={filteredSales.length - ((currentPage - 1) * ITEMS_PER_PAGE) - i - 1} // Index visual exacto
+                    index={isManual ? ((effectivePage - 1) * 10) + i + 1 : filteredSales.length - ((effectivePage - 1) * ITEMS_PER_PAGE) - i - 1} // Index visual adjusted
                     expanded={expanded}
                     onExpand={onExpand}
                     onRevert={onRevert}
@@ -187,22 +244,36 @@ export default function SalesTable({
       </div>
       
       {/* Paginación */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-4">
+      {effectiveTotalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-4 select-none">
              <button
-               disabled={currentPage === 1}
-               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-               className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-zinc-800 dark:border-zinc-700 dark:text-gray-300"
+               disabled={effectivePage <= 1}
+               onClick={() => handlePageChange(effectivePage - 1)}
+               className="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-zinc-800 dark:border-zinc-700 dark:text-gray-300"
              >
                Anterior
              </button>
-             <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-               Página <span className="text-gray-900 dark:text-white">{currentPage}</span> / {totalPages}
-             </span>
+             
+             <div className="flex gap-1">
+                 {getPageNumbers().map((p) => (
+                     <button
+                         key={p}
+                         onClick={() => handlePageChange(p as number)}
+                         className={`px-3 py-1 text-sm font-medium rounded-md border transition-colors ${
+                             effectivePage === p 
+                                ? 'bg-primary text-primary-foreground border-primary' 
+                                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 dark:bg-zinc-800 dark:border-zinc-700 dark:text-gray-300 dark:hover:bg-zinc-700'
+                         }`}
+                     >
+                         {p}
+                     </button>
+                 ))}
+             </div>
+
              <button
-               disabled={currentPage === totalPages}
-               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-               className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-zinc-800 dark:border-zinc-700 dark:text-gray-300"
+               disabled={effectivePage >= effectiveTotalPages}
+               onClick={() => handlePageChange(effectivePage + 1)}
+               className="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-zinc-800 dark:border-zinc-700 dark:text-gray-300"
              >
                Siguiente
              </button>
