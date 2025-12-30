@@ -95,13 +95,13 @@ export default function PaymentHistorySection({ context, entityId, refreshParent
         <div className="flex gap-2 w-full sm:w-auto">
              <button
                 onClick={() => openModal("DEBT")}
-                className="flex-1 sm:flex-none text-sm bg-rose-500 hover:bg-rose-600 text-white px-3 py-1.5 rounded-md flex items-center justify-center gap-1 transition shadow-sm"
+                className="hidden md:flex flex-1 sm:flex-none text-sm bg-rose-500 hover:bg-rose-600 text-white px-3 py-1.5 rounded-md items-center justify-center gap-1 transition shadow-sm"
             >
                 <Plus size={16} /> {context === "CLIENT" ? "Agregar Fiado/Deuda" : "Registrar Pedido"}
             </button>
             <button
                 onClick={() => openModal("PAYMENT")}
-                className="flex-1 sm:flex-none text-sm bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-md flex items-center justify-center gap-1 transition shadow-sm"
+                className="hidden md:flex flex-1 sm:flex-none text-sm bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-md items-center justify-center gap-1 transition shadow-sm"
             >
                 <Plus size={16} /> {context === "CLIENT" ? "Registrar Cobro" : "Registrar Pago"}
             </button>
@@ -125,7 +125,7 @@ export default function PaymentHistorySection({ context, entityId, refreshParent
                 <th className="px-4 py-3 text-right">Monto</th>
                 <th className="px-4 py-3 text-center">Comprobante</th>
                  <th className="px-4 py-3">Usuario</th>
-                {isAdmin && <th className="px-4 py-3 text-right">Acciones</th>}
+                {isAdmin && <th className="hidden xl:table-cell px-4 py-3 text-right">Acciones</th>}
               </tr>
             </thead>
             <tbody>
@@ -168,7 +168,7 @@ export default function PaymentHistorySection({ context, entityId, refreshParent
                         </div>
                       </td>
                       {isAdmin && (
-                        <td className="px-4 py-3 text-right">
+                        <td className="hidden xl:table-cell px-4 py-3 text-right">
                            <div className="flex justify-end gap-1">
                               <button
                                  onClick={() => openModal(tx.type.includes("DEBT") ? "DEBT" : "PAYMENT", tx)} 

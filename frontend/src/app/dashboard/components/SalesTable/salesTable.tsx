@@ -159,7 +159,7 @@ export default function SalesTable({
       
       {/* 🛠️ Barra de Herramientas (Solo si NO es simpleMode) */}
       {!simpleMode && (
-        <div className="flex flex-col md:flex-row gap-3 justify-between items-center bg-gray-200 dark:bg-[#18181b] p-3 rounded-md border border-gray-200 dark:border-[#27272a] transition-colors ">
+        <div className="hidden md:flex flex-col md:flex-row gap-3 justify-between items-center bg-gray-200 dark:bg-[#18181b] p-3 rounded-md border border-gray-200 dark:border-[#27272a] transition-colors ">
           
           {/* Buscador */}
           <div className="relative w-full md:w-auto flex-1 max-w-sm">
@@ -206,7 +206,7 @@ export default function SalesTable({
 
 
       {/* 📋 Tabla */}
-      <div className="border border-gray-200 dark:border-[#27272a] rounded-md overflow-hidden transition-colors">
+      <div className="border border-gray-200 dark:border-[#27272a] rounded-md overflow-hidden transition-colors overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-gray-200 dark:bg-[#09090b] text-gray-700 dark:text-gray-200 border-b dark:border-[#27272a]">
             <tr className="overflow-y-auto">
@@ -245,7 +245,7 @@ export default function SalesTable({
       
       {/* Paginación */}
       {effectiveTotalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-4 select-none">
+        <div className="flex items-center justify-center gap-2 mt-4 select-none flex-wrap">
              <button
                disabled={effectivePage <= 1}
                onClick={() => handlePageChange(effectivePage - 1)}

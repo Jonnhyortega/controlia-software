@@ -50,7 +50,7 @@ export default function DashboardHeader({
           <button
             onClick={onNewSale}
             disabled={isCashClosed}
-            className={`flex items-center gap-2 px-6 py-3.5 rounded-md font-semibold shadow-lg shadow-primary/20 transition-all active:scale-95 hover:-translate-y-0.5
+            className={`hidden md:flex items-center gap-2 px-6 py-3.5 rounded-md font-semibold shadow-lg shadow-primary/20 transition-all active:scale-95 hover:-translate-y-0.5
                   ${
                     isCashClosed
                       ? "bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-zinc-800 dark:text-zinc-600 shadow-none hover:translate-y-0"
@@ -66,7 +66,7 @@ export default function DashboardHeader({
           <button
             onClick={onAddExpense}
             disabled={isCashClosed}
-            className={`flex items-center gap-2 px-5 py-3.5 rounded-md font-medium border transition-all active:scale-95 hover:-translate-y-0.5
+            className={`hidden md:flex items-center gap-2 px-5 py-3.5 rounded-md font-medium border transition-all active:scale-95 hover:-translate-y-0.5
                   ${
                     isCashClosed
                       ? "opacity-50 cursor-not-allowed bg-gray-200 border-gray-100 text-gray-400 shadow-none hover:translate-y-0"
