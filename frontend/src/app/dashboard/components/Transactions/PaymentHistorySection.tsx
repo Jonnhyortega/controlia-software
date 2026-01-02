@@ -93,12 +93,12 @@ export default function PaymentHistorySection({ context, entityId, refreshParent
             Cuenta Corriente
         </h3>
         <div className="flex gap-2 w-full sm:w-auto">
-             <button
+             {/* <button
                 onClick={() => openModal("DEBT")}
                 className="hidden md:flex flex-1 sm:flex-none text-sm bg-rose-500 hover:bg-rose-600 text-white px-3 py-1.5 rounded-md items-center justify-center gap-1 transition shadow-sm"
             >
                 <Plus size={16} /> {context === "CLIENT" ? "Agregar Fiado/Deuda" : "Registrar Pedido"}
-            </button>
+            </button> */}
             <button
                 onClick={() => openModal("PAYMENT")}
                 className="hidden md:flex flex-1 sm:flex-none text-sm bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-md items-center justify-center gap-1 transition shadow-sm"

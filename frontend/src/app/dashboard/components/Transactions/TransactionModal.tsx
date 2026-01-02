@@ -147,6 +147,10 @@ export default function TransactionModal({
 
              // ---------------------------------------------------------
              // UPDATE DAILY CASH WITH THIS INITIAL PAYMENT
+             // ---------------------------------------------------------
+             // UPDATE DAILY CASH WITH THIS INITIAL PAYMENT
+             // Removed to prevent duplication - Backend handles this.
+             /*
              try {
                 const dailyCash = await getTodayDailySales();
                 if (dailyCash && dailyCash.status === "abierta") {
@@ -163,12 +167,16 @@ export default function TransactionModal({
              } catch (err) {
                 console.error("Error updating daily cash with initial payment", err);
              }
+             */
              // ---------------------------------------------------------
 
              toast.success("Deuda y Pago inicial registrados");
          } else {
              
              // IF IT IS A DIRECT PAYMENT (Not debt initial payment, but a straightforward payment transaction)
+             // IF IT IS A DIRECT PAYMENT (Not debt initial payment, but a straightforward payment transaction)
+             // Frontend manual update removed to prevent duplication. Backend should handle sync.
+             /*
              if (type === "SUPPLIER_PAYMENT") {
                   try {
                     const dailyCash = await getTodayDailySales();
@@ -186,6 +194,7 @@ export default function TransactionModal({
                     console.error("Error updating daily cash with direct payment", err);
                  }
              }
+             */
 
              toast.success("Movimiento registrado correctamente");
          }

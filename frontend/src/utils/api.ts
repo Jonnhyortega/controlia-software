@@ -334,8 +334,9 @@ export const getClosedCashDays = async (userId: string): Promise<DailyCash[]> =>
 
 
 // ✅ src/utils/api.ts
-export const updateDailyCash = async (id: string, updates: Partial<DailyCash>): Promise<DailyCash> => {
-  const res = await api.put(`${API_URL}/daily-cash/${id}`, updates);
+export const updateDailyCash = async (id: string, updates: Partial<DailyCash> & { overwrite?: boolean }): Promise<DailyCash> => {
+  const url = `${API_URL}/daily-cash/${id}${updates.overwrite ? "?overwrite=true" : ""}`;
+  const res = await api.put(url, updates);
   return res.data;
 };
 

@@ -15,11 +15,24 @@ export default function ReceiptModal({ sale, onClose }: ReceiptModalProps) {
   const { user } = useAuth();
   const { formatCurrency, settings } = useCustomization();
   const [imgPerfil, setImgPerfil] = useState<string | null>(null);
+  const [businessName, setBusinessName] = useState("");
 
-  useEffect(()=>{
+  useEffect(() => {
+    // 1. Cargar imagen de perfil del usuario si existe
     if(user?.logoUrl){
       setImgPerfil(user.logoUrl);
     }
+    
+    // 2. Fetch de perfil para asegurar el nombre de negocio actualizado (igual que Navbar)
+    (async () => {
+      try {
+        const { getProfile } = await import("../../../../utils/api");
+        const data = await getProfile();
+        setBusinessName(data.businessName || data.name || "");
+      } catch (err) {
+        console.error("Error fetching profile for receipt", err);
+      }
+    })();
   },[user])
   
   if (!sale) return null;
@@ -72,9 +85,7 @@ export default function ReceiptModal({ sale, onClose }: ReceiptModalProps) {
                         )}
                 </div>
                 <h2 className="text-xl font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1 line-clamp-1">
-                  {settings?.businessName && settings.businessName !== "Mi Comercio" 
-                    ? settings.businessName 
-                    : (user?.businessName || user?.name || "CONTROLIA STORE")}
+                  {businessName || settings?.businessName || user?.businessName || "CONTROLIA STORE"}
                 </h2>
                 <div className="text-gray-800 dark:text-gray-500 text-xs flex flex-col gap-1 items-center">
                     <span className="flex items-center gap-1 text-center">
@@ -134,7 +145,9 @@ export default function ReceiptModal({ sale, onClose }: ReceiptModalProps) {
                 </div>
                 <div className="flex justify-between text-xs text-gray-500 pt-2 border-t border-gray-100">
                     <span className="text-gray-800 dark:text-gray-500">MÉTODO DE PAGO</span>
-                    <span className="uppercase font-semibold text-gray-800 dark:text-gray-500">{sale.paymentMethod}</span>
+                    <span className="uppercase font-semibold text-gray-800 dark:text-gray-500">
+                      {sale.amountPaid === 0 ? "—" : sale.paymentMethod}
+                    </span>
                 </div>
             </div>
 
@@ -148,7 +161,7 @@ export default function ReceiptModal({ sale, onClose }: ReceiptModalProps) {
                         <img src="/logosinfondo.png" alt="Controlia" className="h-5 w-auto object-contain grayscale" />
                         <span className="font-bold tracking-wide text-gray-600">CONTROLIA</span>
                     </div>
-                    <p className="text-[8px] font-medium">controlia-software.vercel.app</p>
+                    <p className="text-[8px] font-medium">www.gestioncontrolia.com</p>
                 </div>
             </div>
             
