@@ -1,15 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { AlertCircle, Clock, CreditCard, Lock, ShieldAlert } from "lucide-react";
+import { AlertCircle, Clock, CreditCard, Lock, ShieldAlert, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { requestEmergencyAccess } from "../../utils/api"; 
 import { useToast } from "../../context/ToastContext";
+import { useAuth } from "../../context/authContext";
 
 export default function SubscriptionExpiredPage() {
   const router = useRouter();
+  const { logout } = useAuth();
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -32,6 +34,11 @@ export default function SubscriptionExpiredPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
   };
 
   return (
@@ -114,10 +121,18 @@ export default function SubscriptionExpiredPage() {
         </div>
         
         {/* Footer info */}
-        <div className="bg-[#0f0f10] p-4 text-center border-t border-white/5">
+        <div className="bg-[#0f0f10] p-4 text-center border-t border-white/5 flex flex-col gap-3">
              <p className="text-xs text-gray-500">
                 ¿Tienes dudas? <a href="#" className="underline hover:text-gray-400">Contáctanos por WhatsApp</a>
              </p>
+             
+             <button 
+                onClick={handleLogout}
+                className="text-xs text-rose-500/80 hover:text-rose-400 flex items-center justify-center gap-1.5 transition-colors mx-auto"
+             >
+                <LogOut size={12} />
+                Cerrar sesión
+             </button>
         </div>
 
       </motion.div>

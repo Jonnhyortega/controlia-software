@@ -49,7 +49,9 @@ export default function SalesRow({
         </td>
 
         <td className="hidden md:table-cell py-3 px-4 capitalize text-primary dark:text-primary-300 font-medium">
-          {sale.paymentMethod === 'cuenta corriente' ? (
+          {sale.amountPaid === 0 ? (
+             <span className="text-gray-400 dark:text-gray-600">—</span>
+          ) : sale.paymentMethod === 'cuenta corriente' ? (
               <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-1 rounded dark:bg-yellow-900 dark:text-yellow-300">
                   Cta. Cte.
               </span>
@@ -109,23 +111,25 @@ export default function SalesRow({
               </button>
             )}
 
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsExpanded(true); // ← Abrir confirm dialog
-              }}
-              className="
-                text-red-600 dark:text-red-400 hover:text-white 
-                bg-red-50 dark:bg-red-900/20 hover:bg-red-600 
-                p-2 rounded-md transition
-                font-semibold
-                flex items-center justify-center gap-1
-              "
-              title="Anular venta"
-            >
-              <Trash2 size={14} />
-              <span className="hidden md:inline text-xs">Anular</span>
-            </button>
+            {!sale.isTransaction && sale.paymentMethod !== 'cuenta corriente' && (!sale.amountDebt || sale.amountDebt <= 0) && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsExpanded(true); // ← Abrir confirm dialog
+                }}
+                className="
+                  text-red-600 dark:text-red-400 hover:text-white 
+                  bg-red-50 dark:bg-red-900/20 hover:bg-red-600 
+                  p-2 rounded-md transition
+                  font-semibold
+                  flex items-center justify-center gap-1
+                "
+                title="Anular venta"
+              >
+                <Trash2 size={14} />
+                <span className="hidden md:inline text-xs">Anular</span>
+              </button>
+            )}
           </div>
 
           {isExpanded && (
