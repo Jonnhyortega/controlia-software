@@ -185,13 +185,15 @@ export default function AuthPage() {
     function tryInit() {
       if ((window as any).google && document.getElementById('gsi-button')) {
         const el = document.getElementById('gsi-button');
+        const containerWidth = el?.offsetWidth; // Responsive width
+
         try {
           (window as any).google.accounts.id.initialize({ client_id: clientId, callback: (resp: any) => handleCredentialResponse(resp?.credential) });
           (window as any).google.accounts.id.renderButton(el, { 
             theme: 'filled_black', 
             size: 'large',
             shape: 'pill',
-            width: '380',
+            width: containerWidth ? containerWidth.toString() : '380',
             text: 'continue_with',
             logo_alignment: 'left'
           });
@@ -275,7 +277,7 @@ export default function AuthPage() {
       <div className="relative z-10 max-w-5xl w-full flex flex-col md:flex-row items-center justify-center gap-12 backdrop-blur-sm">
         
         {/* Panel derecho (Central) */}
-        <div className="w-full max-w-md flex flex-col gap-6 bg-[#121212]/80 backdrop-blur-xl p-8 rounded-2xl border border-white/10 relative shadow-2xl ring-1 ring-white/5">
+        <div className="w-full max-w-md flex flex-col gap-6 bg-[#121212]/80 backdrop-blur-xl p-6 md:p-8 rounded-2xl border border-white/10 relative shadow-2xl ring-1 ring-white/5">
           {/* Header */}
           <div className="text-center">
             <h1 className="text-xs tracking-[0.4em] font-bold text-gray-500 mb-4 uppercase">
