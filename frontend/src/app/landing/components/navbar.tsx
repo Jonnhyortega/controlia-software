@@ -33,7 +33,7 @@ export default function Navbar() {
             <Link href="/about" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
               Sobre nosotros
             </Link>
-            <Link href="/#contact" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+            <Link href="https://wa.me/541176513862" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
               Contacto
             </Link>
           </div>
