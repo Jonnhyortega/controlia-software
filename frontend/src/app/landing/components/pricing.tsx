@@ -9,10 +9,12 @@ const plans = [
     name: 'Plan Base',
     price: '$25.000',
     period: '/mes',
-    description: 'Ideal para kioscos y comercios chicos. Suena accesible y no minimiza al cliente.',
+    description: 'Ideal para kioscos, comercios que vendan productos que esten comenzando.',
     features: [
-      `Cantidad de productos: ${PLAN_LIMITS?.basic?.products || 100}`,
-      `Hasta ${PLAN_LIMITS?.basic?.users || 1} usuarios (empleados)`,
+      `Hasta ${PLAN_LIMITS.basic.products} productos`,
+      `Hasta ${PLAN_LIMITS.basic.users} usuario`,
+      `Hasta ${PLAN_LIMITS.basic.suppliers} proveedores`,
+      `Hasta ${PLAN_LIMITS.basic.monthlySales} ventas por mes`,
       'Ventas y Stock en tiempo real',
       'Reportes básicos',
       'Soporte por email'
@@ -25,8 +27,10 @@ const plans = [
     period: '/mes',
     description: 'Control total con Controlia Gestión. Para el comercio que ya se toma en serio el negocio.',
     features: [
-       `Cantidad de productos: ${PLAN_LIMITS?.gestion?.products || 5000}`,
-      `Hasta ${PLAN_LIMITS?.gestion?.users || 2} usuarios (empleados)`,
+      `Hasta ${PLAN_LIMITS.gestion.products} productos`,
+      `Hasta ${PLAN_LIMITS.gestion.users} usuarios`,
+      `Hasta ${PLAN_LIMITS.gestion.suppliers} proveedores`,
+      `Hasta ${PLAN_LIMITS.gestion.monthlySales} ventas por mes`,
       'Gestión financiera avanzada',
       'Cuentas corrientes (Fiados)',
       'Personalización de marca',

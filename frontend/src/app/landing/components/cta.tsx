@@ -36,7 +36,7 @@ const CTA = () => {
                         <ArrowRight className="ml-2 w-5 h-5" />
                     </Button>
                 </Link>
-                <Link href="/contact">
+                <Link href="https://wa.me/541176513862" target="_blank" rel="noopener noreferrer">
                      <Button size="lg" variant="outline" className="border-white/10 text-white hover:bg-white/5 px-10 h-14 text-lg">
                         Hablar con Ventas
                     </Button>
