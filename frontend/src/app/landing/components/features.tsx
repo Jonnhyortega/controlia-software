@@ -65,13 +65,20 @@ const features = [
   }
 ];
 
+const trackSpotlight = (e: React.MouseEvent<HTMLDivElement>) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  e.currentTarget.style.setProperty('--x', `${e.clientX - rect.left}px`);
+  e.currentTarget.style.setProperty('--y', `${e.clientY - rect.top}px`);
+};
+
 const Features = () => {
   return (
-    <section className="py-24 bg-[#0F0F12] relative overflow-hidden">
+    <section className="py-24 bg-[#0F0F12] relative overflow-clip">
       {/* Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] mix-blend-screen" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 rounded-full blur-[120px] mix-blend-screen" />
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 lp-dots [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000,transparent)]" />
+        <div className="lp-aurora lp-aurora--blue top-[-10%] left-[-10%] w-[40%] h-[40%] opacity-30" />
+        <div className="lp-aurora lp-aurora--violet bottom-[-10%] right-[-10%] w-[40%] h-[40%] opacity-25" />
       </div>
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -87,9 +94,9 @@ const Features = () => {
             <span className="text-sm font-medium text-gray-300">Potencia tu negocio</span>
           </div>
           
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">
-            Todo lo que necesitas, <br/>
-            <span className="bg-gradient-to-r from-primary-400 to-blue-400 bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-[-0.025em]">
+            <span className="lp-text-metal">Todo lo que necesitas,</span> <br/>
+            <span className="lp-text-gradient">
               sin la complejidad
             </span>
           </h2>
@@ -106,19 +113,20 @@ const Features = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ y: -5, scale: 1.02 }}
+              whileHover={{ y: -4 }}
+              onMouseMove={trackSpotlight}
               className={`
                 ${feature.colSpan} 
-                group relative overflow-hidden rounded-md border border-white/10 bg-white/5 p-8 
-                hover:bg-white/[0.07] transition-all duration-300
+                lp-spotlight group relative overflow-hidden rounded-xl border border-white/[0.08] p-8 
+                transition-colors duration-300 hover:border-white/[0.14]
               `}
             >
-              <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 bg-gradient-to-br ${feature.color}`} />
+              <div className={`absolute -top-24 -right-24 w-48 h-48 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-700 bg-gradient-to-br ${feature.color}`} />
               
               <div className="relative z-10 flex flex-col h-full">
                 <div className={`
-                  w-12 h-12 rounded-md flex items-center justify-center mb-6 
-                  bg-gradient-to-br ${feature.color} shadow-lg shadow-black/20
+                  w-12 h-12 rounded-lg flex items-center justify-center mb-6 
+                  bg-gradient-to-br ${feature.color} ring-1 ring-white/20 shadow-[0_8px_30px_-6px_rgba(52,131,250,0.5)] group-hover:scale-110 transition-transform duration-500
                 `}>
                   <feature.icon className="w-6 h-6 text-white" />
                 </div>
