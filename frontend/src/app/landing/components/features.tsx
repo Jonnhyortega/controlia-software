@@ -17,7 +17,7 @@ const features = [
   {
     icon: ScanBarcode,
     title: 'Cobrá en segundos',
-    description: 'Pasás el código con la cámara del celular o con un lector, y el ticket sale al toque. Para la hora pico, cuando se te llena el mostrador.',
+    description: 'Pasás el código por el lector y el producto entra al ticket con su precio. ¿Sin lector? La cámara del celu también sirve.',
     color: 'from-blue-500 to-indigo-500',
     colSpan: 'md:col-span-2'
   },

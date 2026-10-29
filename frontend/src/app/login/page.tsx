@@ -11,7 +11,7 @@ import { ArrowLeft, ArrowRight, BarChart3, CheckCircle2, Eye, EyeOff, Gift, Load
 
 const BRAND_BENEFITS = [
   "Cobrás, controlás el stock y cerrás la caja en un solo lugar",
-  "Lector de códigos con la cámara del celular",
+  "Cobrás con lector de códigos o con la cámara",
   "Los fiados anotados, sin cuaderno",
 ];
 

@@ -405,7 +405,17 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
   background-size: 22px 22px;
 }
 
+/* Parpadeo del láser del lector */
+.lp-flicker { animation: lp-flicker 1.6s ease-in-out infinite; }
+@keyframes lp-flicker {
+  0%, 100% { opacity: 1; }
+  45% { opacity: 0.75; }
+  50% { opacity: 0.35; }
+  55% { opacity: 0.85; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .lp-flicker,
   .lp-aurora, .lp-text-gradient, .lp-border-glow::before, .lp-float, .lp-beam { animation: none; }
   .lp-tilt, .lp-tilt:hover { transform: none; }
 }

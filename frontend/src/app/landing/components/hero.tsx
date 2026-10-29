@@ -108,7 +108,7 @@ const Hero = () => {
             </h1>
 
             <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              Cobrás pasando el código con la cámara del celular, el stock se descuenta solo y los fiados quedan anotados con nombre y monto. Chau cuaderno, chau planillas.
+              Cobrás pasando el código por el lector, el stock se descuenta solo y los fiados quedan anotados con nombre y monto. Chau cuaderno, chau planillas.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-10">
