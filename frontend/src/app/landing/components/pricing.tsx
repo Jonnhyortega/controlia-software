@@ -9,7 +9,7 @@ const plans = [
     name: 'Plan Base',
     price: '$25.000',
     period: '/mes',
-    description: 'Ideal para kioscos, comercios que vendan productos que esten comenzando.',
+    description: 'Para el kiosco o almacén que quiere dejar el cuaderno y empezar a ordenarse.',
     features: [
       `Hasta ${PLAN_LIMITS.basic.products} productos`,
       `Hasta ${PLAN_LIMITS.basic.users} usuario`,
@@ -25,7 +25,7 @@ const plans = [
     name: 'Plan Gestión',
     price: '$59.000',
     period: '/mes',
-    description: 'Control total con Controlia Gestión. Para el comercio que ya se toma en serio el negocio.',
+    description: 'Para el comercio con empleados, fiados y más movimiento en el mostrador.',
     features: [
       `Hasta ${PLAN_LIMITS.gestion.products} productos`,
       `Hasta ${PLAN_LIMITS.gestion.users} usuarios`,
@@ -56,10 +56,10 @@ const Pricing = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-5xl font-bold mb-4 tracking-[-0.025em] lp-text-metal">
-            Precios simples y transparentes
+            Un precio claro, sin sorpresas
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Elige el plan que mejor se adapte a tus necesidades. 15 dias de prueba gratis.
+            Probás 15 días gratis en tu mostrador y después elegís. Sin contratos: cancelás cuando quieras.
           </p>
         </motion.div>
 
@@ -112,7 +112,7 @@ const Pricing = () => {
                       : 'bg-white/[0.06] hover:bg-white/[0.12] ring-1 ring-white/10 text-white'
                   }`}
                 >
-                  Elegir {plan.name}
+                  Empezar con {plan.name}
                 </Button>
               </Link>
             </motion.div>

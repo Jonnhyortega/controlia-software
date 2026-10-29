@@ -57,7 +57,7 @@ const Footer = () => {
               </div>
             </motion.div>
             <p className="text-gray-400 text-sm mb-4">
-              {"La plataforma de gestión \ncomercial diseñada para negocios que quieren \n mejorar su administración."}
+              {"El sistema de gestión para kioscos, almacenes y comercios de barrio."}
             </p>
           </div>
 

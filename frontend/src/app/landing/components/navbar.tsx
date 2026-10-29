@@ -54,7 +54,7 @@ export default function Navbar() {
                 </Link>
                 <Link href="/login?register=1">
                   <Button className="lp-btn-primary lp-shine text-white rounded-full h-9 sm:h-10 px-4 sm:px-5 text-xs sm:text-sm whitespace-nowrap">
-                    Comenzar Gratis
+                    Probar gratis
                   </Button>
                 </Link>
               </>

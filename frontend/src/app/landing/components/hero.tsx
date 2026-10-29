@@ -11,10 +11,10 @@ const BASE_TOTAL = 145200;
 const YESTERDAY_TOTAL = BASE_TOTAL / 1.24;
 const DEMO_SALES = [12400, 8750, 23100, 5600, 17300];
 const DEMO_BENEFITS = [
-  { icon: Package, text: 'Stock descontado automáticamente' },
-  { icon: Receipt, text: 'Ticket listo para imprimir' },
-  { icon: Wallet, text: 'Caja del día actualizada al instante' },
-  { icon: BarChart3, text: 'Venta registrada en tus reportes' },
+  { icon: Package, text: 'El stock se descontó solo' },
+  { icon: Receipt, text: 'Ticket listo para el cliente' },
+  { icon: Wallet, text: 'La caja del día ya lo sumó' },
+  { icon: BarChart3, text: 'Quedó en tus reportes de ventas' },
 ];
 const CTA_EVERY = 3;
 
@@ -97,18 +97,18 @@ const Hero = () => {
               className="lp-border-glow inline-flex items-center gap-2 bg-white/[0.04] border border-white/10 rounded-full px-4 py-1.5 mb-8 backdrop-blur-md"
             >
               <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-              <span className="text-sm text-gray-300 font-medium tracking-wide">La solución preferida por PyMEs</span>
+              <span className="text-sm text-gray-300 font-medium tracking-wide">Para kioscos, almacenes y comercios de barrio</span>
             </motion.div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.05] tracking-[-0.03em]">
-              <span className="lp-text-metal">Gestiona tu negocio</span> <br className="hidden lg:block"/>
+              <span className="lp-text-metal">Cerrá la caja</span> <br className="hidden lg:block"/>
               <span className="lp-text-gradient">
-                sin límites
+                sabiendo cuánto ganaste.
               </span>
             </h1>
 
             <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              Dile adiós a las planillas de cálculo. Controlia centraliza tus ventas, stock, clientes y finanzas en una plataforma intuitiva diseñada para escalar.
+              Cobrás pasando el código con la cámara del celular, el stock se descuenta solo y los fiados quedan anotados con nombre y monto. Chau cuaderno, chau planillas.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-10">
@@ -117,7 +117,7 @@ const Hero = () => {
                   size="lg" 
                   className="lp-btn-primary lp-shine w-full sm:w-auto px-8 py-6 text-lg text-white rounded-full group"
                 >
-                  {isLoggedIn ? 'Ir a mi Panel' : 'Comenzar Gratis'}
+                  {isLoggedIn ? 'Ir a mi Panel' : 'Probalo 15 días gratis'}
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -127,7 +127,7 @@ const Hero = () => {
                   variant="outline" 
                   className="w-full sm:w-auto px-8 py-6 text-lg rounded-full bg-white/[0.03] border-white/15 hover:bg-white/10 hover:border-white/30 text-gray-200 hover:text-white backdrop-blur-md transition-all font-medium"
                 >
-                  Ver Funcionalidades
+                  Ver cómo funciona
                 </Button>
               </Link>
             </div>
@@ -137,10 +137,10 @@ const Hero = () => {
                  <CheckCircle2 className="w-4 h-4 text-green-500" /> Sin tarjeta de crédito
                </div>
                <div className="flex items-center gap-2">
-                 <CheckCircle2 className="w-4 h-4 text-green-500" /> Setup en 2 minutos
+                 <CheckCircle2 className="w-4 h-4 text-green-500" /> Desde el celu o la compu
                </div>
                <div className="flex items-center gap-2">
-                 <CheckCircle2 className="w-4 h-4 text-green-500" /> Cancelación flexible
+                 <CheckCircle2 className="w-4 h-4 text-green-500" /> Cancelás cuando quieras
                </div>
             </div>
           </motion.div>
@@ -217,9 +217,9 @@ const Hero = () => {
                                 <span className="text-xs sm:text-sm text-gray-100 font-medium">{DEMO_BENEFITS[toast.benefit].text}</span>
                               ) : (
                                 <span className="text-xs sm:text-sm text-gray-100 font-medium">
-                                  Así de rápido es vender con Controlia.{' '}
+                                  Así se vende con Controlia.{' '}
                                   <Link href="/login?register=1" className="lp-text-gradient font-semibold whitespace-nowrap hover:underline">
-                                    Pruébalo gratis →
+                                    Probalo gratis →
                                   </Link>
                                 </span>
                               )}

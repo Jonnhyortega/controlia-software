@@ -16,50 +16,50 @@ import {
 const features = [
   {
     icon: ScanBarcode,
-    title: 'Ventas a la Velocidad de la Luz',
-    description: 'No hagas esperar a tus clientes. Nuestro POS está optimizado para procesar transacciones en segundos, con lector de códigos y tickets instantáneos.',
+    title: 'Cobrá en segundos',
+    description: 'Pasás el código con la cámara del celular o con un lector, y el ticket sale al toque. Para la hora pico, cuando se te llena el mostrador.',
     color: 'from-blue-500 to-indigo-500',
     colSpan: 'md:col-span-2'
   },
   {
     icon: Package,
-    title: 'Stock Cero-Errores',
-    description: 'Olvídate de contar manualmente. El inventario se actualiza en tiempo real con cada venta. Recibe alertas inteligentes antes de quedarte sin mercadería.',
+    title: 'Sabé qué reponer',
+    description: 'Cada venta descuenta el stock. Ves qué se está acabando antes de que un cliente te lo pida y no lo tengas.',
     color: 'from-emerald-500 to-teal-500',
     colSpan: 'md:col-span-1'
   },
   {
     icon: DollarSign,
-    title: 'Finanzas Claras',
-    description: '¿Dónde está tu dinero? Visualiza tu ganancia real diaria, controla la caja chica y registra gastos sin ser contador.',
+    title: 'La caja que cierra',
+    description: 'Abrís y cerrás la caja con el resumen del día: lo que vendiste, lo que gastaste y lo que tiene que haber en el cajón.',
     color: 'from-orange-500 to-red-500',
     colSpan: 'md:col-span-1'
   },
   {
     icon: Users,
-    title: 'Gestión de Clientes & Fiados',
-    description: 'Fideliza a tus clientes con cuentas corrientes. Registra fiados y pagos parciales de forma segura y organizada. Adiós al cuaderno.',
+    title: 'Fiados sin cuaderno',
+    description: 'Cada cliente con su cuenta: lo que se llevó, lo que pagó y lo que debe. Se terminan los tachones y las discusiones de "yo te pagué".',
     color: 'from-purple-500 to-pink-500',
     colSpan: 'md:col-span-2'
   },
   {
     icon: ShieldCheck,
-    title: 'Seguridad Militar',
-    description: 'Tus datos están encriptados. Define roles para tus empleados y controla qué pueden ver o modificar.',
+    title: 'Vos decidís quién toca qué',
+    description: 'Creás usuarios para tus empleados y elegís qué pueden ver o cambiar. Atienden el mostrador, pero la plata la controlás vos.',
     color: 'from-cyan-500 to-blue-500',
     colSpan: 'md:col-span-1'
   },
   {
     icon: BarChart3,
-    title: 'Tu Negocio en Números',
-    description: 'Toma decisiones informadas. Identifica tus productos estrella, horas pico y días más rentables con un clic.',
+    title: 'Qué sale y qué no',
+    description: 'Reportes simples para ver qué productos se venden más y cómo vienen las ventas, sin ser contador.',
     color: 'from-violet-500 to-purple-500',
     colSpan: 'md:col-span-1'
   },
   {
     icon: Palette,
-    title: 'Identidad Propia',
-    description: 'Tu marca importa. Personaliza los tickets con tu logo, elige tu tema (Oscuro/Claro) y haz que el sistema se sienta tuyo.',
+    title: 'Con la cara de tu negocio',
+    description: 'Tu logo en los tickets y el tema claro u oscuro, como más te guste.',
     color: 'from-pink-500 to-rose-500',
     colSpan: 'md:col-span-1'
   }
@@ -91,17 +91,17 @@ const Features = () => {
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-6">
             <Zap className="w-4 h-4 text-amber-400" fill="currentColor" />
-            <span className="text-sm font-medium text-gray-300">Potencia tu negocio</span>
+            <span className="text-sm font-medium text-gray-300">Lo que pasa en tu mostrador</span>
           </div>
           
           <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-[-0.025em]">
-            <span className="lp-text-metal">Todo lo que necesitas,</span> <br/>
+            <span className="lp-text-metal">Todo el mostrador,</span> <br/>
             <span className="lp-text-gradient">
-              sin la complejidad
+              en una sola pantalla.
             </span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
-            Hemos analizado las necesidades reales de los negocios modernos para crear una suite de herramientas que realmente usarás.
+            Pensado para el que atiende, repone y cierra la caja. Sin cursos ni manuales: si sabés usar WhatsApp, sabés usar Controlia.
           </p>
         </motion.div>
 

@@ -10,9 +10,9 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, BarChart3, CheckCircle2, Eye, EyeOff, Gift, Loader2 } from "lucide-react";
 
 const BRAND_BENEFITS = [
-  "Ventas, stock y caja en un solo lugar",
+  "Cobrás, controlás el stock y cerrás la caja en un solo lugar",
   "Lector de códigos con la cámara del celular",
-  "Clientes, fiados y reportes al día",
+  "Los fiados anotados, sin cuaderno",
 ];
 
 // Componente Reutilizable de Input Flotante
@@ -297,8 +297,8 @@ export default function AuthPage() {
               </h1>
               <p className="text-gray-400 text-sm">
                 {isLogin
-                  ? "Ingresa tus datos para acceder al panel."
-                  : "Registrate en segundos y administra tu negocio."}
+                  ? "Ingresá tus datos para entrar a tu panel."
+                  : "Creá tu cuenta y probá Controlia 15 días gratis."}
               </p>
             </div>
 
@@ -418,7 +418,7 @@ export default function AuthPage() {
                     <div>
                       <p className="font-semibold text-white text-sm">Prueba gratis de 15 días</p>
                       <p className="text-xs text-gray-400 mt-0.5">
-                        Disfruta del Plan Base sin costo. Luego $25.000 ARS/mes.
+                        Usá el Plan Base sin costo. Después, $25.000 ARS/mes.
                       </p>
                       <p className="text-[11px] text-gray-500 mt-1">No se requiere tarjeta de crédito</p>
                     </div>
