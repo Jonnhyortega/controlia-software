@@ -159,7 +159,7 @@ export default function SalesTable({
       
       {/* 🛠️ Barra de Herramientas (Solo si NO es simpleMode) */}
       {!simpleMode && (
-        <div className="hidden md:flex flex-col md:flex-row gap-3 justify-between items-center bg-gray-200 dark:bg-[#18181b] p-3 rounded-md border border-gray-200 dark:border-[#27272a] transition-colors ">
+        <div className="flex flex-col md:flex-row gap-3 justify-between items-center bg-gray-200 dark:bg-[#18181b] p-3 rounded-md border border-gray-200 dark:border-[#27272a] transition-colors ">
           
           {/* Buscador */}
           <div className="relative w-full md:w-auto flex-1 max-w-sm">

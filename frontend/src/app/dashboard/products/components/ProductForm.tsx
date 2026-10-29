@@ -1,4 +1,4 @@
-import { ScanBarcode, Loader2, Package, X } from "lucide-react";
+import { Camera, ScanBarcode, Loader2, Package, X } from "lucide-react";
 import { Button } from "../../components/button";
 import { useCustomization } from "../../../../context/CustomizationContext";
 import { useState, useEffect } from "react";
@@ -371,6 +371,16 @@ export function ProductForm({ form, setForm, suppliers, categories, setShowCateg
                     className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-zinc-800/50 border border-gray-200 dark:border-zinc-700/50 rounded-md text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-gray-400 font-mono font-medium"
                 />
             </div>
+            <button
+                type="button"
+                onClick={() => setScannerOpen(true)}
+                title="Escanear código con la cámara"
+                aria-label="Escanear código con la cámara"
+                className="shrink-0 inline-flex items-center gap-2 px-4 rounded-md border border-gray-200 dark:border-zinc-700/50 bg-gray-50 dark:bg-zinc-800/50 text-gray-700 dark:text-gray-200 text-sm font-medium hover:border-primary hover:text-primary transition-colors"
+            >
+                <Camera className="w-5 h-5" />
+                <span className="hidden sm:inline">Cámara</span>
+            </button>
             </div>
         </div>
 

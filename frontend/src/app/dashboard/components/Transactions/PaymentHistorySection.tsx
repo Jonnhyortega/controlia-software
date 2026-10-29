@@ -101,7 +101,7 @@ export default function PaymentHistorySection({ context, entityId, refreshParent
             </button> */}
             <button
                 onClick={() => openModal("PAYMENT")}
-                className="hidden md:flex flex-1 sm:flex-none text-sm bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-md items-center justify-center gap-1 transition shadow-sm"
+                className="flex flex-1 sm:flex-none text-sm bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-md items-center justify-center gap-1 transition shadow-sm"
             >
                 <Plus size={16} /> {context === "CLIENT" ? "Registrar Cobro" : "Registrar Pago"}
             </button>

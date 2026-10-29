@@ -11,6 +11,7 @@ import {
   CreditCard,
   ShoppingCart,
   X,
+  Camera,
 } from "lucide-react";
 
 import { ConfirmDialog } from "../../../dashboard/components/confirmDialog";
@@ -407,14 +408,26 @@ export default function SalesForm({
       <div className="flex flex-1 overflow-hidden relative flex-col md:flex-row">
         
         {/* --- LEFT PANEL: Product List (Flexible) --- */}
-        <div className="flex-1 flex flex-col bg-white dark:bg-[#09090b] relative overflow-hidden order-2 md:order-1">
+        <div className="flex-1 min-h-0 flex flex-col bg-white dark:bg-[#09090b] relative overflow-hidden order-1">
           
           {/* Search Bar Area */}
-          <div className="px-6 pt-6 pb-2">
-             <ProductSearch 
-                products={productsDB}
-                onSelect={addProductToSale}
-             />
+          <div className="px-3 pt-3 md:px-6 md:pt-6 pb-2 flex items-start gap-2">
+             <div className="flex-1 min-w-0">
+               <ProductSearch
+                  products={productsDB}
+                  onSelect={addProductToSale}
+               />
+             </div>
+             <button
+                type="button"
+                onClick={() => setScannerOpen(true)}
+                title="Escanear código con la cámara"
+                aria-label="Escanear código con la cámara"
+                className="shrink-0 inline-flex items-center gap-2 h-10 px-3 rounded-md border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 text-sm font-medium hover:border-primary hover:text-primary transition-colors"
+             >
+                <Camera size={18} />
+                <span className="hidden sm:inline">Escanear</span>
+             </button>
           </div>
 
           {/* Table Header (Sticky) */}
@@ -526,9 +539,9 @@ export default function SalesForm({
         </div>
 
         {/* --- RIGHT PANEL: Controls (Sidebar) --- */}
-        <div className="w-full md:w-[400px] xl:w-[450px] bg-gray-50 dark:bg-[#121212] border-t md:border-t-0 md:border-l border-gray-200 dark:border-zinc-800 flex flex-col shrink-0 z-20 shadow-[-10px_0_30px_-15px_rgba(0,0,0,0.05)] order-1 md:order-2 h-[40vh] md:h-auto">
+        <div className="w-full md:w-[400px] xl:w-[450px] bg-gray-50 dark:bg-[#121212] border-t md:border-t-0 md:border-l border-gray-200 dark:border-zinc-800 flex flex-col shrink-0 z-20 shadow-[-10px_0_30px_-15px_rgba(0,0,0,0.05)] order-2 max-h-[55%] md:max-h-none md:h-auto">
            
-           <div className="flex-1 overflow-y-auto p-5 md:p-6 space-y-6">
+           <div className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 space-y-4 md:space-y-6">
               
               {/* Payment Method */}
               <div className="space-y-3">
@@ -613,8 +626,8 @@ export default function SalesForm({
            </div>
 
            {/* TOTAL & SUBMIT (Bottom Fixed) */}
-           <div className="p-5 md:p-6 bg-white dark:bg-[#18181b] border-t border-gray-200 dark:border-zinc-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-30">
-              <div className="flex flex-col gap-1 mb-4">
+           <div className="p-4 md:p-6 bg-white dark:bg-[#18181b] border-t border-gray-200 dark:border-zinc-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-30">
+              <div className="flex flex-col gap-1 mb-3 md:mb-4">
                   <div className="flex justify-between items-center text-gray-500 dark:text-gray-400">
                       <span className="text-sm font-medium">
                         {newSale.amountPaid !== undefined && newSale.amountPaid < newSale.products.reduce((acc, p) => acc + (Number(p.quantity) || 0) * (Number(p.price) || 0), 0) 
@@ -628,7 +641,7 @@ export default function SalesForm({
                       )}
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+                    <span className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
                         {formatCurrency(
                         newSale.amountPaid !== undefined 
                         ? newSale.amountPaid 

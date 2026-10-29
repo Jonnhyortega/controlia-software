@@ -45,7 +45,7 @@ export default function ExpensesTable({ expenses, onDelete }: ExpensesTableProps
                    !expense.description.toLowerCase().startsWith("pago a proveedor") && (
                     <button 
                       onClick={() => onDelete(i)}
-                      className="p-1.5 rounded-md transition-colors hidden md:inline-flex text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      className="p-1.5 rounded-md transition-colors inline-flex text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
                       title="Eliminar gasto"
                     >
                       <Trash2 size={16} />

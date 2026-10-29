@@ -17,40 +17,51 @@ export default function BarcodeScanner({ onDetected, onClose }: BarcodeScannerPr
   // Ref para controlar la instancia del lector y poder detenerlo
   const controlsRef = useRef<any>(null);
 
+  // Guardamos los callbacks en refs para no reiniciar la cámara en cada render del padre
+  const onDetectedRef = useRef(onDetected);
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onDetectedRef.current = onDetected;
+    onCloseRef.current = onClose;
+  }, [onDetected, onClose]);
+
   useEffect(() => {
     const codeReader = new BrowserMultiFormatReader();
     let mounted = true;
+    let detected = false;
 
     const startScanning = async () => {
+      if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
+        setError("La cámara solo funciona en una conexión segura (https). Abrí Controlia desde su dirección web.");
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
-        // Solicitar permisos explícitamente primero para manejar errores mejor
-        // await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        
-        // decodeFromVideoDevice(deviceId, videoElement, callback)
-        // undefined deviceId selecciona la cámara por defecto (trasera preferiblemente si facingMode se respeta automágicamente o por defecto)
-        // @zxing/browser maneja esto.
-        
-        controlsRef.current = await codeReader.decodeFromVideoDevice(
-          undefined, 
-          videoRef.current!, 
-          (result, err) => {
-            if (result && mounted) {
-              // Beep sound opcional
-              // const audio = new Audio('/beep.mp3'); audio.play().catch(() => {});
-              onDetected(result.getText());
-              onClose(); // Cerrar al detectar
-            }
-            if (err) {
-              // Muchos errores son "No QR code found", ignorar
+        // Pedimos la cámara trasera: en el celular es la que sirve para leer códigos
+        controlsRef.current = await codeReader.decodeFromConstraints(
+          { video: { facingMode: { ideal: "environment" } }, audio: false },
+          videoRef.current!,
+          (result) => {
+            // Errores de "código no encontrado" llegan en cada frame: se ignoran
+            if (result && mounted && !detected) {
+              detected = true;
+              controlsRef.current?.stop();
+              onDetectedRef.current(result.getText());
+              onCloseRef.current(); // Cerrar al detectar
             }
           }
         );
-        setLoading(false);
+        if (mounted) setLoading(false);
       } catch (err: any) {
         console.error("Error starting scanner:", err);
         if (mounted) {
-            setError("No se pudo acceder a la cámara. Verifique permisos.");
+            setError(
+              err?.name === "NotAllowedError"
+                ? "No diste permiso para usar la cámara. Habilitalo en la configuración del navegador y volvé a intentar."
+                : "No se pudo acceder a la cámara. Revisá que ninguna otra app la esté usando."
+            );
             setLoading(false);
         }
       }
@@ -75,12 +86,14 @@ export default function BarcodeScanner({ onDetected, onClose }: BarcodeScannerPr
       }
       // codeReader.reset(); // Reset global library state if needed
     };
-  }, [onDetected, onClose]);
+  }, []);
 
   return (
     <div className="relative bg-black rounded-md overflow-hidden shadow-2xl flex flex-col items-center justify-center w-full max-w-lg mx-auto aspect-[4/3]">
-      <button 
+      <button
+        type="button"
         onClick={onClose}
+        aria-label="Cerrar cámara"
         className="absolute top-4 right-4 z-20 text-white bg-black/50 p-2 rounded-full hover:bg-black/80 backdrop-blur-sm"
       >
         <X size={24} />
@@ -99,9 +112,12 @@ export default function BarcodeScanner({ onDetected, onClose }: BarcodeScannerPr
         </div>
       ) : (
         <>
-            <video 
-                ref={videoRef} 
+            <video
+                ref={videoRef}
                 className="w-full h-full object-cover"
+                playsInline
+                muted
+                autoPlay
             />
             
             {loading && (
@@ -119,7 +135,7 @@ export default function BarcodeScanner({ onDetected, onClose }: BarcodeScannerPr
                     <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-red-500"></div>
                 </div>
                 <p className="absolute bottom-8 left-0 right-0 text-center text-white font-medium text-sm drop-shadow-md">
-                    Apunta el código de barras aquí
+                    Apuntá el código de barras acá
                 </p>
             </div>
         </>
