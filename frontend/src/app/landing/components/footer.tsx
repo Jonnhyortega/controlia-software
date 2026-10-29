@@ -40,7 +40,8 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-[#0f0f12] border-t border-gray-800">
+    <footer className="relative bg-[#07090d]">
+      <div className="lp-hairline" />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           <div className="col-span-2 md:col-span-1">
@@ -52,7 +53,7 @@ const Footer = () => {
             >
               <div className="flex items-center gap-2">
                 <img src="/icon.png" alt="Controlia" className="w-8 h-8 rounded-md" />
-                <span className="text-2xl font-bold text-white">CONTROLIA</span>
+                <span className="text-2xl font-bold lp-text-metal">CONTROLIA</span>
               </div>
             </motion.div>
             <p className="text-gray-400 text-sm mb-4">
@@ -86,7 +87,7 @@ const Footer = () => {
           ))}
         </div>
 
-        <div className="border-t border-gray-800 pt-8">
+        <div className="border-t border-white/[0.06] pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-400 text-sm">
               © {currentYear} CONTROLIA. Todos los derechos reservados.

@@ -43,7 +43,10 @@ const plans = [
 
 const Pricing = () => {
   return (
-    <section className="py-24 bg-[#1a1b1e] relative">
+    <section className="py-24 bg-[#0b0d12] relative overflow-clip">
+      <div className="absolute inset-x-0 top-0 lp-hairline" />
+      <div className="absolute inset-0 lp-grid opacity-60 pointer-events-none" />
+      <div className="lp-aurora lp-aurora--blue left-1/2 -translate-x-1/2 top-[20%] w-[700px] h-[400px] opacity-25" />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -52,7 +55,7 @@ const Pricing = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 tracking-[-0.025em] lp-text-metal">
             Precios simples y transparentes
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
@@ -68,14 +71,14 @@ const Pricing = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className={`relative bg-gray-900/50 backdrop-blur-sm border rounded-md p-8 hover:border-primary/50 transition-all duration-300 ${
+              className={`relative w-full md:max-w-sm backdrop-blur-xl border rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 ${
                 plan.popular 
-                  ? 'border-primary/50 ring-1 ring-primary/20 scale-105 shadow-xl' 
-                  : 'border-gray-800'
+                  ? 'lp-border-glow border-transparent bg-gradient-to-b from-[#3483fa]/[0.12] via-[#0e1220]/80 to-[#0e1220]/80 md:scale-105 shadow-[0_30px_100px_-30px_rgba(52,131,250,0.6)]' 
+                  : 'border-white/[0.08] bg-gradient-to-b from-white/[0.05] to-white/[0.01] hover:border-white/20'
               }`}
             >
               {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1 shadow-lg">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 lp-btn-primary text-white px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
                   <Sparkles className="w-3 h-3" />
                   Más popular
                 </div>
@@ -85,7 +88,7 @@ const Pricing = () => {
                 <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
                 <p className="text-gray-400 text-sm mb-6 h-10">{plan.description}</p>
                 <div className="flex items-baseline">
-                  <span className="text-4xl font-bold text-white">{plan.price}</span>
+                  <span className={`text-5xl font-bold tracking-tight tabular-nums ${plan.popular ? 'lp-text-gradient' : 'lp-text-metal'}`}>{plan.price}</span>
                   <span className="text-gray-500 ml-2 text-sm">{plan.period}</span>
                 </div>
               </div>
@@ -93,7 +96,9 @@ const Pricing = () => {
               <ul className="space-y-4 mb-8 min-h-[200px]">
                 {plan.features.map((feature, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-green-500 shrink-0" />
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400/25 to-emerald-600/10 ring-1 ring-emerald-400/30">
+                      <Check className="w-3 h-3 text-emerald-400" />
+                    </span>
                     <span className="text-gray-300 text-sm">{feature}</span>
                   </li>
                 ))}
@@ -101,10 +106,10 @@ const Pricing = () => {
 
               <Link href="/login?register=1" className="block w-full">
                 <Button 
-                  className={`w-full ${
+                  className={`w-full h-11 rounded-full ${
                     plan.popular 
-                      ? 'bg-primary hover:bg-primary-700 text-white' 
-                      : 'bg-white/10 hover:bg-white/20 text-white'
+                      ? 'lp-btn-primary lp-shine text-white' 
+                      : 'bg-white/[0.06] hover:bg-white/[0.12] ring-1 ring-white/10 text-white'
                   }`}
                 >
                   Elegir {plan.name}
