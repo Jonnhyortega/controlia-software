@@ -42,7 +42,27 @@ export default function ReceiptModal({ sale, onClose }: ReceiptModalProps) {
        day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" 
     });
 
+  // El navegador usa document.title como nombre sugerido del PDF al imprimir
+  const buildFileName = () => {
+    const store = (businessName || settings?.businessName || user?.businessName || "")
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-zA-Z0-9]+/g, "");
+    const ticketNumber = sale._id.slice(-6).toUpperCase();
+    const date = new Date(sale.date || sale.createdAt)
+      .toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", year: "numeric" })
+      .replace(/\//g, "-");
+    return ["Ticket", store, ticketNumber, date].filter(Boolean).join("-");
+  };
+
   const handlePrint = () => {
+    const originalTitle = document.title;
+    const restoreTitle = () => {
+      document.title = originalTitle;
+      window.removeEventListener("afterprint", restoreTitle);
+    };
+    window.addEventListener("afterprint", restoreTitle);
+    document.title = buildFileName();
     window.print();
   };
 

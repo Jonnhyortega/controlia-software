@@ -12,6 +12,7 @@ import {
   ShoppingCart,
   X,
   Camera,
+  Loader2,
 } from "lucide-react";
 
 import { ConfirmDialog } from "../../../dashboard/components/confirmDialog";
@@ -27,6 +28,7 @@ import { useToast } from "../../../../context/ToastContext";
 import { useAuth } from "../../../../context/authContext";
 import { useCustomization } from "../../../../context/CustomizationContext";
 import ProductSearch from "./ProductSearch";
+import SalesFormSkeleton from "./SalesFormSkeleton";
 import ClientSearch from "./ClientSearch"; // Import NEW
 import { FormattedPriceInput } from "../../../../components/FormattedPriceInput";
 
@@ -313,6 +315,8 @@ export default function SalesForm({
       title: "Confirmar registro de venta",
       message: "¿Deseás registrar esta venta?",
       onConfirm: async () => {
+        // Cerrar el diálogo al confirmar para evitar un doble Enter mientras se registra
+        setConfirmDialog((prev) => ({ ...prev, open: false }));
         try {
           setLoading(true);
 
@@ -360,16 +364,7 @@ export default function SalesForm({
     });
   };
 
-  if (initialLoading)
-    return (
-      <Loading
-        fullscreen
-        message="Cargando productos del inventario..."
-      />
-    );
-
-  if (loading)
-    return <Loading fullscreen message="Registrando venta..." />;
+  if (initialLoading) return <SalesFormSkeleton />;
 
   return (
     <motion.div
@@ -658,7 +653,9 @@ export default function SalesForm({
                   className="w-full py-3.5 bg-primary hover:bg-primary-700 text-white font-bold text-base rounded-lg shadow-lg shadow-primary/25 flex items-center justify-center gap-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               >
                   {loading ? (
-                    <>Procesando...</>
+                    <>
+                       <Loader2 className="w-5 h-5 animate-spin" /> Registrando venta...
+                    </>
                   ) : (
                     <>
                        <ShoppingCart className="w-5 h-5" /> Confirmar Venta

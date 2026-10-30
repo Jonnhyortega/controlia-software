@@ -123,7 +123,7 @@ export default function SubscriptionExpiredPage() {
         {/* Footer info */}
         <div className="bg-[#0f0f10] p-4 text-center border-t border-white/5 flex flex-col gap-3">
              <p className="text-xs text-gray-500">
-                ¿Tienes dudas? <a href="#" className="underline hover:text-gray-400">Contáctanos por WhatsApp</a>
+                ¿Tienes dudas? <a href="https://wa.me/541176513862" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400">Contáctanos por WhatsApp</a>
              </p>
              
              <button 

@@ -284,7 +284,9 @@ export default function HelpPage() {
                             Enviar Email
                         </a>
                         <a 
-                            href="#"
+                            href="https://wa.me/541176513862"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all"
                         >
                             <MessageCircle className="w-4 h-4" />
